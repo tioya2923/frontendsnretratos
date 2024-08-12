@@ -2,6 +2,11 @@
   "name": "frontendpsn",
   "version": "0.1.0",
   "private": true,
+  "description": "Comunidade de São Nicolau",
+  "main": "index.js",
+  "homepage": "./",
+  "proxy": "https://backend-sn-a37ffec6bc3e.herokuapp.com/",
+  "author": "João Dumba",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
