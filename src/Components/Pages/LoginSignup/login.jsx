@@ -31,7 +31,6 @@ function Login() {
         }
         
         const url = `${backendUrl}components/login.php`;
-        //const url = "https://backend-family-c1c363294a5e.herokuapp.com/components/login.php"
         let fData = new FormData();
         fData.append('email', email);
         fData.append('password', password);
