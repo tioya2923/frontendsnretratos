@@ -1,0 +1,40 @@
+.container-footer {
+    color: #040000;
+    padding: 20px 0;
+    font-family: 'Arial', sans-serif;
+    position: static;
+    width: 100%;
+    background-color:  hsl(180, 12%, 74%);
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main-contente {
+    min-height: calc(100vh - 120px);
+}
+
+.footer-nav {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-top: 40px;
+}
+
+.footer-nav li {
+    padding: 0 1em;
+    list-style-type: none;
+}
+
+.footer-nav a {
+    color: #040000 !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+   
+}
+
+.footer-nav a:hover {
+    color: #040000;
+    text-decoration: none;
+    
+}
+

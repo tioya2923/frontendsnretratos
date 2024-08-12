@@ -1,0 +1,110 @@
+
+
+
+/* Estilos para dispositivos pequenos (tablets em retrato e telefones grandes, a partir de 600px) */
+@media only screen and (min-width: 600px) {}
+
+
+/* Estilos para dispositivos médios (tablets em paisagem, a partir de 768px) */
+@media only screen and (min-width: 768px) {
+    .navbar-content {
+        flex-direction: row;
+    }
+
+    .menu-links {
+        display: flex;
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
+}
+
+/* Estilos para dispositivos grandes (laptops/desktops, a partir de 992px) */
+@media only screen and (min-width: 992px) {
+    .navbar-content {
+        flex-direction: row;
+    }
+
+    .menu-links {
+        display: flex;
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
+}
+
+/* Estilos para dispositivos extra grandes (laptops grandes e desktops, a partir de 1200px) */
+@media only screen and (min-width: 1200px) {
+    .navbar-content {
+        flex-direction: row;
+    }
+
+    .menu-links {
+        display: flex;
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
+}
+
+/* Estilos gerais da barra de navegação */
+.navbar-init {
+    height: 5.56em;
+    width: 100%;
+    top: 0%;
+    margin-bottom: 2rem;
+    z-index: 2;
+    background-color: hsl(180, 12%, 74%);
+}
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    height: 60px;
+    width: 100px;
+    margin-right: auto;
+}
+
+.menu-links li {
+    list-style-type: none;
+    display: inline;
+    padding: 1em;
+}
+
+.menu-links li a {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #040000;;
+    cursor: pointer;
+}
+
+
+/* Estilos para dispositivos extra pequenos (telefones, até 600px) */
+@media only screen and (max-width: 600px) {
+
+    .logo {
+        height: auto; /* Valor reduzido pela metade */
+        width: auto; /* Mantém a largura proporcional à altura */
+        margin-right: auto;
+        margin-top: 20px;
+        
+    }
+    
+
+
+    .menu-links {
+      
+        margin-top: 28px;
+        margin-left: auto;
+    }
+
+
+
+}

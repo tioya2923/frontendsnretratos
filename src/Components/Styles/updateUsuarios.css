@@ -1,0 +1,51 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+  
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.button-delete {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.button-delete:hover {
+    opacity: 0.8;
+}
+
+
+
+
+/* Estilos para dispositivos com largura de tela até 600px */
+@media only screen and (max-width: 600px) {
+   
+    th, td {
+        padding: 15px;
+    }
+
+    .button-delete {
+        padding: 10px 20px;
+    }
+}
+
+/* Estilos para dispositivos com largura de tela entre 601px e 1024px */
+@media only screen and (min-width: 600px) and (max-width: 1024px) {
+ 
+
+    th, td {
+        padding: 20px;
+    }
+
+    .button-delte {
+        padding: 20px 40px;
+    }
+}

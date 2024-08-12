@@ -1,0 +1,137 @@
+.deletePhoto {
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.deletePhoto>div {
+    flex: 0 0 30%;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.deletePhoto img {
+    margin-top: 12px;
+    width: 95%;
+    height: 600px;
+    object-fit: cover;
+}
+
+.deletePhoto p {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.deletePhoto button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: hsl(59, 87%, 50%);
+    color: black;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 25px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.deletePhoto button:hover {
+    background-color: #f10909;
+    color: white;
+}
+
+@media only screen and (max-width: 600px) {
+    .deletePhoto {
+        margin-top: 50px;        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .deletePhoto>div {        
+        flex: 0 0 100%;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .deletePhoto img {
+        margin-top: 12px;
+        width: 95%;
+        height: 600px;
+        object-fit: cover;
+    }
+
+    .deletePhoto p {
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    .deletePhoto button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: hsl(59, 87%, 50%);
+        color: black;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-size: 25px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .deletePhoto button:hover {
+        background-color: #f10909;
+        color: white;
+    }
+}
+
+
+@media only screen and (min-width: 600px) and (max-width:  1024px) {
+    .deletePhoto {
+        margin-top: 50px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    
+    .deletePhoto>div {
+        flex: 0 0 50%; /* Alterado de 30% para 100% */
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .deletePhoto img {
+        margin-top: 12px;
+        width: 95%;
+        height: 600px;
+        object-fit: cover;
+    }
+    
+    .deletePhoto p {
+        text-align: center;
+        margin-top: 8px;
+    }
+    
+    .deletePhoto button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: hsl(59, 87%, 50%);
+        color: black;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-size: 25px;
+        transition: background-color 0.3s ease-in-out;
+    }
+    
+    .deletePhoto button:hover {
+        background-color: #f10909;
+        color: white;
+    }
+    
+}

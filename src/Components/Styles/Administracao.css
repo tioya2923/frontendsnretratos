@@ -1,0 +1,60 @@
+.admini{
+    margin: 0 auto;
+    margin-top: 75px;
+    margin-bottom: 50px;
+    width: 75%;
+    border-radius: 2%;
+    border: 5px solid #ccc;
+    padding: 5%;
+    font-weight: bold;
+    background-color: rgb(232, 224, 213);
+
+}
+.link-admini {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin: 0 auto;
+    text-align: center; /* 2. Centralize titles */
+    text-transform: uppercase; /* 4. Uppercase letters */
+    margin-bottom: 10px; /* 6. Distance between links */
+    width: 340px;
+    background-color: #c69f9f;
+    border-radius: 2%;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.link-admini a.insert {
+    text-decoration: none; /* 1. Remove underline */
+    color: #000; /* Initial color for links */
+    display: block; /* Make the link fill the container for centering */
+    padding: 5px 0; /* Add some padding */
+}
+
+.link-admini a.insert:hover {
+    color: #e36464; /* 3. Color change on hover */
+}
+/* CSS para telas com largura máxima de 600px */
+@media only screen and (max-width: 600px){
+    .admini{
+        width: 100%;
+        padding: 2%;
+    }
+    .link-admini {
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+/* CSS para telas com largura entre 600px e 1024px */
+@media only screen and (min-width: 600px) and (max-width:  1024px){
+    .admini{
+        width: 85%;
+        padding: 3%;
+    }
+    .link-admini {
+        width: 85%;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+}

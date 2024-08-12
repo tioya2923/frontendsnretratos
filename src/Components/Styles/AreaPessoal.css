@@ -1,0 +1,120 @@
+.container-form {
+  margin-top: 150px;
+  margin-bottom: 150px;
+
+}
+
+.error {
+  color: red;
+}
+
+.container-form label {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+/* Estilo para o botão */
+.container-form button {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  background-color: #558aca;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 auto;
+  margin-top: 25px;
+  margin-bottom: 20px;
+}
+
+.container-form button:hover {
+  background-color: #046e22;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input[type="password"] {
+  padding-right: 40px;  /* Espaço para o ícone do "olho" */
+}
+
+.input-wrapper .toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+
+
+
+/* Ajustes para telas pequenas */
+@media only screen and (max-width: 600px) {
+  .container-form {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    
+  }
+
+  .container-form button {
+    padding: 5px 10px;
+    font-size: 1em;
+  }
+
+  .container-form input[type="email"],
+  .container-form input[type="password"] {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .container-form .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  .input-wrapper input[type="password"] {
+    padding-right: 40px;  /* Espaço para o ícone do "olho" */
+  }
+  
+  .input-wrapper .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+}
+
+
+/* Ajustes para telas médias */
+@media only screen and (min-width: 600px) and (max-width: 1024px) {
+  .container-form {
+    margin-top: 100px;
+    margin-bottom: 100px;
+  }
+
+  .container-form button {
+    padding: 8px 16px;
+    font-size: 1.1em;
+  }
+
+  .input-wrapper .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+}
