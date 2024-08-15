@@ -3,9 +3,8 @@ import "./Footer.css";
 
 const Footer = () => {
     const navigation = [
-        { link: "fotografias", text: "Fotografias" },
-        { link: "videos", text: "Vídeos" },        
-        { link: "areaPessoal", text: "Admin" },
+        { link: "/fotografias", text: "Retratos" },          
+        { link: "/Privacidade", text: "Admin" },
     ];
     
 

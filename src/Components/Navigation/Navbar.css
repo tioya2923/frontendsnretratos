@@ -90,12 +90,12 @@
 @media only screen and (max-width: 600px) {
 
     .logo {
-        height: auto; /* Valor reduzido pela metade */
+        height: 10vw; /* Ajuste este valor conforme necessário */
+        max-height: 100px; /* Ajuste este valor conforme necessário */
         width: auto; /* Mantém a largura proporcional à altura */
         margin-right: auto;
-        margin-top: 20px;
-        
     }
+    
     
 
 

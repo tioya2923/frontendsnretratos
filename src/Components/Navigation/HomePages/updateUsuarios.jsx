@@ -65,8 +65,14 @@ const UpdateUsuarios = () => {
                 </tbody>
             </table>
             <div>
-                <Link to="/adPrivacidade" style={{ textDecoration: 'none' }}><p>Área Privada</p></Link>
+                <div className="admini">
+                    <div className="link-admini"><Link to="/insertImages" className='insert'>Inserir Ficheiros</Link></div>
+                    <div className="link-admini"><Link to="/deletePhoto" className='insert'>Editar Ficheiros</Link></div>
+                    <div className="link-admini"><Link to="/updateAdministradores" className='insert'>Administradores</Link></div>
+
+                </div>
             </div>
+
         </div>
     );
 };

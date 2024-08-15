@@ -7,169 +7,173 @@
   justify-content: space-around;
 }
 
-.carousel-foto {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+.carousel-pasta {
+  display: flex; /* Alterado para flex para exibir as pastas horizontalmente */
+  flex-wrap: wrap;
   justify-content: space-around;
   max-height: 2500px;
   overflow-y: scroll;
   scroll-behavior: smooth;
 }
 
-/* Estilo dos itens do carrossel */
+/* Estilo das pastas */
+.pasta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  padding: 20px; 
+  width: 200px; /* Defina a largura da pasta */
+  height: 200px; /* Defina a altura da pasta */
+  background-color: hwb(149 67% 24%); /* Cor de fundo da pasta */
+  border-radius: 10px; /* Bordas arredondadas para dar aparência de pasta */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar aparência 3D */
+  cursor: pointer;
+}
+
+
+
+.carousel-fotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Cria uma grade responsiva com colunas de pelo menos 200px de largura */
+  grid-gap: 2px; /* Remove o espaço entre os itens da grade */
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
 .item {
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+   /* Estilos para cada item da grade */
+   border: 4px solid #ccc;
+   padding: 4px; /* Remove qualquer preenchimento */
+   margin: 4px; /* Remove qualquer margem */
+   box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.20);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   overflow: hidden; /* Garante que a imagem não ultrapasse os limites da box */
+   cursor: pointer;
+ }
 
-/* Estilo das imagens */
 .card-foto {
-  margin-top: 12px;
-  width: 95%;
+  /* Estilos para a foto */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Garante que a imagem cubra todo o espaço sem distorção */
 }
 
-.container img {
-  margin-top: 12px;
-  width: 100%;
-  height: 550px;
-  margin-bottom: 15px;
-  object-fit: cover;
+
+
+/* Estilo do modal */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.685); /* Fundo escuro para destacar a imagem */
+  z-index: 1000;
 }
 
-/* Estilo do texto 'saber mais' */
-.info a {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  font-size: 1em;
-  background-color: #acbccd;
-  /* Cor de fundo do botão */
+.modal-foto {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.nav-button {
+  position: fixed; /* Alterado para fixed */
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
   color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  margin-top: 15px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1001;
 }
 
-@media only screen and (max-width: 600px) {
-  .container {
-    margin-right: 5%;
-    margin-left: 5%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+.nav-button.left {
+  left: 20px; /* Ajuste a posição conforme necessário */
 
-  }
-
-  .carousel-foto {
-    display: grid;
-    grid-template-columns: 1fr;
-    /* Alterado para apresentar apenas uma imagem por coluna */
-    gap: 40px;
-    justify-content: space-around;
-    max-height: 750px;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-  }
-
-  /* Estilo dos itens do carrossel */
-  .item {
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Estilo das imagens */
-  .card-foto {
-    margin-top: 12px;
-    width: 95%;
-  }
-
-  .container img {
-    margin-top: 12px;
-    width: 100%;
-    height: 350px;
-    margin-bottom: 15px;
-    object-fit: cover;
-  }
-
-  .name {
-    font-size: 20px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  }
-
-  /* Estilo do texto 'saber mais' */
-  .info a {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    font-size: 1.5em;
-    background-color: #acbccd;
-    /* Cor de fundo do botão */
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-top: 15px;
-  }
-}
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) and (max-width: 1024px) {
-  .container {
-    margin-right: 5%;
-    margin-left: 5%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-
-  .carousel-foto {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    /* Alterado para apresentar duas imagens por coluna */
-    gap: 40px;
-    justify-content: space-around;
-    max-height: 750px;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-  }
-
-  /* Estilo dos itens do carrossel */
-  .item {
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Estilo das imagens */
-  .card-foto {
-    margin-top: 12px;
-    width: 95%;
-  }
-
-  .container img {
-    margin-top: 12px;
-    width: 100%;
-    height: 350px;
-    margin-bottom: 15px;
-    object-fit: cover;
-  }
-
-  .name {
-    font-size: 20px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  }
-
-  /* Estilo do texto 'saber mais' */
-  .info a {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    font-size: 1.5em;
-    background-color: #acbccd;
-    /* Cor de fundo do botão */
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-top: 15px;
-  }
+ 
 
 }
+
+.nav-button.right {
+  right: 20px; /* Ajuste a posição conforme necessário */
+}
+
+.nav-button {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(238, 232, 232, 0.912);
+  color: white;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  
+}
+
+.nav-button:hover {
+  background: rgba(93, 114, 119, 0.8);
+}
+
+.nav-button.left {
+  left: 20px;
+}
+
+.nav-button.right {
+  right: 20px;
+}
+
+.nav-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+
+
+.close-button {
+  position: fixed;
+  bottom: 0; /* Fixa o botão na parte inferior da página */
+  right: 0; /* Opcional: você pode ajustar isso para mover o botão horizontalmente */
+  margin: 15px; /* Adiciona uma margem ao redor do botão */
+  padding: 10px;
+  background: #c5cdd5;
+  color: rgb(20, 19, 19);
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: medium;
+}
+
+.voltar-button {
+  position: fixed;
+  bottom: 0; /* Fixa o botão na parte inferior da página */
+  left: 50%; /* Centraliza o botão horizontalmente */
+  transform: translateX(-50%); /* Desloca o botão para a esquerda pela metade de sua largura */
+  margin: 15px; /* Adiciona uma margem ao redor do botão */
+  padding: 10px;
+  background: #c5cdd5;
+  color: rgb(20, 19, 19);
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: medium;
+}
+
+
+

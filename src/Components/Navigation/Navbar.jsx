@@ -5,9 +5,8 @@ import logo from './Logo/logopsn.png';
 const Navbar = () => {
 
     const navigation = [
-        { link: '/fotografias', text: 'Fotografias' },
-        { link: '/videos', text: 'Vídeos' },
-        { link: '/areaPessoal', text: 'Admin' },
+        { link: '/fotografias', text: 'Retratos' },
+            { link: '/Privacidade', text: 'Admin' },
     ];
 
 

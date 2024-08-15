@@ -5,7 +5,9 @@ import '../Styles/InsertImages.css'
 function InsertImages() {
   const fileInput = useRef(null);
   const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
+  const [pasta, setPasta] = useState("");
+  const [nomeUsuario, setNomeUsuario] = useState("");
+  const [dataCriacao, setDataCriacao] = useState(""); // Adicione este
   const [result, setResult] = useState("");
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -14,8 +16,12 @@ function InsertImages() {
     e.preventDefault();
     const formData = new FormData();
     formData.append("nome", nome);
-    formData.append("image", fileInput.current.files[0]);
-    formData.append("descricao", descricao);
+    formData.append("pasta", pasta);
+    formData.append("nomeUsuario", nomeUsuario);
+    formData.append("dataCriacao", dataCriacao); // Adicione este
+    for (let i = 0; i < fileInput.current.files.length; i++) {
+      formData.append("file[]", fileInput.current.files[i]);
+    }
 
     axios.post(`${backendUrl}components/insertFotografias.php`, formData, {
       headers: {
@@ -25,7 +31,9 @@ function InsertImages() {
     .then((response) => {
       setResult(response.data);
       setNome("");
-      setDescricao("");
+      setPasta("");
+      setNomeUsuario("");
+      setDataCriacao(""); // Adicione este
       fileInput.current.value = null;
     })
     .catch((error) => {
@@ -35,13 +43,15 @@ function InsertImages() {
 
   return (
     <div className="FotoForm">
-      <h1>Selecione a fotografia</h1>
-      <form onSubmit={handleSubmit}>      
-        <input type="file" id="image" name="image" accept="image/*" ref={fileInput} />
+      <h1>Selecione um ou mais arquivos</h1>
+      <form onSubmit={handleSubmit}>
+        <input type="text" id="nomeUsuario" name="nomeUsuario" placeholder="Seu nome" value={nomeUsuario} onChange={e => setNomeUsuario(e.target.value)} />
         <br />
-        <input type="text" id="nome" name="nome" placeholder="Nome da fotografia" value={nome} onChange={e => setNome(e.target.value)} />
+        <input type="text" id="pasta" name="pasta" placeholder="Nome da pasta" value={pasta} onChange={e => setPasta(e.target.value)} />
         <br />
-        <textarea id="descricao" name="descricao" placeholder="Texto para descrever a fotografia" value={descricao} onChange={e => setDescricao(e.target.value)}></textarea>
+        <input type="date" id="dataCriacao" name="dataCriacao" value={dataCriacao} onChange={e => setDataCriacao(e.target.value)} /> {/* Adicione este */}
+        <br />
+        <input type="file" id="file" name="file" accept="image/*,video/*" ref={fileInput} multiple />
         <br />
         <button type="submit">Enviar</button>
       </form>
