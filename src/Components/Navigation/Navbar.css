@@ -57,7 +57,7 @@
     top: 0%;
     margin-bottom: 2rem;
     z-index: 2;
-    background-color: hsl(180, 12%, 74%);
+    background-color: #4b0303;
 }
 
 .navbar-content {
@@ -68,7 +68,7 @@
 
 .logo {
     height: 60px;
-    width: 100px;
+    width: auto;
     margin-right: auto;
 }
 
@@ -81,7 +81,7 @@
 .menu-links li a {
     text-decoration: none;
     text-transform: uppercase;
-    color: #040000;;
+    color: #ffffff;
     cursor: pointer;
 }
 
@@ -90,7 +90,7 @@
 @media only screen and (max-width: 600px) {
 
     .logo {
-        height: 10vw; /* Ajuste este valor conforme necessário */
+        height: 15vw; /* Ajuste este valor conforme necessário */
         max-height: 100px; /* Ajuste este valor conforme necessário */
         width: auto; /* Mantém a largura proporcional à altura */
         margin-right: auto;

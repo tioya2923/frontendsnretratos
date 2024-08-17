@@ -25,10 +25,14 @@
   padding: 20px; 
   width: 200px; /* Defina a largura da pasta */
   height: 200px; /* Defina a altura da pasta */
-  background-color: hwb(149 67% 24%); /* Cor de fundo da pasta */
+  background-color: hwb(0 40% 27%); /* Cor de fundo da pasta */
   border-radius: 10px; /* Bordas arredondadas para dar aparência de pasta */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar aparência 3D */
   cursor: pointer;
+  color: rgba(255, 255, 255, 0.752);
+  font-size: medium;
+  font-weight: 900;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 

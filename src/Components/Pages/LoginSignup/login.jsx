@@ -114,7 +114,7 @@ function Login() {
                     </div>
                     <button onClick={handleSubmit} className="button-form">Entrar</button>
                     <div className="login-form-register">
-                        <Link to="/register">faça aqui o teu registo</Link>
+                        <Link to="/register">fazer registo</Link>
                     </div>
                     <ToastContainer />
                 </div>

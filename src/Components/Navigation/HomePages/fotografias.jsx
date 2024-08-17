@@ -60,7 +60,7 @@ const Fotografias = () => {
     return (
         <div>
             <div className='container'>
-                <h2>Imagens e Vídeos da Comunidade Paroquial de São Nicolau</h2>
+                <h2>Comunidade Paroquial de São Nicolau</h2>
             </div>
             {pastaSelecionada === null ? (
                 <div className='carousel-pasta'>

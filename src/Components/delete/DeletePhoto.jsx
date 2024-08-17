@@ -32,7 +32,6 @@ const DeletePhoto = () => {
         setPastaSelecionada(pasta);
     };
 
-
     const closeModal = () => {
         setFotoSelecionada(null);
     };
@@ -56,9 +55,6 @@ const DeletePhoto = () => {
         setPlayingVideo(video);
     };
 
-
-    // ...
-    
     const handleDeletePasta = async (pastaId) => {
         const response = await fetch(`${backendUrl}components/deletePasta.php`, {
             method: 'DELETE',
@@ -67,7 +63,7 @@ const DeletePhoto = () => {
             },
             body: `pasta_id=${pastaId}`,
         });
-    
+
         const data = await response.json();
         if (data.error) {
             toast.error(data.error);
@@ -76,7 +72,7 @@ const DeletePhoto = () => {
             setPastas(pastas.filter(pasta => pasta.id !== pastaId));
         }
     };
-    
+
     const handleDeleteFotos = async () => {
         for (const fotoId of fotosSelecionadas) {
             const foto = pastaSelecionada.fotos.find(foto => foto.id === fotoId);
@@ -87,23 +83,23 @@ const DeletePhoto = () => {
                 },
                 body: `foto_id=${fotoId}&foto_key=${foto.arquivo}`,
             });
-    
+
             if (!response.ok) {
                 const error = await response.json();
                 toast.error(error.error || 'Ocorreu um erro');
                 return;
             }
         }
-    
+
         setPastaSelecionada({
             ...pastaSelecionada,
             fotos: pastaSelecionada.fotos.filter(foto => !fotosSelecionadas.includes(foto.id))
         });
-    
+
         setFotosSelecionadas([]);
         toast.success('Arquivos apagados com sucesso');
     };
-    
+
     const handleFileChange = (e) => {
         const files = e.target.files;
         const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpg', 'video/mp4', 'video/mpeg', 'video/ogg', 'video/webm'];
@@ -117,45 +113,54 @@ const DeletePhoto = () => {
         }
         setFile(files);
     };
-    
-    const handleUpload = async () => {
+
+    const handleUpload = () => {
+        if (!file) {
+            toast.error("Por favor, selecione um arquivo para carregar.");
+            return;
+        }
+
         const formData = new FormData();
         for (let i = 0; i < file.length; i++) {
             formData.append('file[]', file[i]);
         }
         formData.append('pasta_id', pastaSelecionada.id);
-    
-        const response = await fetch(`${backendUrl}components/upload.php`, {
+
+        fetch(`${backendUrl}components/upload.php`, {
             method: 'POST',
             body: formData,
-        });
-    
-        if (response.ok) {
-            const data = await response.json();          
-            toast.success(data.message);
-            setPastaSelecionada({
-                ...pastaSelecionada,
-                fotos: [...pastaSelecionada.fotos, { foto: URL.createObjectURL(file), nome: file.name }]
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw response;
+                }
+            })
+            .then(data => {
+                toast.success(data.message);
+                setPastaSelecionada({
+                    ...pastaSelecionada,
+                    fotos: [...pastaSelecionada.fotos, { arquivo: URL.createObjectURL(new Blob([file[0]])), nome: file[0].name }]
+                });
+                setFile(null); // Limpa o estado do arquivo após o upload bem-sucedido
+            })
+            .catch(async errorResponse => {
+                let error;
+                if (errorResponse instanceof Response) {
+                    error = await errorResponse.json();
+                } else {
+                    error = { error: errorResponse.message };
+                }
+                toast.error(error.error);
             });
-            setFile(null); // Limpa o estado do arquivo após o upload bem-sucedido
-        } else {
-            const error = await response.json();
-            toast.error(error.error);
-        }
+
     };
-    
-    // ...
-    
-
-    // ...
-
-
-
 
     return (
         <div>
             <div className='container'>
-                <h2>Editar e apagar ficheiros</h2>
+                <h2>Editar ficheiros</h2>
             </div>
             {pastaSelecionada === null ? (
                 <div className='carousel-pasta'>
@@ -196,12 +201,11 @@ const DeletePhoto = () => {
                         ))}
                     </div>
                     <div className="buttons">
-                        <input type="file" multiple onChange={handleFileChange} />
-                        <button onClick={handleUpload}>Adicionar Foto</button>
-                        <button onClick={handleDeleteFotos}>Apagar Fotos Selecionadas</button>
+                        <input type="file" id="file" name="file" accept="image/*,video/*" multiple onChange={handleFileChange} />
+                        <button onClick={handleUpload}>Adicionar Ficheiros</button>
+                        <button onClick={handleDeleteFotos}>Apagar Ficheiros Selecionados</button>
                         <button onClick={() => setPastaSelecionada(null)}>Voltar</button>
                     </div>
-
                 </div>
             )}
 
