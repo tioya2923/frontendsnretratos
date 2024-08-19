@@ -43,38 +43,46 @@ const UpdateUsuarios = () => {
 
     return (
         <div>
-            <h2>Participantes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Estado</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user.id}>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.status}</td>
-                            <td><button className='button-delete' onClick={() => deleteUser(user.id)}>Eliminar</button></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
             <div>
                 <div className="admini">
                     <div className="link-admini"><Link to="/insertImages" className='insert'>Inserir Ficheiros</Link></div>
                     <div className="link-admini"><Link to="/deletePhoto" className='insert'>Editar Ficheiros</Link></div>
                     <div className="link-admini"><Link to="/updateAdministradores" className='insert'>Administradores</Link></div>
-
+                </div>
+            </div>
+            <h2>Participantes</h2>
+            <div className='container-participantes'>
+                <div className="user-grid">
+                    {users.map(user => (
+                        <div className="user-card" key={user.id}>
+                            <div>
+                                <h3>Nome:</h3>
+                                <p>{user.name}</p>
+                            </div>
+                            <div>
+                                <h3>E-mail:</h3>
+                                <p>{user.email}</p>
+                            </div>
+                            <div>
+                                <h3>Estado:</h3>
+                                <p>{user.status}</p>
+                            </div>
+                            <div>
+                                <h3>Ação:</h3>
+                                <button className='button-delete' onClick={() => deleteUser(user.id)}>Eliminar</button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
         </div>
     );
+
+
+
+
+
 };
 
 export default UpdateUsuarios;
