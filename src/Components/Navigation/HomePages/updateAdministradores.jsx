@@ -18,7 +18,7 @@ const UpdateAdministradores = () => {
                 }
             })
             .catch(error => {
-                console.error(`Espere um pouco ou contacte o administrador: ${error}`);
+                console.error(`Espere ou contacte o administrador: ${error}`);
             });
     }, [backendUrl]); // backendUrl é a dependência
 

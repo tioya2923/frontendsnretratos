@@ -1,7 +1,6 @@
 table {
     width: 100%;
     border-collapse: collapse;
-  
 }
 
 th, td {
@@ -22,12 +21,8 @@ th, td {
     opacity: 0.8;
 }
 
-
-
-
 /* Estilos para dispositivos com largura de tela até 600px */
 @media only screen and (max-width: 600px) {
-   
     th, td {
         padding: 15px;
     }
@@ -38,14 +33,12 @@ th, td {
 }
 
 /* Estilos para dispositivos com largura de tela entre 601px e 1024px */
-@media only screen and (min-width: 600px) and (max-width: 1024px) {
- 
-
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
     th, td {
         padding: 20px;
     }
 
-    .button-delte {
+    .button-delete {
         padding: 20px 40px;
     }
 }
