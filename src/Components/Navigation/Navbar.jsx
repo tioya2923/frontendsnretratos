@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
 import logo from './Logo/logopsn.png';
 
 const Navbar = () => {
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const navigation = [
+        { link: '/programa', text: 'Programa' },
+        { link: '/missas', text: 'Missas' },
+        { link: '/ConfissoesHorarios', text: 'Confissões' },
+        { link: '/cantores', text: 'Cantores' },
+        { link: '/acolitos', text: 'Acólitos' },
+        { link: '/InscritosRefeicoes', text: 'Refeições' },
         { link: '/fotografias', text: 'Retratos' },
-            { link: '/Privacidade', text: 'Admin' },
+        { link: '/Privacidade', text: 'Admin' },
     ];
 
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
 
     return (
         <nav className="navbar-init">
@@ -16,7 +26,12 @@ const Navbar = () => {
                 <a href="/home" className="logo-container">
                     <img src={logo} alt="Logo" className="logo" />
                 </a>
-                <ul className="menu-links">
+                <div className="hamburger-menu" onClick={toggleMenu}>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <ul className={`menu-links ${menuOpen ? 'show' : ''}`}>
                     {navigation.map((nav) => (
                         <li key={nav.text} className="nav-item">
                             <a href={nav.link} className="nav-link">
@@ -25,7 +40,6 @@ const Navbar = () => {
                         </li>
                     ))}
                 </ul>
-
             </div>
         </nav>
     );

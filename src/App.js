@@ -18,6 +18,12 @@ import Privacidade from "./Components/Pages/LoginSignup/Privacidade";
 import UpdateUsuarios from "./Components/Navigation/HomePages/updateUsuarios";
 import AdPrivacidade from "./Components/Pages/LoginSignup/AdPrivacidade";
 import UpdateAdministradores from "./Components/Navigation/HomePages/updateAdministradores";
+import CalendarioRefeicoes from "./Components/Navigation/HomePages/refeicoes";
+import InscritosRefeicoes from "./Components/Navigation/HomePages/InscritosRefeicoes";
+import ConfissoesHorarios from "./Components/Navigation/HomePages/ConfissoesHoraios";
+import InserirNome from "./Components/Navigation/HomePages/InserirNome";
+import InserirNomeConf from "./Components/Navigation/HomePages/InserirNomeConf";
+import GerenciamentoRefeicoes from "./Components/Navigation/HomePages/GerenciamentoRefeicoes";
 
 function PrivateRoute({ children, isAuthenticated }) {
   if (isAuthenticated) {
@@ -40,6 +46,14 @@ function App() {
             <Route path="/" element={<><Navbar /><PrivateRoute isAuthenticated={!!isAuthenticated}><Home /></PrivateRoute><Footer /></>} />
             <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/fotografias" element={<><Navbar /><Fotografias /><Footer /></>} />
+            <Route path="/refeicoes" element={<><Navbar /><CalendarioRefeicoes /><Footer /></>} />
+            <Route path="/InscritosRefeicoes" element={<><Navbar /><InscritosRefeicoes /><Footer /></>} />
+             <Route path="/ConfissoesHorarios" element={<><Navbar /><ConfissoesHorarios /><Footer /></>} />
+             <Route path="/InserirNome" element={<><Navbar /><InserirNome /><Footer /></>} />
+
+             <Route path="/InserirNomeConf" element={<><Navbar /><InserirNomeConf/><Footer /></>} />
+             <Route path="/GerenciamentoRefeicoes" element={<><Navbar /><GerenciamentoRefeicoes/><Footer /></>} />
+
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/insertImages" element={<><Navbar /><InsertImages /><Footer /></>} />
@@ -50,6 +64,8 @@ function App() {
             <Route path="/updateUsuarios" element={<><Navbar /><UpdateUsuarios /><Footer /></>} />
             <Route path="/adPrivacidade" element={<><Navbar /><AdPrivacidade /><Footer /></>} />
             <Route path="/updateAdministradores" element={<><Navbar /><UpdateAdministradores /><Footer /></>} />
+
+
 
           </Routes>
         </Router>

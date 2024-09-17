@@ -1,0 +1,127 @@
+.calendario-container {
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    background-color: rgb(237, 222, 222);
+    margin-bottom: 25px;
+
+    
+}
+
+.calendario-semana {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.calendario-dia {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f7a2a2;
+    margin-bottom: 15px;
+}
+
+.calendario-dia h3 {
+    margin: 0 0 10px;
+    font-size: medium;
+    color: white;
+    font-weight: 900;
+    
+}
+
+.calendario-dia input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #dde0dd6a;
+    
+}
+
+.calendario-dia button {
+    display: block;
+    width: 75px;
+    margin: 5px auto; /* Centraliza o botão */
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #760107c8;
+    color: white;
+    cursor: pointer;
+}
+
+.calendario-dia button:hover {
+    background-color: #023b03;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .calendario-semana {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    }
+
+    .calendario-dia {
+        padding: 8px;
+    }
+
+    .calendario-dia h3 {
+        font-size: small;
+    }
+
+    .calendario-dia input {
+        padding: 4px;
+    }
+
+    .calendario-dia button {
+        width: 100%;
+        padding: 4px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .calendario-semana {
+        grid-template-columns: repeat(2, 1fr); /* Duas colunas em telas médias */
+    }
+
+    .calendario-dia {
+        padding: 10px;
+    }
+
+    .calendario-dia h3 {
+        font-size: medium;
+    }
+
+    .calendario-dia input {
+        padding: 5px;
+    }
+
+    .calendario-dia button {
+        width: 75px;
+        padding: 5px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .calendario-semana {
+        grid-template-columns: repeat(3, 1fr); /* Três colunas em telas grandes */
+    }
+
+    .calendario-dia {
+        padding: 12px;
+    }
+
+    .calendario-dia h3 {
+        font-size: large;
+    }
+
+    .calendario-dia input {
+        padding: 6px;
+    }
+
+    .calendario-dia button {
+        width: 100px;
+        padding: 6px;
+    }
+}

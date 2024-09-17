@@ -1,0 +1,119 @@
+.insert-inserir-refeicao-container {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 1.2rem;
+}
+
+.insert-form-container h2 {
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.insert-form {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+}
+
+.insert-label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.insert-input, .insert-select {
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.2rem;
+}
+
+.insert-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9em; /* Diminui o tamanho da fonte do botão */
+    cursor: pointer;
+    margin-top: 5px; /* Diminui o espaçamento entre o input e o botão */
+}
+
+.insert-button:hover {
+    background-color: #0056b3;
+}
+
+.insert-tabela-refeicoes {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.insert-tabela-refeicoes th, .insert-tabela-refeicoes td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+
+.insert-tabela-refeicoes th {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.insert-tabela-refeicoes tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.insert-tabela-refeicoes tr:hover {
+    background-color: #ddd;
+}
+
+.insert-tabela-refeicoes tr {
+    border-bottom: 1px solid #ddd;
+    font-size: 1.2rem;
+}
+
+.insert-nomes-verticais {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Espaçamento entre os nomes */
+}
+
+.insert-data-dia {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.insert-tabela-refeicoes th, .insert-tabela-refeicoes td {
+    padding: 12px 15px;
+    border-right: 1px solid #ddd; /* Adiciona divisões verticais */
+}
+
+.insert-tabela-refeicoes th:last-child, .insert-tabela-refeicoes td:last-child {
+    border-right: none; /* Remove a borda direita da última coluna */
+}
+
+.insert-inscricao-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.insert-inscricao-link:hover {
+    background-color: #0056b3;
+}
+
+.insert-erro {
+    color: red;
+    font-size: 1rem;
+    margin-top: 10px;
+    text-align: center;
+}

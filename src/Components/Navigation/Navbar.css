@@ -1,62 +1,10 @@
-
-
-
-/* Estilos para dispositivos pequenos (tablets em retrato e telefones grandes, a partir de 600px) */
-@media only screen and (min-width: 600px) {}
-
-
-/* Estilos para dispositivos médios (tablets em paisagem, a partir de 768px) */
-@media only screen and (min-width: 768px) {
-    .navbar-content {
-        flex-direction: row;
-    }
-
-    .menu-links {
-        display: flex;
-    }
-
-    .hamburger-menu {
-        display: none;
-    }
-}
-
-/* Estilos para dispositivos grandes (laptops/desktops, a partir de 992px) */
-@media only screen and (min-width: 992px) {
-    .navbar-content {
-        flex-direction: row;
-    }
-
-    .menu-links {
-        display: flex;
-    }
-
-    .hamburger-menu {
-        display: none;
-    }
-}
-
-/* Estilos para dispositivos extra grandes (laptops grandes e desktops, a partir de 1200px) */
-@media only screen and (min-width: 1200px) {
-    .navbar-content {
-        flex-direction: row;
-    }
-
-    .menu-links {
-        display: flex;
-    }
-
-    .hamburger-menu {
-        display: none;
-    }
-}
-
 /* Estilos gerais da barra de navegação */
 .navbar-init {
     height: 5.56em;
     width: 100%;
     top: 0%;
     margin-bottom: 2rem;
-    z-index: 2;
+    z-index: 1000;
     background-color: #4b0303;
 }
 
@@ -64,12 +12,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .logo {
     height: 60px;
     width: auto;
     margin-right: auto;
+}
+
+.menu-links {
+    display: none; /* Esconder o menu por padrão */
 }
 
 .menu-links li {
@@ -83,28 +37,112 @@
     text-transform: uppercase;
     color: #ffffff;
     cursor: pointer;
+    z-index: 1001; 
 }
 
+.hamburger-menu {
+    display: block; /* Mostrar o menu hambúrguer por padrão */
+    cursor: pointer;
+    z-index: 1001; /* Garantir que o menu hambúrguer esteja acima das imagens */
+}
+
+.hamburger-menu div {
+    width: 25px;
+    height: 3px;
+    background-color: #ffffff;
+    margin: 5px 0;
+}
 
 /* Estilos para dispositivos extra pequenos (telefones, até 600px) */
 @media only screen and (max-width: 600px) {
-
     .logo {
         height: 15vw; /* Ajuste este valor conforme necessário */
         max-height: 100px; /* Ajuste este valor conforme necessário */
         width: auto; /* Mantém a largura proporcional à altura */
         margin-right: auto;
     }
-    
-    
-
 
     .menu-links {
-      
-        margin-top: 28px;
-        margin-left: auto;
+        display: none; /* Esconder o menu por padrão */
+        flex-direction: column;
+        position: absolute;
+        top: 5.56em;
+        left: 18px;
+        width: 100%;
+        background-color: #4b0303;
+        z-index: 1000; /* Garantir que o menu esteja acima das imagens */
+        max-width: 90%;
     }
 
+    .menu-links li {
+        display: block;
+        text-align: center;
+        padding: 1em 0;
+    }
 
+    .menu-links.show {
+        display: flex; /* Mostrar o menu quando a classe 'show' estiver presente */
+    }
+}
 
+/* Estilos para dispositivos pequenos (tablets em retrato e telefones grandes, a partir de 600px) */
+@media only screen and (min-width: 600px) and (max-width: 1200px) {
+    .menu-links {
+        display: none; /* Esconder o menu por padrão */
+        flex-direction: column;
+        position: absolute;
+        top: 5.56em;
+        left: 15%;
+        width: 70%;
+        background-color: #4b0303;
+        z-index: 1000; /* Garantir que o menu esteja acima das imagens */
+        max-width: 90%;
+    }
+
+    .menu-links li {
+        display: block;
+        text-align: center;
+        padding: 1em 0;
+    }
+
+    .menu-links.show {
+        display: flex; /* Mostrar o menu quando a classe 'show' estiver presente */
+    }
+
+    .hamburger-menu {
+        display: block; /* Mostrar o menu hambúrguer */
+    }
+}
+
+/* Estilos para dispositivos médios (tablets em paisagem, a partir de 768px) */
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
+    .navbar-content {
+        flex-direction: row;
+    }
+
+    .menu-links {
+        display: none; /* Esconder o menu por padrão */
+        
+    }
+
+    .hamburger-menu {
+        display: block; /* Mostrar o menu hambúrguer */
+        
+    }
+}
+
+/* Estilos para dispositivos grandes (laptops/desktops, a partir de 1200px) */
+@media only screen and (min-width: 1200px) {
+    .navbar-content {
+        flex-direction: row;
+    }
+
+    .menu-links {
+        display: flex;
+        
+    }
+
+    .hamburger-menu {
+        display: none;
+    }
 }

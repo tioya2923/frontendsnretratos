@@ -1,0 +1,60 @@
+.tabela-refeicoes {
+  width: 90%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  margin: 0 auto;
+}
+
+.tabela-refeicoes th, .tabela-refeicoes td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: center;
+
+}
+
+.tabela-refeicoes th {
+  background-color: #c94c11;
+  color: white;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 1.2rem;
+}
+
+.tabela-refeicoes tr:nth-child(even) {
+  background-color: #f9f9f9;
+  
+}
+
+.tabela-refeicoes tr:hover {
+  background-color: #ddd;
+  
+}
+
+.tabela-refeicoes tr {
+  border-bottom: 1px solid #ddd;
+  font-size: 1rem;
+ 
+}
+
+.nomes-verticais {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; /* Espaçamento entre os nomes */
+  text-align: justify;
+  
+  
+}
+
+.data-dia {
+  font-size: 0.8em;
+  color: #e0ebed;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.tabela-refeicoes th, .tabela-refeicoes td {
+  padding: 12px 15px;
+  border-right: 1px solid #ddd; /* Adiciona divisões verticais */
+}
+
+.tabela-refeicoes th:last-child, .tabela-refeicoes td:last-child {
+  border-right: none; /* Remove a borda direita da última coluna */
+}
