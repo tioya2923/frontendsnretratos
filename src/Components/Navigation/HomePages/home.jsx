@@ -1,5 +1,6 @@
 import React from "react";
-import Fotografias from "./fotografias";
+//import Fotografias from "./fotografias";
+import InscritosRefeicoes from "./InscritosRefeicoes";
 
 
 
@@ -8,7 +9,8 @@ import Fotografias from "./fotografias";
 const Home = () => {
     return (
         <div>            
-            <Fotografias />  
+            {/*<Fotografias /> */ }
+            <InscritosRefeicoes/>
         </div>
     );
 };

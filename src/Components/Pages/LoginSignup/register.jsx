@@ -100,7 +100,7 @@ function Register() {
         <label htmlFor="confirm-password"></label>
         <input type={showPassword ? "text" : "password"} name="confirm-password" id="confirm-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirmar palavra-passe" required />
         <span id="confirm-error" className="error">{confirmError}</span>
-        <label htmlFor="show-password">Ver palavra-passe</label>
+        <label htmlFor="show-password" className="verPalavraPasse">Ver palavra-passe</label>
         <input type="checkbox" name="show-password" id="show-password" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
         <input type="button" name="send" id="send" value="Submeter" onClick={handleSubmit} />
 

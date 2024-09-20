@@ -6,14 +6,15 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const navigation = [
-        { link: '/programa', text: 'Programa' },
-        { link: '/missas', text: 'Missas' },
-        { link: '/ConfissoesHorarios', text: 'Confissões' },
-        { link: '/cantores', text: 'Cantores' },
-        { link: '/acolitos', text: 'Acólitos' },
+        { link: '#/programa', text: '' },
+        { link: '#/missas', text: '' },
+        { link: '#/ConfissoesHorarios', text: '' },
+        { link: '#/cantores', text: '' },
+        { link: '#/acolitos', text: '' },
+        { link: "/refeicoes", text: "Inscrição para as refeições" },
         { link: '/InscritosRefeicoes', text: 'Refeições' },
-        { link: '/fotografias', text: 'Retratos' },
-        { link: '/Privacidade', text: 'Admin' },
+        { link: "/Privacidade", text: "Admin" },
+       
     ];
 
     const toggleMenu = () => {

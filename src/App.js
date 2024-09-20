@@ -1,16 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./global";
 import { theme } from "./theme";
 import Navbar from "./Components/Navigation/Navbar";
 import Footer from "./Components/FooterPage/Footer";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Components/Navigation/HomePages/home";
 import Fotografias from "./Components/Navigation/HomePages/fotografias";
 import InsertImages from "./Components/Store/insertImages";
-import Login from "./Components/Pages/LoginSignup/login";
-import Register from "./Components/Pages/LoginSignup/register";
 import AreaPessoal from "./Components/Navigation/HomePages/areaPessoal";
 import DeletePhoto from "./Components/delete/DeletePhoto";
 import Administracao from "./Components/Navigation/HomePages/Administracao";
@@ -24,38 +21,25 @@ import ConfissoesHorarios from "./Components/Navigation/HomePages/ConfissoesHora
 import InserirNome from "./Components/Navigation/HomePages/InserirNome";
 import InserirNomeConf from "./Components/Navigation/HomePages/InserirNomeConf";
 import GerenciamentoRefeicoes from "./Components/Navigation/HomePages/GerenciamentoRefeicoes";
+import AdicionarNome from "./Components/Navigation/HomePages/AdicionarNome";
 
-function PrivateRoute({ children, isAuthenticated }) {
-  if (isAuthenticated) {
-    return children;
-  }
-  return <Navigate to="/login" />;
-}
-PrivateRoute.propTypes = {
-  children: PropTypes.node.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired
-};
 function App() {
-  const isAuthenticated = localStorage.getItem("token") || sessionStorage.getItem("token");
   return (
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyles />
         <Router>
           <Routes>
-            <Route path="/" element={<><Navbar /><PrivateRoute isAuthenticated={!!isAuthenticated}><Home /></PrivateRoute><Footer /></>} />
+            <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />
             <Route path="/fotografias" element={<><Navbar /><Fotografias /><Footer /></>} />
             <Route path="/refeicoes" element={<><Navbar /><CalendarioRefeicoes /><Footer /></>} />
             <Route path="/InscritosRefeicoes" element={<><Navbar /><InscritosRefeicoes /><Footer /></>} />
-             <Route path="/ConfissoesHorarios" element={<><Navbar /><ConfissoesHorarios /><Footer /></>} />
-             <Route path="/InserirNome" element={<><Navbar /><InserirNome /><Footer /></>} />
-
-             <Route path="/InserirNomeConf" element={<><Navbar /><InserirNomeConf/><Footer /></>} />
-             <Route path="/GerenciamentoRefeicoes" element={<><Navbar /><GerenciamentoRefeicoes/><Footer /></>} />
-
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/ConfissoesHorarios" element={<><Navbar /><ConfissoesHorarios /><Footer /></>} />
+            <Route path="/InserirNome" element={<><Navbar /><InserirNome /><Footer /></>} />
+            <Route path="/InserirNomeConf" element={<><Navbar /><InserirNomeConf /><Footer /></>} />
+            <Route path="/GerenciamentoRefeicoes" element={<><Navbar /><GerenciamentoRefeicoes /><Footer /></>} />
+            <Route path="/AdicionarNome" element={<><Navbar /><AdicionarNome /><Footer /></>} />
             <Route path="/insertImages" element={<><Navbar /><InsertImages /><Footer /></>} />
             <Route path="/areaPessoal" element={<><Navbar /><AreaPessoal /><Footer /></>} />
             <Route path="/deletePhoto" element={<><Navbar /><DeletePhoto /><Footer /></>} />
@@ -64,13 +48,11 @@ function App() {
             <Route path="/updateUsuarios" element={<><Navbar /><UpdateUsuarios /><Footer /></>} />
             <Route path="/adPrivacidade" element={<><Navbar /><AdPrivacidade /><Footer /></>} />
             <Route path="/updateAdministradores" element={<><Navbar /><UpdateAdministradores /><Footer /></>} />
-
-
-
           </Routes>
         </Router>
       </>
     </ThemeProvider>
   );
 }
+
 export default App;

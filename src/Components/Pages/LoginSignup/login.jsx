@@ -16,7 +16,6 @@ function Login() {
     const [codigo, setCodigo] = useState('');
     const [message, setMessage] = useState('');
 
-
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     const handleSubmit = () => {
@@ -49,9 +48,8 @@ function Login() {
                 console.error(error.response.data);
                 toast.error(error.response.data.message);
             });
-
-
     }
+
     const handleVerify = async (event) => {
         event.preventDefault();
         const data = JSON.stringify({ codigo });
@@ -68,6 +66,7 @@ function Login() {
             console.error('Erro ao verificar o código:', error);
         }
     };
+
     const validateInputs = () => {
         let errors = [];
         if (email.length === 0) {
@@ -82,11 +81,13 @@ function Login() {
         document.getElementById("password-error").textContent = errors.find(e => e.includes("palavra passe")) || "";
         return errors;
     }
+
     useEffect(() => {
         if (loggedIn) {
             navigate('/home'); // Use navigate para redirecionar
         }
     }, [loggedIn, navigate]); // Passa loggedIn como dependência do efeito
+
     return (
         <div className="container-login">
             <h1 className="login-form">Iniciar Sessão</h1>
@@ -103,6 +104,8 @@ function Login() {
                         </i>
                     </div>
                     <span id="password-error" className="form-error"></span>
+
+                    {/*
                     <div className="form-field">
                         <input
                             type="text"
@@ -112,6 +115,7 @@ function Login() {
                         <button onClick={handleVerify} className="button-form">Verificar</button>
                         {message && <p>{message}</p>}
                     </div>
+                    */}
                     <button onClick={handleSubmit} className="button-form">Entrar</button>
                     <div className="login-form-register">
                         <Link to="/register">fazer registo</Link>
@@ -121,6 +125,6 @@ function Login() {
             </div>
         </div>
     );
-
 }
+
 export default Login;

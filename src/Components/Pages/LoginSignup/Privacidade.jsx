@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import './Login.css';
 
+
+
 function Privacidade() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
