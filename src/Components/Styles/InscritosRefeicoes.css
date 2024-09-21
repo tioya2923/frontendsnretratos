@@ -170,11 +170,11 @@ table tr:hover {
     }
 
     th, td {
-        font-size: 0.9rem;
+        font-size: 0.5rem;
     }
 
     .calendarioButton {
-        font-size: 0.8rem; /* Ajusta o tamanho da fonte */
+        font-size: 0.5rem; /* Ajusta o tamanho da fonte */
         padding: 0.1rem 0.2rem; /* Ajusta o espaçamento interno */
     }
 }
