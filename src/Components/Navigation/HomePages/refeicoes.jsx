@@ -7,7 +7,7 @@ const CalendarioRefeicoes = () => {
     const [nomes, setNomes] = useState([]); // Estado para armazenar os nomes
     const [nomesAlmoco, setNomesAlmoco] = useState({}); // Estado para os nomes no almoço
     const [nomesJantar, setNomesJantar] = useState({}); // Estado para os nomes no jantar
-    const [erro, setErro] = useState(''); // Estado para a mensagem de erro
+    const [erros, setErros] = useState({}); // Estado para as mensagens de erro
     const [levarRefeicao, setLevarRefeicao] = useState({}); // Estado para levar refeição
     const [almoco, setAlmoco] = useState({}); // Estado para almoçar
     const [almocoMaisCedo, setAlmocoMaisCedo] = useState({}); // Estado para almoçar mais cedo
@@ -58,10 +58,10 @@ const CalendarioRefeicoes = () => {
         axios.post(`${backendUrl}/components/refeicoes.php`, payload)
             .then(response => {
                 if (response.data.message === "Já inscrito para esta refeição" && !payload.levar_refeicao) {
-                    setErro(`O nome ${response.data.nome} já está inscrito para esta refeição.`);
+                    setErros(prev => ({ ...prev, [data]: `O ${response.data.nome} já está inscrito para esta refeição.` }));
                 } else {
                     console.log(response.data);
-                    setErro(''); // Limpar mensagem de erro
+                    setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
                     if (tipo.includes('almoco')) {
                         setNomesAlmoco(prev => ({ ...prev, [data]: '' })); // Limpar o campo de nome do almoço
                     } else {
@@ -127,7 +127,6 @@ const CalendarioRefeicoes = () => {
     return (
         <div className="calendario-container">
             <h2>Calendário para as Refeições</h2>
-            {erro && <p className="erro">{erro}</p>}
             <div className="calendario-semana">
                 {semana.map((dia, index) => (
                     <div key={index} className="calendario-dia">
@@ -147,6 +146,7 @@ const CalendarioRefeicoes = () => {
                                         <option key={index} value={nome.nome_completo}>{nome.nome_completo}</option>
                                     ))}
                                 </select>
+                                {erros[dia] && <p className="erro">{erros[dia]}</p>}
                             </div>
 
                             <label className="checkbox-label">
@@ -174,7 +174,7 @@ const CalendarioRefeicoes = () => {
                                 Almoço mais tarde
                             </label>
                             <label className="checkbox-label">
-                                <input
+                            <input
                                     type="checkbox"
                                     checked={levarRefeicao[dia] || false}
                                     onChange={(e) => handleCheckboxChange(dia, 'levarRefeicao', e.target.checked)}
@@ -196,6 +196,7 @@ const CalendarioRefeicoes = () => {
                                         <option key={index} value={nome.nome_completo}>{nome.nome_completo}</option>
                                     ))}
                                 </select>
+                                {erros[dia] && <p className="erro">{erros[dia]}</p>}
                             </div>
                             <label className="checkbox-label">
                                 <input
