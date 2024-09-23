@@ -124,6 +124,14 @@ const CalendarioRefeicoes = () => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
+    const calcularTotalGeralJantar = () => {
+        const totalJantar = Object.values(jantar).filter(Boolean).length;
+        const totalJantarMaisCedo = Object.values(jantarMaisCedo).filter(Boolean).length;
+        const totalJantarMaisTarde = Object.values(jantarMaisTarde).filter(Boolean).length;
+        const totalLevarRefeicao = Object.values(levarRefeicao).filter(Boolean).length;
+        return totalJantar + totalJantarMaisCedo + totalJantarMaisTarde + totalLevarRefeicao;
+    };
+
     return (
         <div className="calendario-container">
             <h2>Calendário para as Refeições</h2>
@@ -174,7 +182,7 @@ const CalendarioRefeicoes = () => {
                                 Almoço mais tarde
                             </label>
                             <label className="checkbox-label">
-                            <input
+                                <input
                                     type="checkbox"
                                     checked={levarRefeicao[dia] || false}
                                     onChange={(e) => handleCheckboxChange(dia, 'levarRefeicao', e.target.checked)}
@@ -222,10 +230,21 @@ const CalendarioRefeicoes = () => {
                                 />
                                 Jantar mais tarde
                             </label>
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={levarRefeicao[dia] || false}
+                                    onChange={(e) => handleCheckboxChange(dia, 'levarRefeicao', e.target.checked)}
+                                />
+                                Takeaway
+                            </label>
                         </div>
                         <button onClick={() => handleInscricao(dia, 'jantar', nomesJantar[dia] || '')}>Inscrever</button>
                     </div>
                 ))}
+            </div>
+            <div className="total-geral-jantar">
+                <h3>Total Geral para o Jantar: {calcularTotalGeralJantar()}</h3>
             </div>
         </div>
     );

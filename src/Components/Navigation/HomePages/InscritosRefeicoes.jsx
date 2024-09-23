@@ -187,7 +187,7 @@ const InscritosRefeicoes = () => {
                     <table className='calendarioTipo'>
                         <thead>
                             <tr>
-                                {tiposRefeicoesAlmoco.map(({ tipo, filtro }) => {
+                            {tiposRefeicoesAlmoco.map(({ tipo, filtro }) => {
                                     const total = refeicoes.filter(filtro).length;
                                     return total > 0 && <th key={tipo}>{tipo}</th>;
                                 })}
@@ -273,7 +273,12 @@ const InscritosRefeicoes = () => {
                             </tr>
                             <tr>
                                 <td colSpan={tiposRefeicoesJantar.length}>
-                                    <p><strong>Total Geral para o Jantar: {refeicoes.filter(refeicao => refeicao.jantar || refeicao.jantar_mais_cedo || refeicao.jantar_mais_tarde || refeicao.levar_refeicao).length}</strong></p>
+                                    <p><strong>Total Geral para o Jantar: {
+                                        refeicoes.filter(refeicao => refeicao.jantar).length +
+                                        refeicoes.filter(refeicao => refeicao.jantar_mais_cedo).length +
+                                        refeicoes.filter(refeicao => refeicao.jantar_mais_tarde).length +
+                                        refeicoes.filter(refeicao => refeicao.levar_refeicao).length
+                                    }</strong></p>
                                 </td>
                             </tr>
                         </tbody>
