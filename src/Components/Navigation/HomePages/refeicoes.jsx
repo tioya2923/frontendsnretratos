@@ -230,14 +230,7 @@ const CalendarioRefeicoes = () => {
                                 />
                                 Jantar mais tarde
                             </label>
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    checked={levarRefeicao[dia] || false}
-                                    onChange={(e) => handleCheckboxChange(dia, 'levarRefeicao', e.target.checked)}
-                                />
-                                Takeaway
-                            </label>
+                          
                         </div>
                         <button onClick={() => handleInscricao(dia, 'jantar', nomesJantar[dia] || '')}>Inscrever</button>
                     </div>
