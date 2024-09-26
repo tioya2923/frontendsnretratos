@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import moment from 'moment-timezone'; // Importar a biblioteca moment-timezone
 import '../../Styles/CalendarioRefeicoes.css'; // Importar o arquivo CSS
 import { useUser } from '../../../UserContext'; // Importar o contexto do usuário
 
@@ -20,18 +21,20 @@ const CalendarioRefeicoes = () => {
     useEffect(() => {
         // Função para calcular a próxima sexta-feira a partir de uma data específica
         const calcularProximaSexta = (data) => {
-            const dia = new Date(data);
-            const proximaSexta = new Date(dia.setDate(dia.getDate() + ((12 - dia.getDay()) % 7)));
+            const dia = moment.tz(data, 'Europe/Lisbon'); // Usar o fuso horário de Portugal Continental
+            const proximaSexta = dia.day(5); // Definir o dia como sexta-feira
+            if (proximaSexta.isBefore(dia, 'day')) {
+                proximaSexta.add(1, 'week'); // Se a sexta-feira já passou, adicionar uma semana
+            }
             return proximaSexta;
         };
 
         // Definir a data inicial como 4 de outubro de 2024
-        const dataInicial = new Date('2024-10-04');
+        const dataInicial = moment.tz('2024-10-04', 'Europe/Lisbon');
         const proximaSexta = calcularProximaSexta(dataInicial);
         const diasDaSemana = Array.from({ length: 8 }, (_, i) => {
-            const dia = new Date(proximaSexta);
-            dia.setDate(proximaSexta.getDate() + i);
-            return dia.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const dia = proximaSexta.clone().add(i, 'days');
+            return dia.format('YYYY-MM-DD'); // Formato YYYY-MM-DD
         });
         setSemana(diasDaSemana);
     }, []);
@@ -131,8 +134,8 @@ const CalendarioRefeicoes = () => {
 
     const formatarIntervaloDatas = () => {
         if (semana.length > 0) {
-            const inicio = new Date(semana[0]).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
-            const fim = new Date(semana[semana.length - 1]).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
+            const inicio = moment.tz(semana[0], 'Europe/Lisbon').format('D [de] MMMM');
+            const fim = moment.tz(semana[semana.length - 1], 'Europe/Lisbon').format('D [de] MMMM');
             return `${inicio} a ${fim}`;
         }
         return '';
@@ -146,7 +149,7 @@ const CalendarioRefeicoes = () => {
                 {semana.map((dia, index) => (
                     <div key={index} className="calendario-dia">
                         <h3>
-                            {capitalizeFirstLetter(new Date(dia).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' }))}
+                            {capitalizeFirstLetter(moment.tz(dia, 'Europe/Lisbon').format('dddd, D [de] MMMM'))}
                         </h3>
                         <div className="refeicao-container">
                             <label className="checkbox-label">
@@ -164,7 +167,7 @@ const CalendarioRefeicoes = () => {
                                     onChange={(e) => handleCheckboxChange(dia, 'almocoMaisCedo', e.target.checked)}
                                 />
                                 Almoço mais cedo
-                            </label>
+                                </label>
                             <label className="checkbox-label">
                                 <input
                                     type="checkbox"
@@ -218,4 +221,3 @@ const CalendarioRefeicoes = () => {
 };
 
 export default CalendarioRefeicoes;
-
