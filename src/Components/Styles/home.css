@@ -1,0 +1,41 @@
+/* Estilos para o container principal */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    max-height: 1500vh;
+    overflow: hidden; /* Evita que o conteúdo exceda a altura máxima */
+}
+
+/* Estilos para o título */
+.home-title {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilos para a imagem do logo */
+.snImage {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* Estilos para o conteúdo */
+.home-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1300px;
+    max-height: 80vh;
+    overflow-y: auto; /* Permite rolagem vertical se o conteúdo exceder a altura máxima */
+}
+
+/* Estilos para os componentes individuais */
+.home-content > * {
+    max-height: 1200px; /* Limita a altura de cada componente */
+    overflow: hidden; /* Esconde o conteúdo excedente */
+    max-width: 100%;
+}

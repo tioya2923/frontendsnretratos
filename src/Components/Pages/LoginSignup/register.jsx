@@ -3,6 +3,7 @@ import "./Register.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -11,7 +12,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmError, setConfirmError] = useState("");
   const [registered, setRegistered] = useState(false);
-
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -25,7 +25,7 @@ function Register() {
       return;
     }
 
-    const url = `${backendUrl}components/registar.php`
+    const url = `${backendUrl}components/registar.php`;
     let fData = new FormData();
     fData.append("name", name);
     fData.append("email", email);
@@ -42,16 +42,15 @@ function Register() {
         if (response.data === "error=email_exists") {
           toast.error("O e-mail já existe");
         } else if (response.data === "success") {
-          // O usuário foi registrado com sucesso e o administrador foi notificado
           toast.success("Registro bem-sucedido! Aguarde a aprovação do administrador.");
           setRegistered(true);
         } else {
-          // Trate outros erros aqui
           toast.error(response.data);
         }
       })
       .catch((error) => toast.error(error));
   };
+
   const validateInputs = () => {
     let errors = [];
     if (name.length === 0) {
@@ -75,6 +74,7 @@ function Register() {
       errors.find((e) => e.includes("palavra passe")) || "";
     return errors;
   };
+
   useEffect(() => {
     if (registered) {
       setName("");
@@ -84,10 +84,10 @@ function Register() {
       setRegistered(false);
     }
   }, [registered]);
+
   return (
     <div>
       <div className="container-form">
-
         <label htmlFor="name"></label>
         <input type="text" name="name" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome completo" required />
         <span id="name-error" className="error"></span>
@@ -103,10 +103,10 @@ function Register() {
         <label htmlFor="show-password" className="verPalavraPasse">Ver palavra-passe</label>
         <input type="checkbox" name="show-password" id="show-password" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
         <input type="button" name="send" id="send" value="Submeter" onClick={handleSubmit} />
-
-      </div >
+      </div>
       <ToastContainer />
     </div>
   );
 }
+
 export default Register;

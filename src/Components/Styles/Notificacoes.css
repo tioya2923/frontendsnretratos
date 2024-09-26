@@ -1,0 +1,76 @@
+.notificacoes-container {
+    font-family: Arial, sans-serif;  
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+
+}
+
+.titulo {   
+    font-weight: bold;    
+}
+
+.erro {
+    color: red;
+}
+
+.tabela-notificacoes {
+    width: 100%;
+    border-collapse: collapse;
+    
+}
+
+.tabela-notificacoes th,
+.tabela-notificacoes td {
+    border: 1px solid #ddd;   
+    color: black;
+    text-align: center;
+}
+
+.tabela-notificacoes th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.tabela-notificacoes tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabela-notificacoes tr:hover {
+    background-color: #ddd;
+}
+
+/* Estilos para ecrãs pequenos */
+@media (max-width: 600px) {
+    .titulo {
+        font-size: 20px;
+    }
+
+    .tabela-notificacoes th,
+    .tabela-notificacoes td {
+        padding: 6px;
+    }
+}
+
+/* Estilos para ecrãs médios */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .titulo {
+        font-size: 22px;
+    }
+
+    .tabela-notificacoes th,
+    .tabela-notificacoes td {
+        padding: 7px;
+    }
+}
+
+/* Estilos para ecrãs grandes */
+@media (min-width: 1025px) {
+    .titulo {
+        font-size: 24px;
+    }
+
+    .tabela-notificacoes th,
+    .tabela-notificacoes td {
+        padding: 8px;
+    }
+}

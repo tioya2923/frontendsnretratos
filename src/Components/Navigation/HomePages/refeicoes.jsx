@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../Styles/CalendarioRefeicoes.css'; // Importar o arquivo CSS
+import { useUser } from '../../../UserContext'; // Importar o contexto do usuário
 
 const CalendarioRefeicoes = () => {
+    const { userName } = useUser(); // Obter o nome do usuário do contexto
     const [semana, setSemana] = useState([]);
-    const [nomes, setNomes] = useState([]); // Estado para armazenar os nomes
-    const [nomesAlmoco, setNomesAlmoco] = useState({}); // Estado para os nomes no almoço
-    const [nomesJantar, setNomesJantar] = useState({}); // Estado para os nomes no jantar
     const [erros, setErros] = useState({}); // Estado para as mensagens de erro
     const [levarRefeicao, setLevarRefeicao] = useState({}); // Estado para levar refeição
     const [almoco, setAlmoco] = useState({}); // Estado para almoçar
@@ -19,32 +18,36 @@ const CalendarioRefeicoes = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
-        // Gerar um calendário de 12 dias começando hoje
-        const hoje = new Date();
-        const diasDoCalendario = Array.from({ length: 12 }, (_, i) => {
-            const dia = new Date(hoje);
-            dia.setDate(hoje.getDate() + i + 4);
+        // Função para calcular a próxima sexta-feira a partir de uma data específica
+        const calcularProximaSexta = (data) => {
+            const dia = new Date(data);
+            const proximaSexta = new Date(dia.setDate(dia.getDate() + ((12 - dia.getDay()) % 7)));
+            return proximaSexta;
+        };
+
+        // Definir a data inicial como 4 de outubro de 2024
+        const dataInicial = new Date('2024-10-04');
+        const proximaSexta = calcularProximaSexta(dataInicial);
+        const diasDaSemana = Array.from({ length: 8 }, (_, i) => {
+            const dia = new Date(proximaSexta);
+            dia.setDate(proximaSexta.getDate() + i);
             return dia.toISOString().split('T')[0]; // Formato YYYY-MM-DD
         });
-        setSemana(diasDoCalendario);
+        setSemana(diasDaSemana);
+    }, []);
 
-        // Buscar nomes do backend
-        axios.get(`${backendUrl}/components/nomes.php`)
-            .then(response => {
-                if (Array.isArray(response.data)) {
-                    setNomes(response.data);
-                } else {
-                    console.error('Erro: dados recebidos não são um array:', response.data);
-                }
-            })
-            .catch(error => console.error('Erro ao buscar nomes:', error));
-    }, [backendUrl]);
+    const handleInscricao = (data, tipo) => {
+        if (!userName.trim()) return; // Ignorar se o nome do usuário não estiver disponível
 
-    const handleInscricao = (data, tipo, nome) => {
-        if (!nome.trim()) return; // Ignorar nomes vazios
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token'); // Obter o token de autenticação
+
+        if (!token) {
+            console.error('Token de autenticação não encontrado');
+            return;
+        }
 
         const payload = {
-            nomes_completos: [nome], // Enviar o nome atual na solicitação
+            nomes_completos: [userName], // Utilizar o nome do usuário autenticado
             data: data,
             levar_refeicao: levarRefeicao[data] || false,
             almoco: almoco[data] || false,
@@ -55,18 +58,19 @@ const CalendarioRefeicoes = () => {
             jantar_mais_tarde: jantarMaisTarde[data] || false
         };
 
-        axios.post(`${backendUrl}/components/refeicoes.php`, payload)
+        console.log('Payload:', payload); // Adicionar log para depuração
+
+        axios.post(`${backendUrl}components/refeicoes.php`, payload, {
+            headers: {
+                'Authorization': `Bearer ${token}` // Adicionar o token de autenticação no cabeçalho
+            }
+        })
             .then(response => {
+                console.log('Response:', response.data); // Adicionar log para depuração
                 if (response.data.message === "Já inscrito para esta refeição" && !payload.levar_refeicao) {
                     setErros(prev => ({ ...prev, [data]: `O ${response.data.nome} já está inscrito para esta refeição.` }));
                 } else {
-                    console.log(response.data);
                     setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
-                    if (tipo.includes('almoco')) {
-                        setNomesAlmoco(prev => ({ ...prev, [data]: '' })); // Limpar o campo de nome do almoço
-                    } else {
-                        setNomesJantar(prev => ({ ...prev, [data]: '' })); // Limpar o campo de nome do jantar
-                    }
                     // Limpar checkboxes
                     setLevarRefeicao(prev => ({ ...prev, [data]: false }));
                     setAlmoco(prev => ({ ...prev, [data]: false }));
@@ -77,19 +81,12 @@ const CalendarioRefeicoes = () => {
                     setJantarMaisTarde(prev => ({ ...prev, [data]: false }));
                 }
             })
-            .catch(error => console.error('Erro ao inscrever-se:', error));
-    };
-
-    const handleNomeChange = (dia, tipo, value) => {
-        if (tipo.includes('almoco')) {
-            const newNomes = { ...nomesAlmoco };
-            newNomes[dia] = value;
-            setNomesAlmoco(newNomes);
-        } else {
-            const newNomes = { ...nomesJantar };
-            newNomes[dia] = value;
-            setNomesJantar(newNomes);
-        }
+            .catch(error => {
+                console.error('Erro ao inscrever-se:', error);
+                if (error.response && error.response.data) {
+                    console.error('Erro no servidor:', error.response.data);
+                }
+            });
     };
 
     const handleCheckboxChange = (dia, tipo, value) => {
@@ -132,9 +129,19 @@ const CalendarioRefeicoes = () => {
         return totalJantar + totalJantarMaisCedo + totalJantarMaisTarde + totalLevarRefeicao;
     };
 
+    const formatarIntervaloDatas = () => {
+        if (semana.length > 0) {
+            const inicio = new Date(semana[0]).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
+            const fim = new Date(semana[semana.length - 1]).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
+            return `${inicio} a ${fim}`;
+        }
+        return '';
+    };
+
     return (
         <div className="calendario-container">
             <h2>Calendário para as Refeições</h2>
+            <p>{formatarIntervaloDatas()}</p>
             <div className="calendario-semana">
                 {semana.map((dia, index) => (
                     <div key={index} className="calendario-dia">
@@ -142,21 +149,6 @@ const CalendarioRefeicoes = () => {
                             {capitalizeFirstLetter(new Date(dia).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' }))}
                         </h3>
                         <div className="refeicao-container">
-                            <div className="nomeContainer">
-                                <select
-                                    value={nomesAlmoco[dia] || ''}
-                                    onChange={(e) => handleNomeChange(dia, 'almoco', e.target.value)}
-                                    onClick={() => document.querySelectorAll('.nomeContainer').forEach(el => el.classList.remove('active'))}
-                                    onFocus={(e) => e.target.parentElement.classList.add('active')}
-                                >
-                                    <option value="">Selecione um nome para o almoço</option>
-                                    {Array.isArray(nomes) && nomes.map((nome, index) => (
-                                        <option key={index} value={nome.nome_completo}>{nome.nome_completo}</option>
-                                    ))}
-                                </select>
-                                {erros[dia] && <p className="erro">{erros[dia]}</p>}
-                            </div>
-
                             <label className="checkbox-label">
                                 <input
                                     type="checkbox"
@@ -190,22 +182,8 @@ const CalendarioRefeicoes = () => {
                                 Takeaway
                             </label>
                         </div>
-                        <button onClick={() => handleInscricao(dia, 'almoco', nomesAlmoco[dia] || '')}>Inscrever</button>
+                        <button onClick={() => handleInscricao(dia, 'almoco')}>Inscrever</button>
                         <div className="refeicao-container">
-                            <div className="nomeContainer">
-                                <select
-                                    value={nomesJantar[dia] || ''}
-                                    onChange={(e) => handleNomeChange(dia, 'jantar', e.target.value)}
-                                    onClick={() => document.querySelectorAll('.nomeContainer').forEach(el => el.classList.remove('active'))}
-                                    onFocus={(e) => e.target.parentElement.classList.add('active')}
-                                >
-                                    <option value="">Selecione um nome para o jantar</option>
-                                    {Array.isArray(nomes) && nomes.map((nome, index) => (
-                                        <option key={index} value={nome.nome_completo}>{nome.nome_completo}</option>
-                                    ))}
-                                </select>
-                                {erros[dia] && <p className="erro">{erros[dia]}</p>}
-                            </div>
                             <label className="checkbox-label">
                                 <input
                                     type="checkbox"
@@ -230,17 +208,14 @@ const CalendarioRefeicoes = () => {
                                 />
                                 Jantar mais tarde
                             </label>
-                          
                         </div>
-                        <button onClick={() => handleInscricao(dia, 'jantar', nomesJantar[dia] || '')}>Inscrever</button>
+                        <button onClick={() => handleInscricao(dia, 'jantar')}>Inscrever</button>
                     </div>
                 ))}
-            </div>
-            <div className="total-geral-jantar">
-                <h3>Total Geral para o Jantar: {calcularTotalGeralJantar()}</h3>
             </div>
         </div>
     );
 };
 
 export default CalendarioRefeicoes;
+

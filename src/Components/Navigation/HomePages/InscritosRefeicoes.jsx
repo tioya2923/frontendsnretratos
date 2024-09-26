@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../Styles/InscritosRefeicoes.css'; // Importar o arquivo CSS
+import './Notificacoes'
+import Notificacoes from './Notificacoes';
 
 const InscritosRefeicoes = () => {
     const [refeicoes, setRefeicoes] = useState([]);
@@ -66,17 +68,19 @@ const InscritosRefeicoes = () => {
         const dataAniversario = new Date(aniversario);
         dataAniversario.setFullYear(dataAtual.getFullYear());
     
-        const umDiaAntes = new Date(dataAniversario);
-        umDiaAntes.setDate(dataAniversario.getDate() - 1);
-    
         const dataAtualStr = dataAtual.toISOString().split('T')[0];
         const dataAniversarioStr = dataAniversario.toISOString().split('T')[0];
-        const umDiaAntesStr = umDiaAntes.toISOString().split('T')[0];
     
-        const isBirthday = dataAtualStr >= umDiaAntesStr && dataAtualStr <= dataAniversarioStr;
-        
-        return isBirthday;
+        return dataAtualStr === dataAniversarioStr;
     };
+
+    if (loading) {
+        return <p>Carregando...</p>;
+    }
+
+    if (error) {
+        return <p>Erro: {error}</p>;
+    }
 
     if (loading) {
         return <p>Carregando...</p>;
@@ -171,7 +175,8 @@ const InscritosRefeicoes = () => {
 
     return (
         <div className='calendarioContainer'>
-            <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>
+            <Notificacoes/>
+            <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>            
             {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar }) => (
                 <div className='calendarioData' key={data}>
                     <h2 className='calendarioDiaData'>{dia}: {data}</h2>
