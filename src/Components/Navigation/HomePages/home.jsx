@@ -11,7 +11,7 @@ function Home() {
 
     return (
         <div className="home-container">
-            <h1 className="home-title">{userName}, Seja Bem-vindo!</h1>
+            <h1 className="home-title">{userName}, seja bem-vindo!</h1>
             <img src={logo} alt="Logo" className="snImage" />
             <div className="home-content">
                 <Refeicoes />
