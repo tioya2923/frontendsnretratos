@@ -29,7 +29,10 @@
 .home-content {
     display: -webkit-box; /* Fallback para navegadores antigos */
     display: -ms-grid; /* Fallback para navegadores antigos */
-    display: grid;
+    display: -webkit-flex; /* Adicionado para compatibilidade com Safari */
+    display: flex; /* Adicionado para compatibilidade com Safari */
+    -webkit-flex-wrap: wrap; /* Adicionado para compatibilidade com Safari */
+    flex-wrap: wrap; /* Adicionado para compatibilidade com Safari */
     -webkit-grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
     gap: 20px;
@@ -45,6 +48,7 @@
     overflow: hidden; /* Esconde o conteúdo excedente */
     max-width: 100%;
 }
+
 /* Media Queries para responsividade */
 @media (max-width: 1200px) {
     .home-title {
@@ -63,6 +67,7 @@
         width: 100px;
     }
     .home-content {
+        -webkit-grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
         grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     }
 }
@@ -75,6 +80,7 @@
         width: 80px;
     }
     .home-content {
+        -webkit-grid-template-columns: 1fr;
         grid-template-columns: 1fr;
     }
 }

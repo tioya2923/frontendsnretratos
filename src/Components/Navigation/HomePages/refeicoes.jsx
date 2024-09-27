@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment-timezone'; // Importar a biblioteca moment-timezone
+import 'moment/locale/pt'; // Importar o idioma português
 import '../../Styles/CalendarioRefeicoes.css'; // Importar o arquivo CSS
 import { useUser } from '../../../UserContext'; // Importar o contexto do usuário
 
@@ -70,8 +71,8 @@ const CalendarioRefeicoes = () => {
         })
             .then(response => {
                 console.log('Response:', response.data); // Adicionar log para depuração
-                if (response.data.message === "Já inscrito para esta refeição" && !payload.levar_refeicao) {
-                    setErros(prev => ({ ...prev, [data]: `O ${response.data.nome} já está inscrito para esta refeição.` }));
+                if (response.data.message === "Já inscrito para esta refeição") {
+                    setErros(prev => ({ ...prev, [data]: "Já inscrito." }));
                 } else {
                     setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
                     // Limpar checkboxes
@@ -186,6 +187,7 @@ const CalendarioRefeicoes = () => {
                             </label>
                         </div>
                         <button onClick={() => handleInscricao(dia, 'almoco')}>Inscrever</button>
+                        {erros[dia] && <p className="erro-mensagem">{erros[dia]}</p>}
                         <div className="refeicao-container">
                             <label className="checkbox-label">
                                 <input
@@ -213,6 +215,7 @@ const CalendarioRefeicoes = () => {
                             </label>
                         </div>
                         <button onClick={() => handleInscricao(dia, 'jantar')}>Inscrever</button>
+                        {erros[dia] && <p className="erro-mensagem">{erros[dia]}</p>}
                     </div>
                 ))}
             </div>
