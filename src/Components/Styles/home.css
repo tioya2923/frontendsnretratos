@@ -45,3 +45,36 @@
     overflow: hidden; /* Esconde o conteúdo excedente */
     max-width: 100%;
 }
+/* Media Queries para responsividade */
+@media (max-width: 1200px) {
+    .home-title {
+        font-size: 1.8em;
+    }
+    .snImage {
+        width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-title {
+        font-size: 1.5em;
+    }
+    .snImage {
+        width: 100px;
+    }
+    .home-content {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .home-title {
+        font-size: 1.2em;
+    }
+    .snImage {
+        width: 80px;
+    }
+    .home-content {
+        grid-template-columns: 1fr;
+    }
+}

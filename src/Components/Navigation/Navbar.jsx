@@ -6,16 +6,11 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const navigation = [
-        { link: '#/programa', text: '' },
-        { link: '#/missas', text: '' },
-        { link: '#/ConfissoesHorarios', text: '' },
-        { link: '#/cantores', text: '' },
-        { link: '#/acolitos', text: '' },
+    
         { link: "/refeicoes", text: "Inscrição para as refeições" },
         { link: '/InscritosRefeicoes', text: 'Refeições' },
         { link: '/fotografias', text: 'Retratos' },
         { link: "/Privacidade", text: "Admin" },
-       
     ];
 
     const toggleMenu = () => {

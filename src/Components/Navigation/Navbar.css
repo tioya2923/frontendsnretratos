@@ -2,7 +2,7 @@
 .navbar-init {
     height: 5.56em;
     width: 100%;
-    top: 0%;
+    top: 0;
     margin-bottom: 2rem;
     z-index: 1000;
     background-color: #4b0303;
@@ -122,12 +122,10 @@
 
     .menu-links {
         display: none; /* Esconder o menu por padrão */
-        
     }
 
     .hamburger-menu {
         display: block; /* Mostrar o menu hambúrguer */
-        
     }
 }
 
@@ -139,7 +137,6 @@
 
     .menu-links {
         display: flex;
-        
     }
 
     .hamburger-menu {

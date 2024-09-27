@@ -44,7 +44,7 @@ const InscritosRefeicoes = () => {
         const dataRefeicao = new Date(refeicao.data);
         const agora = new Date();
         const diferencaHoras = (dataRefeicao - agora) / (1000 * 60 * 60);
-    
+
         if (diferencaHoras > 24) {
             try {
                 await axios.delete(`${backendUrl}components/refeicoes.php`, { data: { id } });
@@ -63,24 +63,29 @@ const InscritosRefeicoes = () => {
         setSelectedId(id);
     };
 
+    // ... (resto do código)
+
     const isBirthday = (data, aniversario) => {
+        // Convertendo datas para objetos Date e ajustando o fuso horário para Portugal Continental
         const dataAtual = new Date(data);
         const dataAniversario = new Date(aniversario);
         dataAniversario.setFullYear(dataAtual.getFullYear());
-    
-        const dataAtualStr = dataAtual.toISOString().split('T')[0];
-        const dataAniversarioStr = dataAniversario.toISOString().split('T')[0];
-    
-        return dataAtualStr === dataAniversarioStr;
+
+        // Convertendo para o formato DD/MM/YYYY para comparação
+        const formatarData = (data) => {
+            const dia = data.getDate().toString().padStart(2, '0');
+            const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+            const ano = data.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        };
+
+        const dataAtualFormatada = formatarData(dataAtual);
+        const dataAniversarioFormatada = formatarData(dataAniversario);
+
+        return dataAtualFormatada === dataAniversarioFormatada;
     };
 
-    if (loading) {
-        return <p>Carregando...</p>;
-    }
-
-    if (error) {
-        return <p>Erro: {error}</p>;
-    }
+    // ... (resto do código)
 
     if (loading) {
         return <p>Carregando...</p>;
@@ -129,8 +134,8 @@ const InscritosRefeicoes = () => {
             const sextaFeiraSanta = new Date(pascoa);
             sextaFeiraSanta.setDate(pascoa.getDate() - 2);
             return {
-                carnaval: carnaval.toLocaleDateString(),
-                sextaFeiraSanta: sextaFeiraSanta.toLocaleDateString()
+                carnaval: carnaval.toLocaleDateString('pt-PT'),
+                sextaFeiraSanta: sextaFeiraSanta.toLocaleDateString('pt-PT')
             };
         };
         return calcularFeriados(ano);
@@ -145,7 +150,7 @@ const InscritosRefeicoes = () => {
         });
 
         const refeicoesPorDia = seteDias.map(data => {
-            const dataFormatada = data.toLocaleDateString();
+            const dataFormatada = data.toLocaleDateString('pt-PT');
             const feriado = feriadosFixos[dataFormatada] || Object.values(feriadosVariaveis(data.getFullYear())).find(f => f === dataFormatada);
 
             const aniversariantesNatalicio = nomes.filter(nome => isBirthday(data, nome.data_aniversario));
@@ -175,8 +180,8 @@ const InscritosRefeicoes = () => {
 
     return (
         <div className='calendarioContainer'>
-            <Notificacoes/>
-            <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>            
+            <Notificacoes />
+            <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>
             {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar }) => (
                 <div className='calendarioData' key={data}>
                     <h2 className='calendarioDiaData'>{dia}: {data}</h2>
@@ -187,12 +192,12 @@ const InscritosRefeicoes = () => {
                     {aniversariantesSacerdotal.length > 0 && (
                         <p className='calenderAniversario'><strong>Aniversário Sacerdotal: {aniversariantesSacerdotal.join(', ')}</strong></p>
                     )}
-                    
+
                     <h3 className='calendarioDiaData'>Almoço: 13h30</h3>
                     <table className='calendarioTipo'>
                         <thead>
                             <tr>
-                            {tiposRefeicoesAlmoco.map(({ tipo, filtro }) => {
+                                {tiposRefeicoesAlmoco.map(({ tipo, filtro }) => {
                                     const total = refeicoes.filter(filtro).length;
                                     return total > 0 && <th key={tipo}>{tipo}</th>;
                                 })}
