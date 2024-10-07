@@ -14,6 +14,9 @@ function Login() {
     const navigate = useNavigate();
 
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    
+   
+
 
     const handleSubmit = () => {
         const errors = validateInputs();
@@ -22,6 +25,7 @@ function Login() {
         }
 
         const url = `${backendUrl}components/login.php`;
+       
         let fData = new FormData();
         fData.append('email', email);
         fData.append('password', password);

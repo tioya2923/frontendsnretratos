@@ -20,25 +20,24 @@ const CalendarioRefeicoes = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
-        // Função para calcular a próxima sexta-feira a partir de uma data específica
-        const calcularProximaSexta = (data) => {
-            const dia = moment.tz(data, 'Europe/Lisbon'); // Usar o fuso horário de Portugal Continental
-            const proximaSexta = dia.day(5); // Definir o dia como sexta-feira
-            if (proximaSexta.isBefore(dia, 'day')) {
+        // Função para calcular a próxima sexta-feira a partir da data atual
+        const calcularProximaSexta = () => {
+            const hoje = moment.tz('Europe/Lisbon'); // Usar o fuso horário de Portugal Continental
+            const proximaSexta = hoje.clone().day(5); // Definir o dia como sexta-feira
+            if (proximaSexta.isBefore(hoje, 'day')) {
                 proximaSexta.add(1, 'week'); // Se a sexta-feira já passou, adicionar uma semana
             }
             return proximaSexta;
         };
 
-        // Definir a data inicial como 4 de outubro de 2024
-        const dataInicial = moment.tz('2024-10-04', 'Europe/Lisbon');
-        const proximaSexta = calcularProximaSexta(dataInicial);
+        const proximaSexta = calcularProximaSexta();
         const diasDaSemana = Array.from({ length: 8 }, (_, i) => {
             const dia = proximaSexta.clone().add(i, 'days');
             return dia.format('YYYY-MM-DD'); // Formato YYYY-MM-DD
         });
         setSemana(diasDaSemana);
     }, []);
+
 
     const handleInscricao = (data, tipo) => {
         if (!userName.trim()) return; // Ignorar se o nome do usuário não estiver disponível
@@ -168,7 +167,7 @@ const CalendarioRefeicoes = () => {
                                     onChange={(e) => handleCheckboxChange(dia, 'almocoMaisCedo', e.target.checked)}
                                 />
                                 Almoço mais cedo
-                                </label>
+                            </label>
                             <label className="checkbox-label">
                                 <input
                                     type="checkbox"
