@@ -45,6 +45,7 @@ const UpdateUsuarios = () => {
         <div>
             <div>
                 <div className="admini">
+                    <div className="link-admini"><Link to="/InscreverVisita" className='insert'>Visitante</Link></div>
                     <div className="link-admini"><Link to="/AdicionarNome" className='insert'>Adicionar Residentes</Link></div>
                     <div className="link-admini"><Link to="/gruposMembros" className='insert'>Adcionar Grupo</Link></div>
                     <div className="link-admini"><Link to="/AddGroupsToMeal" className='insert'>Adicionar Refeições em Grupos</Link></div>
@@ -52,7 +53,7 @@ const UpdateUsuarios = () => {
                     <div className="link-admini"><Link to="/deletePhoto" className='insert'>Editar Ficheiros</Link></div>
                     <div className="link-admini"><Link to="/insertImages" className='insert'>Inserir Ficheiros</Link></div>
                     <div className="link-admini"><Link to="/updateAdministradores" className='insert'>Administradores</Link></div>
-                    
+
 
                     {/*<div className="link-admini"><Link to="#/InserirNome" className='insert'>Mapa para as Confissões</Link></div>
                    

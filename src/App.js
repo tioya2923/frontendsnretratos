@@ -32,7 +32,9 @@ import RefeicoesList from "./Components/Navigation/HomePages/RefeicoesGrupo";
 import Notificacoes from "./Components/Navigation/HomePages/Notificacoes";
 import GruposList from "./Components/Navigation/HomePages/RefeicoesGrupo";
 import ProtectedRoute from "./Components/Pages/LoginSignup/ProtectedRoute";
-import { UserProvider } from './UserContext'; // Import the UserProvider
+import { UserProvider } from './UserContext'; 
+import InscreverVisitas  from "./Components/Navigation/HomePages/InscreverVisita";
+
 
 function PrivateRoute({ children, isAuthenticated }) {
   if (isAuthenticated) {
@@ -88,6 +90,7 @@ function App() {
               <Route path="/Notificacoes" element={<><Navbar /><Notificacoes  /><Footer /></>} />
               <Route path="/GruposList" element={<><Navbar /><GruposList  /><Footer /></>} />
               <Route path="/ProtectedRoute" element={<><Navbar /><ProtectedRoute  /><Footer /></>} />
+              <Route path="/InscreverVisita" element={<><Navbar /><InscreverVisitas /><Footer /></>} />
             </Routes>
           </UserProvider>
         </Router>
