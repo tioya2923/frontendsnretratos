@@ -143,7 +143,7 @@ const InscritosRefeicoes = () => {
 
     const organizarPorDia = (refeicoes) => {
         const hoje = new Date();
-        const seteDias = Array.from({ length: 9 }, (_, i) => {
+        const seteDias = Array.from({ length: 12 }, (_, i) => {
             const data = new Date();
             data.setDate(hoje.getDate() + i);
             return data;
