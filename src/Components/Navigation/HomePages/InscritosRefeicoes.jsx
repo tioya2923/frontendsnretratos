@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../Styles/InscritosRefeicoes.css'; // Importar o arquivo CSS
-import './Notificacoes'
-import Notificacoes from './Notificacoes';
+//import './Notificacoes'
+//import Notificacoes from './Notificacoes';
 
 const InscritosRefeicoes = () => {
     const [refeicoes, setRefeicoes] = useState([]);
@@ -28,7 +28,6 @@ const InscritosRefeicoes = () => {
         const fetchNomes = async () => {
             try {
                 const response = await axios.get(`${backendUrl}components/nomes.php`);
-                console.log('Nomes:', response.data); // Verificar se os dados estão corretos
                 setNomes(response.data);
             } catch (err) {
                 setError(err.message);
@@ -63,8 +62,6 @@ const InscritosRefeicoes = () => {
         setSelectedId(id);
     };
 
-    // ... (resto do código)
-
     const isBirthday = (data, aniversario) => {
         // Convertendo datas para objetos Date e ajustando o fuso horário para Portugal Continental
         const dataAtual = new Date(data);
@@ -75,8 +72,8 @@ const InscritosRefeicoes = () => {
         const formatarData = (data) => {
             const dia = data.getDate().toString().padStart(2, '0');
             const mes = (data.getMonth() + 1).toString().padStart(2, '0');
-            //const ano = data.getFullYear();
-            return `${dia}/${mes}`; // /${ano}
+            const ano = data.getFullYear();
+            return `${dia}/${mes}/${ano}`;
         };
 
         const dataAtualFormatada = formatarData(dataAtual);
@@ -84,8 +81,6 @@ const InscritosRefeicoes = () => {
 
         return dataAtualFormatada === dataAniversarioFormatada;
     };
-
-    // ... (resto do código)
 
     if (loading) {
         return <p>Carregando...</p>;
@@ -125,7 +120,6 @@ const InscritosRefeicoes = () => {
     };
 
     const feriadosVariaveis = (ano) => {
-        // Função para calcular a data do Carnaval e da Sexta-feira Santa
         const calcularFeriados = (ano) => {
             const pascoa = new Date(ano, 2, 31);
             pascoa.setDate(pascoa.getDate() + (7 - pascoa.getDay()));
@@ -143,18 +137,23 @@ const InscritosRefeicoes = () => {
 
     const organizarPorDia = (refeicoes) => {
         const hoje = new Date();
-        const seteDias = Array.from({ length: 12 }, (_, i) => {
+        const seteDias = Array.from({ length: 7 }, (_, i) => {
             const data = new Date();
             data.setDate(hoje.getDate() + i);
             return data;
         });
 
         const refeicoesPorDia = seteDias.map(data => {
-            const dataFormatada = data.toLocaleDateString('pt-PT');
-            const feriado = feriadosFixos[dataFormatada] || Object.values(feriadosVariaveis(data.getFullYear())).find(f => f === dataFormatada);
+            const dataFormatada = data.toLocaleDateString('pt-PT', { timeZone: 'Europe/Lisbon' }); // Certificando-se que o fuso horário está correto
+            const mesDia = dataFormatada.substring(0, 5);
+            const feriado = feriadosFixos[mesDia] || Object.values(feriadosVariaveis(data.getFullYear())).find(f => f === dataFormatada);
 
             const aniversariantesNatalicio = nomes.filter(nome => isBirthday(data, nome.data_aniversario));
-            const aniversariantesSacerdotal = nomes.filter(nome => isBirthday(data, nome.data_aniversario_sacerdotal));
+            const aniversariantesSacerdotal = nomes
+                .filter(nome => nome.data_aniversario_sacerdotal) // Filtrar apenas os que têm data válida
+                .filter(nome => isBirthday(data, nome.data_aniversario_sacerdotal));
+
+            const horarioJantar = data.getDay() === 0 ? '20h30' : (feriado || Object.keys(feriadosFixos).includes(dataFormatada.substring(0, 5))) ? '20h30' : '20h00';
 
             return {
                 dia: diasDaSemana[data.getDay()],
@@ -169,26 +168,32 @@ const InscritosRefeicoes = () => {
                     }
                     return dataRefeicao.toDateString() === data.toDateString();
                 }),
-                horarioJantar: (data.getDay() === 0 || feriado) ? '20h30' : '20h00'
+                horarioJantar
             };
         });
-
         return refeicoesPorDia;
     };
 
     const refeicoesOrganizadas = organizarPorDia(refeicoes);
 
+    
+
     return (
         <div className='calendarioContainer'>
-            <Notificacoes />
+         
             <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>
             {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar }) => (
                 <div className='calendarioData' key={data}>
                     <h2 className='calendarioDiaData'>{dia}: {data}</h2>
-                    {feriado && <p><strong>{feriado}</strong></p>}
+
+                    {feriado && <p className='calenderAniversario'><strong>{feriado}</strong></p>}
+
+
                     {aniversariantesNatalicio.length > 0 && (
                         <p className='calenderAniversario'> <strong>Aniversariante do dia: {aniversariantesNatalicio.join(', ')}</strong></p>
                     )}
+
+
                     {aniversariantesSacerdotal.length > 0 && (
                         <p className='calenderAniversario'><strong>Aniversário Sacerdotal: {aniversariantesSacerdotal.join(', ')}</strong></p>
                     )}
