@@ -24,7 +24,7 @@ function Login() {
             return;
         }
 
-        const url = `${backendUrl}components/login.php`;
+        const url = `${backendUrl}components/login.php`;   
        
         let fData = new FormData();
         fData.append('email', email);
