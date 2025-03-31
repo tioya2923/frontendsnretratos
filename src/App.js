@@ -8,7 +8,6 @@ import Navbar from "./Components/Navigation/Navbar";
 import Footer from "./Components/FooterPage/Footer";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Components/Navigation/HomePages/home";
-import Fotografias from "./Components/Navigation/HomePages/fotografias";
 import InsertImages from "./Components/Store/insertImages";
 import Login from "./Components/Pages/LoginSignup/login";
 import Register from "./Components/Pages/LoginSignup/register";
@@ -65,8 +64,7 @@ function App() {
           <UserProvider> {/* Wrap your app with UserProvider */}
             <Routes>
               <Route path="/" element={<><Navbar /><PrivateRoute isAuthenticated={isAuthenticated}><Home /></PrivateRoute><Footer /></>} />
-              <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />
-              <Route path="/fotografias" element={<><Navbar /><Fotografias /><Footer /></>} />
+              <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />             
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/insertImages" element={<><Navbar /><InsertImages /><Footer /></>} />

@@ -3,7 +3,6 @@ import { useUser } from '../../../UserContext';
 import logo from '../Logo/sn.png';
 import Refeicoes from './InscritosRefeicoes';
 import Calendario from './refeicoes';
-import Fotografias from './fotografias';
 import '../../Styles/home.css'; // Importar o arquivo CSS
 
 function Home() {
@@ -15,8 +14,7 @@ function Home() {
             <img src={logo} alt="Logo" className="snImage" />
             <div className="home-content">
                 <Refeicoes />
-                <Calendario />
-                <Fotografias />
+                <Calendario />               
             </div>
         </div>
     );

@@ -5,7 +5,7 @@
   "description": "Comunidade de São Nicolau",
   "main": "index.js",
   "homepage": "./",
-  "proxy": "https://backend-sn-a37ffec6bc3e.herokuapp.com/",
+  "proxy": "http://135.181.47.213/",
   "author": "João Dumba",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

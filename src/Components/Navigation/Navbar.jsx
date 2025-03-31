@@ -9,7 +9,6 @@ const Navbar = () => {
     
         { link: "/refeicoes", text: "Inscrição para as refeições" },
         { link: '/InscritosRefeicoes', text: 'Refeições' },
-        { link: '/fotografias', text: 'Retratos' },
         { link: "/Privacidade", text: "Admin" },
     ];
 
