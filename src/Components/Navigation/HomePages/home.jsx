@@ -13,8 +13,7 @@ function Home() {
             <h1 className="home-title">{userName}, seja bem-vindo!</h1>
             <img src={logo} alt="Logo" className="snImage" />
             <div className="home-content">
-                <Refeicoes />
-                <Calendario />               
+                <Refeicoes />                         
             </div>
         </div>
     );
