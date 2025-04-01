@@ -5,7 +5,7 @@
   "description": "Comunidade de São Nicolau",
   "main": "index.js",
   "homepage": "./",
-  "proxy": "https://135.181.47.213/",
+  "proxy": "https://snrefeicoes.pt/",
   "author": "João Dumba",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
