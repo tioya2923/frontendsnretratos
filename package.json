@@ -34,8 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && bash post-build.sh",
-    "test": "react-scripts test",
+    "build": "react-scripts build && bash post-build.sh",    
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
