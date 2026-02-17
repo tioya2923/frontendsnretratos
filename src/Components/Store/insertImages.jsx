@@ -10,7 +10,7 @@ function InsertImages() {
   const [dataCriacao, setDataCriacao] = useState(""); // Adicione este
   const [result, setResult] = useState("");
 
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL.endsWith('/') ? process.env.REACT_APP_BACKEND_URL : process.env.REACT_APP_BACKEND_URL + '/';
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,7 +37,11 @@ function InsertImages() {
       fileInput.current.value = null;
     })
     .catch((error) => {
-      console.error(error);
+      if (error.response && error.response.data && error.response.data.message) {
+        setResult('Erro: ' + error.response.data.message);
+      } else {
+        setResult('Erro de conexão. Tente novamente mais tarde.');
+      }
     });
   };
 

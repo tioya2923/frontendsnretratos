@@ -1,112 +1,233 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import "flag-icons/css/flag-icons.min.css";
 import "./Register.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { allCountries } from "./countryCodes";
 
-function Register() {
+// Ordenação dos países
+const sortedCountries = [...allCountries].sort((a, b) => {
+  if (a.code === "+1") return -1;
+  if (b.code === "+1") return 1;
+  return parseInt(a.code.replace(/\D/g, "")) - parseInt(b.code.replace(/\D/g, ""));
+});
+
+export default function Register() {
+  const [selectedCountry, setSelectedCountry] = useState(sortedCountries[0]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [whatsapp, setWhatsapp] = useState("");
+
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [whatsappError, setWhatsappError] = useState("");
   const [confirmError, setConfirmError] = useState("");
-  const [registered, setRegistered] = useState(false);
 
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const backendEnv = process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = backendEnv.endsWith("/") ? backendEnv : backendEnv + "/";
 
-  const handleSubmit = () => {
-    const errors = validateInputs();
-    if (errors.length > 0) {
-      return;
+  // ---------------- VALIDAR CAMPOS ----------------
+  const validateInputs = () => {
+    let errors = [];
+
+    let nameErr = "";
+    let emailErr = "";
+    let passwordErr = "";
+    let whatsappErr = "";
+
+    if (!name.trim()) {
+      nameErr = "Insira o seu nome";
+      errors.push(nameErr);
     }
+
+    if (!email.trim()) {
+      emailErr = "Insira o seu email";
+      errors.push(emailErr);
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailErr = "Insira um email válido";
+      errors.push(emailErr);
+    }
+
+    if (!password) {
+      passwordErr = "Insira a palavra passe";
+      errors.push(passwordErr);
+    } else if (password.length < 8) {
+      passwordErr = "A palavra passe deve ter pelo menos 8 caracteres";
+      errors.push(passwordErr);
+    }
+
+    if (!whatsapp.trim()) {
+      whatsappErr = "Insira o número do WhatsApp";
+      errors.push(whatsappErr);
+    } else if (!/^\d{8,12}$/.test(whatsapp)) {
+      whatsappErr = "Número inválido. Insira apenas o número, sem o código do país.";
+      errors.push(whatsappErr);
+    }
+
+    setNameError(nameErr);
+    setEmailError(emailErr);
+    setPasswordError(passwordErr);
+    setWhatsappError(whatsappErr);
+
+    return errors;
+  };
+
+  // ---------------- SUBMETER FORM ----------------
+  const handleSubmit = async () => {
+    const errors = validateInputs();
+    if (errors.length > 0) return;
+
     if (password !== confirmPassword) {
       setConfirmError("As palavras passe não coincidem");
       return;
     }
+    setConfirmError("");
 
     const url = `${backendUrl}components/registar.php`;
-    let fData = new FormData();
-    fData.append("name", name);
-    fData.append("email", email);
-    fData.append("password", password);
-    fData.append("newRegistration", true);
-    axios
-      .post(url, fData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then((response) => {
-        if (response.data === "error=email_exists") {
-          toast.error("O e-mail já existe");
-        } else if (response.data === "success") {
-          toast.success("Registro bem-sucedido! Aguarde a aprovação do administrador.");
-          setRegistered(true);
-        } else {
-          toast.error(response.data);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
 
-  const validateInputs = () => {
-    let errors = [];
-    if (name.length === 0) {
-      errors.push("Insira o seu nome");
-    }
-    if (email.length === 0) {
-      errors.push("Insira o seu email");
-    } else if (!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)) {
-      errors.push("Insira um email válido");
-    }
-    if (password.length === 0) {
-      errors.push("Insira a palavra passe");
-    } else if (password.length < 8) {
-      errors.push("A palavra passe deve ter pelo menos 8 caracteres");
-    }
-    document.getElementById("name-error").textContent =
-      errors.find((e) => e.includes("nome")) || "";
-    document.getElementById("email-error").textContent =
-      errors.find((e) => e.includes("email")) || "";
-    document.getElementById("password-error").textContent =
-      errors.find((e) => e.includes("palavra passe")) || "";
-    return errors;
-  };
+    const payload = {
+      name,
+      email,
+      password,
+      whatsapp: selectedCountry.code.replace("+", "") + whatsapp,
+      newRegistration: true
+    };
 
-  useEffect(() => {
-    if (registered) {
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setRegistered(false);
+    try {
+      const response = await axios.post(url, payload, {
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (response.data.status === "email_exists") {
+        toast.error("O e-mail já existe");
+      } else if (response.data.status === "success") {
+        toast.success("Registo bem-sucedido! Aguarde a aprovação do administrador.");
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setWhatsapp("");
+      } else {
+        toast.error("Erro ao registrar. Tente novamente.");
+      }
+
+    } catch (error) {
+      toast.error("Erro de conexão. Tente novamente mais tarde.");
     }
-  }, [registered]);
+  };
 
   return (
-    <div>
+    <div className="register-center-wrapper">
       <div className="container-form">
-        <label htmlFor="name"></label>
-        <input type="text" name="name" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome completo" required />
-        <span id="name-error" className="error"></span>
-        <label htmlFor="email"></label>
-        <input type="email" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" required />
-        <span id="email-error" className="error"></span>
-        <label htmlFor="password"></label>
-        <input type={showPassword ? "text" : "password"} name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Palavra-passe" required />
-        <span id="password-error" className="error"></span>
-        <label htmlFor="confirm-password"></label>
-        <input type={showPassword ? "text" : "password"} name="confirm-password" id="confirm-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirmar palavra-passe" required />
-        <span id="confirm-error" className="error">{confirmError}</span>
-        <label htmlFor="show-password" className="verPalavraPasse">Ver palavra-passe</label>
-        <input type="checkbox" name="show-password" id="show-password" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
-        <input type="button" name="send" id="send" value="Submeter" onClick={handleSubmit} />
+        <h2>Registar</h2>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
+          {/* Nome */}
+          <div className="form-group">
+            <label>Nome</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} required />
+            {nameError && <span className="error">{nameError}</span>}
+          </div>
+
+          {/* Email */}
+          <div className="form-group">
+            <label>Email</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} required />
+            {emailError && <span className="error">{emailError}</span>}
+          </div>
+
+          {/* WhatsApp */}
+          <div className="form-group">
+            <label>WhatsApp</label>
+            <div className="form-group-row">
+              <Select
+                className="whatsapp-select"
+                classNamePrefix="react-select"
+                value={{
+                  value: selectedCountry.code,
+                  label: (
+                    <span>
+                      <span className={`fi fi-${selectedCountry.iso}`} style={{ marginRight: 8 }}></span>
+                      {selectedCountry.code}
+                    </span>
+                  ),
+                }}
+                onChange={(option) => {
+                  const found = sortedCountries.find((c) => c.code === option.value);
+                  setSelectedCountry(found || sortedCountries[0]);
+                }}
+                options={sortedCountries.map((country) => ({
+                  value: country.code,
+                  label: (
+                    <span>
+                      <span className={`fi fi-${country.iso}`} style={{ marginRight: 8 }}></span>
+                      {country.code}
+                    </span>
+                  ),
+                }))}
+                isSearchable
+              />
+
+              <input
+                type="text"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value.replace(/\D/g, ""))}
+                required
+                placeholder="Número sem código"
+                className="whatsapp-input"
+              />
+            </div>
+            {whatsappError && <span className="error">{whatsappError}</span>}
+          </div>
+
+          {/* Password */}
+          <div className="form-group">
+            <label>Palavra Passe</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {passwordError && <span className="error">{passwordError}</span>}
+          </div>
+
+          {/* Confirm Password */}
+          <div className="form-group">
+            <label>Confirmar Palavra Passe</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            {confirmError && <span className="error">{confirmError}</span>}
+          </div>
+
+          <button type="submit">Registar</button>
+        </form>
+
+        <div className="register-form-login" style={{ marginTop: 16, textAlign: "center" }}>
+          <span style={{ color: "#ece0d4", fontSize: "0.98em" }}>
+            Já tem conta?
+            <a href="/login" style={{ color: "#16e135", fontWeight: 600, marginLeft: 6, textDecoration: "none" }}>
+              Faça Login
+            </a>
+          </span>
+        </div>
+
+        <ToastContainer />
       </div>
-      <ToastContainer />
     </div>
   );
 }
-
-export default Register;

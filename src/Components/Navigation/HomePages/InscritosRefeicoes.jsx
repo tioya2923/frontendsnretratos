@@ -11,15 +11,23 @@ const InscritosRefeicoes = () => {
     const [error, setError] = useState(null);
     const [selectedId, setSelectedId] = useState(null); // Estado para controlar o nome selecionado
     const [nomes, setNomes] = useState([]); // Estado para armazenar os nomes e datas de aniversário
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const envUrl = process.env.REACT_APP_BACKEND_URL;
+    const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
     useEffect(() => {
         const fetchRefeicoes = async () => {
             try {
                 const response = await axios.get(`${backendUrl}components/refeicoes.php`);
-                setRefeicoes(response.data);
+                // Garante que refeicoes é sempre um array
+                if (Array.isArray(response.data)) {
+                    setRefeicoes(response.data);
+                } else if (response.data && typeof response.data === 'object') {
+                    setRefeicoes([response.data]);
+                } else {
+                    setRefeicoes([]);
+                }
             } catch (err) {
-                setError(err.message);
+                setError('Erro ao carregar refeições. Tente novamente mais tarde.');
             } finally {
                 setLoading(false);
             }
@@ -28,9 +36,16 @@ const InscritosRefeicoes = () => {
         const fetchNomes = async () => {
             try {
                 const response = await axios.get(`${backendUrl}components/nomes.php`);
-                setNomes(response.data);
+                // Garante que nomes é sempre um array
+                if (Array.isArray(response.data)) {
+                    setNomes(response.data);
+                } else if (response.data && typeof response.data === 'object') {
+                    setNomes([response.data]);
+                } else {
+                    setNomes([]);
+                }
             } catch (err) {
-                setError(err.message);
+                setError('Erro ao carregar aniversariantes.');
             }
         };
 
@@ -49,7 +64,7 @@ const InscritosRefeicoes = () => {
                 await axios.delete(`${backendUrl}components/refeicoes.php`, { data: { id } });
                 setRefeicoes(refeicoes.filter(refeicao => refeicao.id !== id));
             } catch (err) {
-                setError(err.message);
+                setError('Erro ao eliminar inscrição.');
             }
         } else {
             alert('Não é possível eliminar o nome 24 horas antes da refeição.');

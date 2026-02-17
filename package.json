@@ -14,6 +14,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.3",
     "date-fns": "^4.1.0",
+    "flag-icons": "^7.5.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
     "react": "^18.3.1",
@@ -23,6 +24,7 @@
     "react-player": "^2.16.0",
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
+    "react-select": "^5.10.2",
     "react-toastify": "^10.0.5",
     "serve": "^14.2.3",
     "styled-components": "^6.1.12",
@@ -34,7 +36,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && bash post-build.sh",    
+    "build": "react-scripts build && bash post-build.sh",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

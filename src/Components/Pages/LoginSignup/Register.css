@@ -1,95 +1,218 @@
+/* Texto amigável para desinscrição de refeições na página de login */
+.unsubscribe-meals {
+    margin-top: 12px;
+    text-align: center;
+    background: #fff3e0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: #7a3e00;
+    font-size: 1em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: inline-block;
+}
+.unsubscribe-meals a {
+    color: #d2691e;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.unsubscribe-meals a:hover {
+    color: #a05c5c;
+}
+/* Força os códigos dos países a preto no react-select */
+.whatsapp-select .react-select__single-value,
+.whatsapp-select .react-select__option,
+.whatsapp-select .react-select__input,
+.whatsapp-select .react-select__placeholder {
+    color: #111 !important;
+    font-weight: 500;
+}
+
+.whatsapp-select .react-select__option span {
+    color: #111 !important;
+}
+/* Centralização do formulário */
+.register-center-wrapper {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ededed;
+}
+
+/* ---------------- CAMPOS WHATSAPP ---------------- */
+
+.form-group-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Select do código do país (react-select) */
+.whatsapp-select {
+    flex: 0 0 30%; /* 🔥 30% da largura total */
+}
+
+/* Forçar react-select a respeitar a largura */
+.whatsapp-select .react-select__control {
+    height: 44px;
+    min-height: 44px;
+    border-radius: 7px;
+    border: 1.5px solid #a05c5c;
+    background: #fff;
+    box-shadow: none;
+}
+
+.whatsapp-select .react-select__value-container {
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+}
+
+.whatsapp-select .react-select__single-value {
+    display: flex;
+    align-items: center;
+    color: #4b0303;
+    font-size: 1rem;
+}
+
+.whatsapp-select .react-select__indicator-separator {
+    display: none;
+}
+
+.whatsapp-select .react-select__control--is-focused {
+    border-color: #e57373;
+    background: #fff8f8;
+}
+
+/* Input do número */
+.whatsapp-input {
+    flex: 1; /* 🔥 ocupa 70% restantes */
+    height: 44px;
+    font-size: 1rem;
+    border-radius: 7px;
+    border: 1.5px solid #a05c5c;
+    padding: 0 12px;
+    background: #fff;
+    color: #4b0303;
+    transition: border 0.2s;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.whatsapp-input:focus {
+    border: 1.5px solid #e57373;
+    background: #fff8f8;
+}
+
+/* ---------------- FORMULÁRIO PRINCIPAL ---------------- */
+
 .container-form {
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 100%;
     max-width: 450px;
-    justify-content: center;
-    margin: auto;
-    padding: 50px;
-    box-shadow: rgba(0, 0, 0, .35)0px 5px 15px;
-    border-radius: 20px;
-    align-items: baseline;
-    background-color: #4b0303;
-}
-
-label {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-input {
-    border: 1px solid #150;
-    width: 100%;
-    max-width: 350px;
-    height: 45px;
-    outline: none;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-bottom: 10px;
-    font-size: 20px;
-    border-radius: 5px;    
-}
-
-input[type=button] {
-    border: 1px solid #150;
-    width: 100%;
-    max-width: 350px;
-    height: 45px;
-    outline: none;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    font-size: 25px;
-    font-weight: 100;
-    border-radius: 5px;
-    text-align: center;
-    background-color: #150;
-    cursor: pointer;
+    margin: 40px auto;
+    padding: 32px 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    border-radius: 18px;
+    background: linear-gradient(135deg, #4b0303 80%, #7c1c1c 100%);
     color: #fff;
-    cursor: pointer;
+    transition: box-shadow 0.2s;
 }
 
-.ToastContainer {
-    /* Estilos padrão para o ToastContainer */
-    position: fixed;
-    bottom: 0;
-    width: 80%;
-    left: 10%; /* Centraliza o container */
+.container-form h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
 }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+/* Inputs gerais */
+input {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4b0303;
+    max-width: 350px;
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1.5px solid #a05c5c;
+    border-radius: 7px;
+    background: #fff;
+    outline: none;
+    transition: border 0.2s;
+    margin-bottom: 4px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border: 1.5px solid #e57373;
+    background: #fff8f8;
+}
+
+/* Botões */
+button[type=submit] {
+    max-width: 350px;
+    width: 100%;
+    height: 48px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #a80505 60%, #e57373 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(168,5,5,0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+button[type=submit]:hover {
+    background: linear-gradient(90deg, #e57373 0%, #a80505 100%);
+    box-shadow: 0 4px 16px rgba(168,5,5,0.13);
+}
+
+/* Erros */
+.error {
+    color: #ffd6d6;
+    font-size: 0.95rem;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding-left: 2px;
+}
+
+/* ---------------- MEDIA QUERY ---------------- */
 
 @media only screen and (max-width: 600px) {
     .container-form {
         width: 100%;
-        padding: 20px;
-    }
-    
-    input, input[type=button] {
-        width: 100%;
+        max-width: 100vw;
+        padding: 6vw 2vw;
+        margin: 10vw auto;
     }
 
-    .ToastContainer {
-        /* Estilos para telas menores ou iguais a 600px */
-        bottom: 50%;
-        width: 100%;
-       
-    }
-}
-
-@media only screen and (min-width: 601px) and (max-width: 1024px){
-    .container-form {
-        width: 100%;
-        padding: 30px;
-    }
-    
-    input, input[type=button] {
-        width: 100%;
+    .form-group-row {
+        gap: 8px;
     }
 
-    .ToastContainer {
-        /* Estilos para telas entre 601px e 1024px */
-        bottom: 0;
-        width: 80%;
-        left: 10%; /* Centraliza o container */
+    .whatsapp-select {
+        flex: 0 0 35%; /* ligeiramente maior no mobile */
     }
 }

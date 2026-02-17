@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo from './Logo/logopsn.png';
 
@@ -19,9 +20,9 @@ const Navbar = () => {
     return (
         <nav className="navbar-init">
             <div className="navbar-content">
-                <a href="/home" className="logo-container">
+                <Link to="/home" className="logo-container">
                     <img src={logo} alt="Logo" className="logo" />
-                </a>
+                </Link>
                 <div className="hamburger-menu" onClick={toggleMenu}>
                     <div></div>
                     <div></div>
@@ -30,9 +31,9 @@ const Navbar = () => {
                 <ul className={`menu-links ${menuOpen ? 'show' : ''}`}>
                     {navigation.map((nav) => (
                         <li key={nav.text} className="nav-item">
-                            <a href={nav.link} className="nav-link">
+                            <Link to={nav.link} className="nav-link">
                                 {nav.text}
-                            </a>
+                            </Link>
                         </li>
                     ))}
                 </ul>

@@ -86,3 +86,31 @@
 .login-form-register a:hover {
     text-decoration: underline;
 }
+
+.unsubscribe-meals {
+    margin-top: 16px;
+    text-align: center;
+    background: #2c2c2c;          /* Fundo suave e discreto */
+    padding: 14px 18px;
+    border-radius: 6px;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.unsubscribe-meals span {
+    color: #f1f1f1;               /* Texto claro e confortável */
+    font-size: 0.95em;
+    line-height: 1.45;
+}
+
+.unsubscribe-meals a {
+    color: #ffd700;               /* Dourado suave */
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.unsubscribe-meals a:hover {
+    color: #ffea80;               /* Tom mais claro no hover */
+    text-decoration: none;
+}

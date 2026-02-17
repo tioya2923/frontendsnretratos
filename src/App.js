@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import 'react-toastify/dist/ReactToastify.css';
-import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./global";
 import { theme } from "./theme";
 import Navbar from "./Components/Navigation/Navbar";
 import Footer from "./Components/FooterPage/Footer";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import ErrorBoundary from "./Components/ErrorBoundary";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Components/Navigation/HomePages/home";
 import InsertImages from "./Components/Store/insertImages";
 import Login from "./Components/Pages/LoginSignup/login";
 import Register from "./Components/Pages/LoginSignup/register";
+import Unsubscribe from "./Components/Pages/LoginSignup/unsubscribe";
 import AreaPessoal from "./Components/Navigation/HomePages/areaPessoal";
 import DeletePhoto from "./Components/delete/DeletePhoto";
 import Administracao from "./Components/Navigation/HomePages/Administracao";
@@ -27,73 +28,90 @@ import GerenciamentoRefeicoes from "./Components/Navigation/HomePages/Gerenciame
 import AdicionarNome from "./Components/Navigation/HomePages/AdicionarNome";
 import MembrosGrupos from "./Components/Navigation/HomePages/gruposMembros";
 import AddGroupsToMeal from "./Components/Navigation/HomePages/AddGroupsToMeal";
-import RefeicoesList from "./Components/Navigation/HomePages/RefeicoesGrupo";
+import RefeicoesGrupo from "./Components/Navigation/HomePages/RefeicoesGrupo";
 import Notificacoes from "./Components/Navigation/HomePages/Notificacoes";
-import GruposList from "./Components/Navigation/HomePages/RefeicoesGrupo";
 import ProtectedRoute from "./Components/Pages/LoginSignup/ProtectedRoute";
-import { UserProvider } from './UserContext'; 
-import InscreverVisitas  from "./Components/Navigation/HomePages/InscreverVisita";
+import { UserProvider, useUser } from './UserContext';
+import InscreverVisita from "./Components/Navigation/HomePages/InscreverVisita";
 
 
-function PrivateRoute({ children, isAuthenticated }) {
-  if (isAuthenticated) {
-    return children;
-  }
-  return <Navigate to="/login" />;
-}
-PrivateRoute.propTypes = {
-  children: PropTypes.node.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired
-};
+
+// PrivateRoute não é necessário pois já existe o ProtectedRoute importado
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
   return (
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyles />
         <Router>
-          <UserProvider> {/* Wrap your app with UserProvider */}
-            <Routes>
-              <Route path="/" element={<><Navbar /><PrivateRoute isAuthenticated={isAuthenticated}><Home /></PrivateRoute><Footer /></>} />
-              <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />             
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/insertImages" element={<><Navbar /><InsertImages /><Footer /></>} />
-              <Route path="/areaPessoal" element={<><Navbar /><AreaPessoal /><Footer /></>} />
-              <Route path="/deletePhoto" element={<><Navbar /><DeletePhoto /><Footer /></>} />
-              <Route path="/administracao" element={<><Navbar /><Administracao /><Footer /></>} />
-              <Route path="/privacidade" element={<><Navbar /><Privacidade /><Footer /></>} />
-              <Route path="/updateUsuarios" element={<><Navbar /><UpdateUsuarios /><Footer /></>} />
-              <Route path="/adPrivacidade" element={<><Navbar /><AdPrivacidade /><Footer /></>} />
-              <Route path="/updateAdministradores" element={<><Navbar /><UpdateAdministradores /><Footer /></>} />
-              <Route path="/refeicoes" element={<><Navbar /><CalendarioRefeicoes /><Footer /></>} />
-              <Route path="/InscritosRefeicoes" element={<><Navbar /><InscritosRefeicoes /><Footer /></>} />
-              <Route path="/ConfissoesHorarios" element={<><Navbar /><ConfissoesHorarios /><Footer /></>} />
-              <Route path="/InserirNome" element={<><Navbar /><InserirNome /><Footer /></>} />
-              <Route path="/InserirNomeConf" element={<><Navbar /><InserirNomeConf /><Footer /></>} />
-              <Route path="/GerenciamentoRefeicoes" element={<><Navbar /><GerenciamentoRefeicoes  /><Footer /></>} />
-              <Route path="/AdicionarNome" element={<><Navbar /><AdicionarNome  /><Footer /></>} />
-              <Route path="/gruposMembros" element={<><Navbar /><MembrosGrupos  /><Footer /></>} />
-              <Route path="/AddGroupsToMeal" element={<><Navbar /><AddGroupsToMeal   /><Footer /></>} />
-              <Route path="/RefeicoesList" element={<><Navbar /><RefeicoesList   /><Footer /></>} />
-              <Route path="/Notificacoes" element={<><Navbar /><Notificacoes  /><Footer /></>} />
-              <Route path="/GruposList" element={<><Navbar /><GruposList  /><Footer /></>} />
-              <Route path="/ProtectedRoute" element={<><Navbar /><ProtectedRoute  /><Footer /></>} />
-              <Route path="/InscreverVisita" element={<><Navbar /><InscreverVisitas /><Footer /></>} />
-            </Routes>
+          <UserProvider>
+            <AppRoutes />
           </UserProvider>
         </Router>
       </>
     </ThemeProvider>
   );
 }
+
+function AppRoutes() {
+  const { isAuthenticated } = useUser();
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/unsubscribe" element={<Unsubscribe />} />
+      <Route path="/insertImages" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <><Navbar /><InsertImages /><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/areaPessoal" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <><Navbar /><AreaPessoal /><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/deletePhoto" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <><Navbar /><DeletePhoto /><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/administracao" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <><Navbar /><Administracao /><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/privacidade" element={<><Navbar /><Privacidade /><Footer /></>} />
+      <Route path="/updateUsuarios" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <><Navbar /><UpdateUsuarios /><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/adPrivacidade" element={<><Navbar /><AdPrivacidade /><Footer /></>} />
+      <Route path="/updateAdministradores" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <><Navbar /><UpdateAdministradores /><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/refeicoes" element={<><Navbar /><CalendarioRefeicoes /><Footer /></>} />
+      <Route path="/InscritosRefeicoes" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></>
+        </ProtectedRoute>
+      } />
+      <Route path="/ConfissoesHorarios" element={<><Navbar /><ConfissoesHorarios /><Footer /></>} />
+      <Route path="/InserirNome" element={<><Navbar /><InserirNome /><Footer /></>} />
+      <Route path="/InserirNomeConf" element={<><Navbar /><InserirNomeConf /><Footer /></>} />
+      <Route path="/GerenciamentoRefeicoes" element={<><Navbar /><GerenciamentoRefeicoes /><Footer /></>} />
+      <Route path="/AdicionarNome" element={<><Navbar /><AdicionarNome /><Footer /></>} />
+      <Route path="/gruposMembros" element={<><Navbar /><MembrosGrupos /><Footer /></>} />
+      <Route path="/AddGroupsToMeal" element={<><Navbar /><AddGroupsToMeal /><Footer /></>} />
+      <Route path="/RefeicoesGrupo" element={<><Navbar /><RefeicoesGrupo /><Footer /></>} />
+      <Route path="/Notificacoes" element={<><Navbar /><Notificacoes /><Footer /></>} />
+      <Route path="/InscreverVisita" element={<><Navbar /><InscreverVisita /><Footer /></>} />
+    </Routes>
+  );
+}
+
 export default App;
