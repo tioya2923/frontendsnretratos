@@ -152,7 +152,7 @@ function Login() {
                     </div>
                     <div className="unsubscribe-meals" style={{ marginTop: 12, textAlign: 'center' }}>
                         <span style={{ color: '#fff', fontSize: '0.98em' }}>
-                            Já não passará a tomar as refeições connosco?{' '}
+                            Deixarás de tomar as refeições connosco?{' '}
                             <p></p>
                             <Link to="/unsubscribe" style={{ color: '#ffd700', textDecoration: 'underline' }}>
                                 Clique aqui.
