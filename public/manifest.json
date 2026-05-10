@@ -1,25 +1,31 @@
 {
+  "id": "/",
   "short_name": "PSN",
   "name": "Paróquia de São Nicolau",
   "description": "Comunidade de São Nicolau - Retratos e Memórias",
   "lang": "pt",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
       "src": "logopsn.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any"
-    },
-    {
-      "src": "logopsn.png",
-      "type": "image/png",
-      "sizes": "512x512",
+      "sizes": "270x270",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "logopsn.png",
+      "type": "image/png",
+      "sizes": "270x270",
+      "form_factor": "narrow",
+      "label": "Paróquia de São Nicolau"
+    },
+    {
+      "src": "logopsn.png",
+      "type": "image/png",
+      "sizes": "270x270",
+      "form_factor": "wide",
+      "label": "Paróquia de São Nicolau"
     }
   ],
   "start_url": "/",
