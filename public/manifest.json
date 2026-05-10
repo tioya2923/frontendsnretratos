@@ -6,9 +6,15 @@
   "lang": "pt",
   "icons": [
     {
-      "src": "logopsn.png",
+      "src": "icon-192.png",
       "type": "image/png",
-      "sizes": "270x270",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
       "purpose": "any maskable"
     }
   ],
