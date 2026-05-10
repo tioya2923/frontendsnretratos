@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./global";
 import { theme } from "./theme";
 import Navbar from "./Components/Navigation/Navbar";
+import PwaUpdateBanner from "./Components/PwaUpdateBanner";
 import Footer from "./Components/FooterPage/Footer";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -39,10 +40,19 @@ import InscreverVisita from "./Components/Navigation/HomePages/InscreverVisita";
 // PrivateRoute não é necessário pois já existe o ProtectedRoute importado
 
 function App() {
+  const [swRegistration, setSwRegistration] = useState(null);
+
+  useEffect(() => {
+    const handler = event => setSwRegistration(event.detail);
+    window.addEventListener('pwa-update', handler);
+    return () => window.removeEventListener('pwa-update', handler);
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyles />
+        {swRegistration && <PwaUpdateBanner registration={swRegistration} />}
         <Router>
           <UserProvider>
             <AppRoutes />
