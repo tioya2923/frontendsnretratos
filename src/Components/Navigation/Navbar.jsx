@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo from './Logo/logopsn.png';
+import InstallPwaButton from "../InstallPwaButton";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -36,6 +37,9 @@ const Navbar = () => {
                             </Link>
                         </li>
                     ))}
+                    <li className="nav-item">
+                        <InstallPwaButton />
+                    </li>
                 </ul>
             </div>
         </nav>
