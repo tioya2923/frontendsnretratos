@@ -63,63 +63,46 @@ function App() {
   );
 }
 
-function AppRoutes() {
+function AuthRoute({ children }) {
   const { isAuthenticated } = useUser();
   return (
+    <ProtectedRoute isAuthenticated={isAuthenticated}>
+      {children}
+    </ProtectedRoute>
+  );
+}
+
+function AppRoutes() {
+  return (
     <Routes>
+      {/* Rotas públicas */}
       <Route path="/" element={<Login />} />
-      <Route path="/home" element={<><Navbar /><Home /><Footer /></>} />
-      <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
-      <Route path="/insertImages" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <><Navbar /><InsertImages /><Footer /></>
-        </ProtectedRoute>
-      } />
-      <Route path="/areaPessoal" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <><Navbar /><AreaPessoal /><Footer /></>
-        </ProtectedRoute>
-      } />
-      <Route path="/deletePhoto" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <><Navbar /><DeletePhoto /><Footer /></>
-        </ProtectedRoute>
-      } />
-      <Route path="/administracao" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <><Navbar /><Administracao /><Footer /></>
-        </ProtectedRoute>
-      } />
       <Route path="/privacidade" element={<><Navbar /><Privacidade /><Footer /></>} />
-      <Route path="/updateUsuarios" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <><Navbar /><UpdateUsuarios /><Footer /></>
-        </ProtectedRoute>
-      } />
       <Route path="/adPrivacidade" element={<><Navbar /><AdPrivacidade /><Footer /></>} />
-      <Route path="/updateAdministradores" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <><Navbar /><UpdateAdministradores /><Footer /></>
-        </ProtectedRoute>
-      } />
-      <Route path="/refeicoes" element={<><Navbar /><CalendarioRefeicoes /><Footer /></>} />
-      <Route path="/InscritosRefeicoes" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></>
-        </ProtectedRoute>
-      } />
-      <Route path="/ConfissoesHorarios" element={<><Navbar /><ConfissoesHorarios /><Footer /></>} />
-      <Route path="/InserirNome" element={<><Navbar /><InserirNome /><Footer /></>} />
-      <Route path="/InserirNomeConf" element={<><Navbar /><InserirNomeConf /><Footer /></>} />
-      <Route path="/GerenciamentoRefeicoes" element={<><Navbar /><GerenciamentoRefeicoes /><Footer /></>} />
-      <Route path="/AdicionarNome" element={<><Navbar /><AdicionarNome /><Footer /></>} />
-      <Route path="/gruposMembros" element={<><Navbar /><MembrosGrupos /><Footer /></>} />
-      <Route path="/AddGroupsToMeal" element={<><Navbar /><AddGroupsToMeal /><Footer /></>} />
-      <Route path="/RefeicoesGrupo" element={<><Navbar /><RefeicoesGrupo /><Footer /></>} />
-      <Route path="/Notificacoes" element={<><Navbar /><Notificacoes /><Footer /></>} />
-      <Route path="/InscreverVisita" element={<><Navbar /><InscreverVisita /><Footer /></>} />
+
+      {/* Rotas protegidas — requerem login */}
+      <Route path="/home" element={<AuthRoute><><Navbar /><Home /><Footer /></></AuthRoute>} />
+      <Route path="/areaPessoal" element={<AuthRoute><><Navbar /><AreaPessoal /><Footer /></></AuthRoute>} />
+      <Route path="/insertImages" element={<AuthRoute><><Navbar /><InsertImages /><Footer /></></AuthRoute>} />
+      <Route path="/deletePhoto" element={<AuthRoute><><Navbar /><DeletePhoto /><Footer /></></AuthRoute>} />
+      <Route path="/administracao" element={<AuthRoute><><Navbar /><Administracao /><Footer /></></AuthRoute>} />
+      <Route path="/updateUsuarios" element={<AuthRoute><><Navbar /><UpdateUsuarios /><Footer /></></AuthRoute>} />
+      <Route path="/updateAdministradores" element={<AuthRoute><><Navbar /><UpdateAdministradores /><Footer /></></AuthRoute>} />
+      <Route path="/refeicoes" element={<AuthRoute><><Navbar /><CalendarioRefeicoes /><Footer /></></AuthRoute>} />
+      <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></></AuthRoute>} />
+      <Route path="/ConfissoesHorarios" element={<AuthRoute><><Navbar /><ConfissoesHorarios /><Footer /></></AuthRoute>} />
+      <Route path="/InserirNome" element={<AuthRoute><><Navbar /><InserirNome /><Footer /></></AuthRoute>} />
+      <Route path="/InserirNomeConf" element={<AuthRoute><><Navbar /><InserirNomeConf /><Footer /></></AuthRoute>} />
+      <Route path="/GerenciamentoRefeicoes" element={<AuthRoute><><Navbar /><GerenciamentoRefeicoes /><Footer /></></AuthRoute>} />
+      <Route path="/AdicionarNome" element={<AuthRoute><><Navbar /><AdicionarNome /><Footer /></></AuthRoute>} />
+      <Route path="/gruposMembros" element={<AuthRoute><><Navbar /><MembrosGrupos /><Footer /></></AuthRoute>} />
+      <Route path="/AddGroupsToMeal" element={<AuthRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AuthRoute>} />
+      <Route path="/RefeicoesGrupo" element={<AuthRoute><><Navbar /><RefeicoesGrupo /><Footer /></></AuthRoute>} />
+      <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><Footer /></></AuthRoute>} />
+      <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
     </Routes>
   );
 }
