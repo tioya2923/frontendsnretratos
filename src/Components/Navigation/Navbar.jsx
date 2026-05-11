@@ -9,6 +9,7 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const navigation = [
+        { link: "/atividades", text: "As Minhas Atividades" },
         { link: "/refeicoes", text: "Inscrição para as refeições" },
         { link: '/InscritosRefeicoes', text: 'Refeições' },
         { link: "/Privacidade", text: "Admin" },
