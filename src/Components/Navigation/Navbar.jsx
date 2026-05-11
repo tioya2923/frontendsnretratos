@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo from './Logo/logopsn.png';
 import InstallPwaButton from "../InstallPwaButton";
+import NotificationToggle from "../NotificationToggle";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -35,6 +36,7 @@ const Navbar = () => {
                 </ul>
 
                 <div className="navbar-actions">
+                    <NotificationToggle />
                     <InstallPwaButton />
                     <div className="hamburger-menu" onClick={toggleMenu}>
                         <div></div>

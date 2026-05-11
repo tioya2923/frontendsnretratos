@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `psn-cache-${CACHE_VERSION}`;
 const API_HOSTNAME = 'snref-backend-8d85ffa999cd.herokuapp.com';
 
@@ -17,7 +17,6 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Permite que o App.js dispare a atualização imediata
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
@@ -42,11 +41,8 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   if (request.method !== 'GET') return;
-
-  // Ignore browser-sync and chrome-extension requests
   if (url.protocol === 'chrome-extension:') return;
 
-  // API calls (backend Heroku) → network-first, sem cache
   if (url.hostname === API_HOSTNAME) {
     event.respondWith(
       fetch(request).catch(() =>
@@ -59,7 +55,6 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Navegação (HTML pages) → network-first, fallback para index.html em cache
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -73,7 +68,6 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Assets estáticos (JS, CSS, imagens) → stale-while-revalidate
   event.respondWith(
     caches.match(request).then(cached => {
       const networkFetch = fetch(request)
@@ -87,6 +81,45 @@ self.addEventListener('fetch', event => {
         .catch(() => cached);
 
       return cached || networkFetch;
+    })
+  );
+});
+
+// Push Notifications
+self.addEventListener('push', event => {
+  let data = { title: 'Paróquia de São Nicolau', body: '', url: '/' };
+
+  try {
+    if (event.data) data = { ...data, ...event.data.json() };
+  } catch (e) {
+    if (event.data) data.body = event.data.text();
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      data: { url: data.url },
+      vibrate: [200, 100, 200],
+      requireInteraction: false
+    })
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || '/';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(targetUrl);
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(targetUrl);
     })
   );
 });
