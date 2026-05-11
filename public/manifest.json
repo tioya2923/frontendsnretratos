@@ -15,21 +15,27 @@
       "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "logopsn.png",
+      "src": "icon-512.png",
       "type": "image/png",
-      "sizes": "270x270",
+      "sizes": "512x512",
       "form_factor": "narrow",
       "label": "Paróquia de São Nicolau"
     },
     {
-      "src": "logopsn.png",
+      "src": "icon-512.png",
       "type": "image/png",
-      "sizes": "270x270",
+      "sizes": "512x512",
       "form_factor": "wide",
       "label": "Paróquia de São Nicolau"
     }

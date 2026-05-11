@@ -5,20 +5,20 @@ import { MdInstallMobile } from 'react-icons/md';
 const Button = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #1a1a2e;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  white-space: nowrap;
   transition: background 0.2s;
 
   &:hover {
-    background: #2d2d5e;
+    background: rgba(255, 255, 255, 0.25);
   }
 `;
 
@@ -44,7 +44,7 @@ export default function InstallPwaButton() {
 
   return (
     <Button onClick={handleInstall} title="Instalar app no telemóvel">
-      <MdInstallMobile size={18} />
+      <MdInstallMobile size={16} />
       Instalar App
     </Button>
   );

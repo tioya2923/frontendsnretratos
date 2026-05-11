@@ -8,7 +8,6 @@ const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const navigation = [
-    
         { link: "/refeicoes", text: "Inscrição para as refeições" },
         { link: '/InscritosRefeicoes', text: 'Refeições' },
         { link: "/Privacidade", text: "Admin" },
@@ -24,11 +23,7 @@ const Navbar = () => {
                 <Link to="/home" className="logo-container">
                     <img src={logo} alt="Logo" className="logo" />
                 </Link>
-                <div className="hamburger-menu" onClick={toggleMenu}>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+
                 <ul className={`menu-links ${menuOpen ? 'show' : ''}`}>
                     {navigation.map((nav) => (
                         <li key={nav.text} className="nav-item">
@@ -37,10 +32,16 @@ const Navbar = () => {
                             </Link>
                         </li>
                     ))}
-                    <li className="nav-item">
-                        <InstallPwaButton />
-                    </li>
                 </ul>
+
+                <div className="navbar-actions">
+                    <InstallPwaButton />
+                    <div className="hamburger-menu" onClick={toggleMenu}>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
         </nav>
     );

@@ -40,6 +40,12 @@
     z-index: 1001; 
 }
 
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .hamburger-menu {
     display: block; /* Mostrar o menu hambúrguer por padrão */
     cursor: pointer;
