@@ -426,15 +426,16 @@ export default function MensagensPage() {
   const [replySending, setReplySending] = useState(false);
 
   // Modal composição
-  const [showModal, setShowModal]           = useState(false);
-  const [utilizadores, setUtilizadores]     = useState([]);
-  const [loadingUsers, setLoadingUsers]     = useState(false);
+  const [showModal, setShowModal]             = useState(false);
+  const [utilizadores, setUtilizadores]       = useState([]);
+  const [loadingUsers, setLoadingUsers]       = useState(false);
   const [usersFetchError, setUsersFetchError] = useState(false);
-  const [corpo, setCorpo]                   = useState('');
-  const [tipoDestinatario, setTipo]         = useState('todos');
-  const [selectedUsers, setSelectedUsers]   = useState([]);
-  const [submitting, setSubmitting]         = useState(false);
-  const [submitError, setSubmitError]       = useState('');
+  const fetchingUsersRef                      = useRef(false);
+  const [corpo, setCorpo]                     = useState('');
+  const [tipoDestinatario, setTipo]           = useState('todos');
+  const [selectedUsers, setSelectedUsers]     = useState([]);
+  const [submitting, setSubmitting]           = useState(false);
+  const [submitError, setSubmitError]         = useState('');
 
   // ── Fetch / Polling ─────────────────────────────────────────────────────────
 
@@ -479,14 +480,16 @@ export default function MensagensPage() {
 
   // ── Utilizadores ────────────────────────────────────────────────────────────
 
-  const fetchUtilizadores = useCallback(async (force = false) => {
+  const fetchUtilizadores = async (force = false) => {
     if (!force && utilizadores.length > 0) return; // já carregado
+    if (fetchingUsersRef.current) return;           // já em progresso
+    fetchingUsersRef.current = true;
     setLoadingUsers(true);
     setUsersFetchError(false);
     try {
       const { data } = await axios.get(
         `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers }
       );
       setUtilizadores(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -494,8 +497,9 @@ export default function MensagensPage() {
       setUsersFetchError(true);
     } finally {
       setLoadingUsers(false);
+      fetchingUsersRef.current = false;
     }
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+  };
 
   // ── Ações ───────────────────────────────────────────────────────────────────
 
@@ -751,7 +755,7 @@ export default function MensagensPage() {
               {(tipoDestinatario === 'selecionar' || tipoDestinatario === 'um') && (
                 loadingUsers
                   ? <Empty style={{ padding: '20px 0' }}>A carregar utilizadores...</Empty>
-                  : usersFetchError
+                  : (usersFetchError && utilizadores.length === 0)
                     ? (
                       <ErrBox style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                         <span>Erro ao carregar utilizadores.</span>
