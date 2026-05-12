@@ -1,21 +1,45 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import {
   MdSend, MdClose, MdAdd, MdDelete, MdGroup, MdPerson, MdPeople,
-  MdMailOutline, MdMail
+  MdMailOutline, MdMail, MdReply
 } from 'react-icons/md';
 import { useUser } from '../../../UserContext';
 
 const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
+const POLL_INTERVAL_MS = 12000; // 12 segundos
 
-// ─── Estilos ────────────────────────────────────────────────────────────────
+// ─── Animações ───────────────────────────────────────────────────────────────
+
+const slideDown = keyframes`
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+`;
+
+// ─── Estilos ─────────────────────────────────────────────────────────────────
 
 const Wrap = styled.div`
   max-width: 700px;
   margin: 0 auto;
   padding: 0 4px;
   font-family: sans-serif;
+`;
+
+const NewBanner = styled.div`
+  background: #4b0303;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  animation: ${slideDown} 0.3s ease;
+  gap: 12px;
 `;
 
 const TabBar = styled.div`
@@ -117,26 +141,6 @@ const MsgBody = styled.p`
   line-height: 1.5;
 `;
 
-const MsgActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
-`;
-
-const DelBtn = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  color: #e53e3e;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  &:hover { background: #fff0f0; }
-`;
-
 const Tag = styled.span`
   display: inline-flex;
   align-items: center;
@@ -149,6 +153,97 @@ const Tag = styled.span`
   margin-top: 4px;
 `;
 
+const MsgActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+`;
+
+const ActionBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: ${({ $danger }) => ($danger ? '#e53e3e' : '#4b0303')};
+  &:hover {
+    background: ${({ $danger }) => ($danger ? '#fff0f0' : '#4b030312')};
+  }
+`;
+
+// ── Resposta inline ──────────────────────────────────────────────────────────
+
+const ReplyBox = styled.div`
+  margin-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+`;
+
+const ReplyLabel = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b0303;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const ReplyTextarea = styled.textarea`
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-size: 13px;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  line-height: 1.5;
+  &:focus { border-color: #4b0303; }
+`;
+
+const ReplyActions = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-end;
+`;
+
+const ReplyCancel = styled.button`
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #666;
+  &:hover { background: #e5e7eb; }
+`;
+
+const ReplySend = styled.button`
+  background: #4b0303;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  &:hover { background: #6b0404; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+`;
+
 const Empty = styled.div`
   text-align: center;
   color: #aaa;
@@ -156,7 +251,7 @@ const Empty = styled.div`
   font-size: 14px;
 `;
 
-// ── Modal ────────────────────────────────────────────────────────────────────
+// ── Modal composição ─────────────────────────────────────────────────────────
 
 const Overlay = styled.div`
   position: fixed;
@@ -303,8 +398,7 @@ const ErrBox = styled.div`
 function formatTime(dateStr) {
   const d = new Date(dateStr);
   const now = new Date();
-  const diffMs = now - d;
-  const diffDays = Math.floor(diffMs / 86400000);
+  const diffDays = Math.floor((now - d) / 86400000);
   if (diffDays === 0) return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
   if (diffDays === 1) return 'Ontem';
   if (diffDays < 7)  return d.toLocaleDateString('pt-PT', { weekday: 'long' });
@@ -321,35 +415,68 @@ export default function MensagensPage() {
   const [mensagens, setMensagens] = useState([]);
   const [loading, setLoading]     = useState(true);
   const [expanded, setExpanded]   = useState(null);
+  const [newCount, setNewCount]   = useState(0);
 
-  const [showModal, setShowModal]           = useState(false);
-  const [utilizadores, setUtilizadores]     = useState([]);
-  const [loadingUsers, setLoadingUsers]     = useState(false);
-  const [corpo, setCorpo]                   = useState('');
-  const [tipoDestinatario, setTipo]         = useState('todos');
-  const [selectedUsers, setSelectedUsers]   = useState([]);
-  const [submitting, setSubmitting]         = useState(false);
-  const [submitError, setSubmitError]       = useState('');
+  // IDs já vistos — para detetar mensagens novas no polling silencioso
+  const seenIdsRef = useRef(new Set());
 
-  // ── Fetch ──────────────────────────────────────────────────────────────────
+  // Resposta inline
+  const [replyingTo, setReplyingTo]   = useState(null);
+  const [replyCorpo, setReplyCorpo]   = useState('');
+  const [replySending, setReplySending] = useState(false);
 
-  const fetchMensagens = useCallback(async () => {
-    setLoading(true);
-    setExpanded(null);
+  // Modal composição
+  const [showModal, setShowModal]         = useState(false);
+  const [utilizadores, setUtilizadores]   = useState([]);
+  const [loadingUsers, setLoadingUsers]   = useState(false);
+  const [corpo, setCorpo]                 = useState('');
+  const [tipoDestinatario, setTipo]       = useState('todos');
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [submitting, setSubmitting]       = useState(false);
+  const [submitError, setSubmitError]     = useState('');
+
+  // ── Fetch / Polling ─────────────────────────────────────────────────────────
+
+  const fetchMensagens = useCallback(async (silent = false) => {
+    if (!silent) { setLoading(true); setNewCount(0); }
     try {
       const url = tab === 'enviadas'
         ? `${BACKEND}/components/mensagens.php?tipo=enviadas`
         : `${BACKEND}/components/mensagens.php`;
       const { data } = await axios.get(url, { headers });
-      setMensagens(Array.isArray(data) ? data : []);
+      const msgs = Array.isArray(data) ? data : [];
+
+      // Detetar mensagens novas (apenas em "Recebidas" e no polling silencioso)
+      if (silent && tab === 'recebidas') {
+        const novas = msgs.filter(m => !seenIdsRef.current.has(m.id) && !m.lida);
+        if (novas.length > 0) setNewCount(prev => prev + novas.length);
+      }
+
+      // Registar todos os IDs vistos
+      msgs.forEach(m => seenIdsRef.current.add(m.id));
+      setMensagens(msgs);
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [token, tab]);
 
-  useEffect(() => { fetchMensagens(); }, [fetchMensagens]);
+  // Fetch inicial ao montar ou mudar de tab
+  useEffect(() => {
+    seenIdsRef.current = new Set();
+    fetchMensagens(false);
+  }, [fetchMensagens]);
+
+  // Polling silencioso — pausa quando o separador está escondido
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!document.hidden) fetchMensagens(true);
+    }, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [fetchMensagens]);
+
+  // ── Utilizadores ────────────────────────────────────────────────────────────
 
   const fetchUtilizadores = async () => {
     if (utilizadores.length > 0) return;
@@ -366,7 +493,7 @@ export default function MensagensPage() {
     }
   };
 
-  // ── Ações ──────────────────────────────────────────────────────────────────
+  // ── Ações ───────────────────────────────────────────────────────────────────
 
   const openModal = () => {
     setCorpo('');
@@ -383,7 +510,10 @@ export default function MensagensPage() {
     );
 
   const handleCardClick = async (msg) => {
+    if (replyingTo === msg.id) return; // não fechar ao clicar na área de resposta
     setExpanded(prev => (prev === msg.id ? null : msg.id));
+    setReplyingTo(null);
+    setReplyCorpo('');
     if (tab === 'recebidas' && !msg.lida) {
       try {
         await axios.put(`${BACKEND}/components/mensagens.php`, { id: msg.id }, { headers });
@@ -403,16 +533,46 @@ export default function MensagensPage() {
     }
   };
 
+  const abrirResposta = (e, msgId) => {
+    e.stopPropagation();
+    setReplyingTo(msgId);
+    setReplyCorpo('');
+  };
+
+  const cancelarResposta = (e) => {
+    e.stopPropagation();
+    setReplyingTo(null);
+    setReplyCorpo('');
+  };
+
+  const enviarResposta = async (e, msg) => {
+    e.stopPropagation();
+    if (!replyCorpo.trim()) return;
+    setReplySending(true);
+    try {
+      await axios.post(
+        `${BACKEND}/components/mensagens.php`,
+        { corpo: replyCorpo, destinatarios: [msg.remetente_id] },
+        { headers }
+      );
+      setReplyingTo(null);
+      setReplyCorpo('');
+      // Atualiza enviadas se o utilizador trocar de tab
+    } catch (err) {
+      alert(err.response?.data?.error || 'Erro ao enviar resposta');
+    } finally {
+      setReplySending(false);
+    }
+  };
+
   const enviar = async (e) => {
     e.preventDefault();
     if (!corpo.trim()) return;
-
     const destinatarios = tipoDestinatario === 'todos' ? 'todos' : selectedUsers;
     if (tipoDestinatario !== 'todos' && selectedUsers.length === 0) {
       setSubmitError('Seleciona pelo menos um utilizador.');
       return;
     }
-
     setSubmitting(true);
     setSubmitError('');
     try {
@@ -422,7 +582,7 @@ export default function MensagensPage() {
         { headers }
       );
       setShowModal(false);
-      if (tab === 'enviadas') fetchMensagens();
+      if (tab === 'enviadas') fetchMensagens(false);
     } catch (err) {
       setSubmitError(err.response?.data?.error || 'Erro ao enviar mensagem.');
     } finally {
@@ -432,7 +592,7 @@ export default function MensagensPage() {
 
   const unreadCount = mensagens.filter(m => !m.lida).length;
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <Wrap>
@@ -448,6 +608,16 @@ export default function MensagensPage() {
           Enviadas
         </Tab>
       </TabBar>
+
+      {/* Banner de novas mensagens */}
+      {newCount > 0 && tab === 'recebidas' && (
+        <NewBanner onClick={() => { setNewCount(0); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <span>
+            {newCount} nova{newCount > 1 ? 's' : ''} mensagem{newCount > 1 ? 's' : ''} recebida{newCount > 1 ? 's' : ''}
+          </span>
+          <span style={{ fontSize: 12, opacity: 0.85 }}>Tocar para ver ↑</span>
+        </NewBanner>
+      )}
 
       <TopBar>
         <AddBtn onClick={openModal}>
@@ -491,18 +661,51 @@ export default function MensagensPage() {
               </MsgBody>
 
               {isExpanded && (
-                <MsgActions>
-                  <DelBtn onClick={(e) => eliminar(e, msg.id)}>
-                    <MdDelete size={15} /> Eliminar
-                  </DelBtn>
-                </MsgActions>
+                <>
+                  <MsgActions>
+                    {tab === 'recebidas' && (
+                      <ActionBtn onClick={(e) => abrirResposta(e, msg.id)}>
+                        <MdReply size={15} /> Responder
+                      </ActionBtn>
+                    )}
+                    <ActionBtn $danger onClick={(e) => eliminar(e, msg.id)}>
+                      <MdDelete size={15} /> Eliminar
+                    </ActionBtn>
+                  </MsgActions>
+
+                  {/* Resposta inline */}
+                  {replyingTo === msg.id && (
+                    <ReplyBox onClick={e => e.stopPropagation()}>
+                      <ReplyLabel>
+                        <MdReply size={14} />
+                        Responder a {msg.remetente_nome}
+                      </ReplyLabel>
+                      <ReplyTextarea
+                        autoFocus
+                        placeholder="Escreve a tua resposta..."
+                        value={replyCorpo}
+                        onChange={e => setReplyCorpo(e.target.value)}
+                      />
+                      <ReplyActions>
+                        <ReplyCancel onClick={cancelarResposta}>Cancelar</ReplyCancel>
+                        <ReplySend
+                          onClick={(e) => enviarResposta(e, msg)}
+                          disabled={replySending || !replyCorpo.trim()}
+                        >
+                          <MdSend size={14} />
+                          {replySending ? 'A enviar...' : 'Enviar'}
+                        </ReplySend>
+                      </ReplyActions>
+                    </ReplyBox>
+                  )}
+                </>
               )}
             </MsgCard>
           );
         })
       )}
 
-      {/* ── Modal composição ─────────────────────────────────────────────── */}
+      {/* ── Modal composição ──────────────────────────────────────────────── */}
       {showModal && (
         <Overlay onClick={e => e.target === e.currentTarget && setShowModal(false)}>
           <Modal>
