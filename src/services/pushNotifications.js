@@ -12,6 +12,11 @@ export function isPushSupported() {
   return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 }
 
+// Edge no Android (EdgA/) não suporta corretamente notificações push de PWAs
+export function isEdgeBrowser() {
+  return /EdgA\/|Edg\//.test(navigator.userAgent);
+}
+
 export async function getSubscriptionStatus() {
   if (!isPushSupported()) return 'unsupported';
   if (Notification.permission === 'denied') return 'denied';

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { MdNotifications, MdNotificationsOff, MdNotificationsNone } from 'react-icons/md';
 import {
   isPushSupported,
+  isEdgeBrowser,
   getSubscriptionStatus,
   subscribeToPush,
   unsubscribeFromPush
@@ -74,12 +75,16 @@ export default function NotificationToggle() {
 
   if (!isPushSupported() || status === 'loading' || status === 'unsupported') return null;
 
-  const showTooltip = msg => {
+  const showTooltip = (msg, ms = 2500) => {
     setTooltip(msg);
-    setTimeout(() => setTooltip(''), 2500);
+    setTimeout(() => setTooltip(''), ms);
   };
 
   const handleClick = async () => {
+    if (status === 'unsubscribed' && isEdgeBrowser()) {
+      showTooltip('Notificações não funcionam no Edge. Usa o Chrome.', 5000);
+      return;
+    }
     setLoading(true);
     try {
       if (status === 'unsubscribed') {
