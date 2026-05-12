@@ -52,7 +52,7 @@ export const UserProvider = ({ children }) => {
   const refreshUnreadMessages = useCallback(async () => {
     if (!tokenRef.current) return;
     try {
-      const res = await fetch(`${BACKEND}/components/mensagens.php?nao_lidas=1`, {
+      const res = await fetch(`${BACKEND}/components/mensagens.php?nao_lidas=1&_=${Date.now()}`, {
         headers: { Authorization: `Bearer ${tokenRef.current}` }
       });
       if (!res.ok) return;

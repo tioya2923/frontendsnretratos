@@ -441,8 +441,8 @@ export default function MensagensPage() {
     if (!silent) { setLoading(true); setNewCount(0); }
     try {
       const url = tab === 'enviadas'
-        ? `${BACKEND}/components/mensagens.php?tipo=enviadas`
-        : `${BACKEND}/components/mensagens.php`;
+        ? `${BACKEND}/components/mensagens.php?tipo=enviadas&_=${Date.now()}`
+        : `${BACKEND}/components/mensagens.php?_=${Date.now()}`;
       const { data } = await axios.get(url, { headers });
       const msgs = Array.isArray(data) ? data : [];
 
@@ -483,7 +483,7 @@ export default function MensagensPage() {
     setLoadingUsers(true);
     try {
       const { data } = await axios.get(
-        `${BACKEND}/components/mensagens.php?utilizadores=1`, { headers }
+        `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`, { headers }
       );
       setUtilizadores(Array.isArray(data) ? data : []);
     } catch (err) {
