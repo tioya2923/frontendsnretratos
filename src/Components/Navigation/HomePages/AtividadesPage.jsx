@@ -389,6 +389,22 @@ export default function AtividadesPage() {
   const submeter = async (e) => {
     e.preventDefault();
     if (!form.tipo || !form.data_atividade || !form.hora_inicio) return;
+
+    const today = getLocalDateStr();
+    if (form.data_atividade < today) {
+      setSubmitError('Não é possível criar uma atividade numa data já passada.');
+      return;
+    }
+    if (form.data_atividade === today) {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const currentTime = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      if (form.hora_inicio <= currentTime) {
+        setSubmitError('Não é possível criar uma atividade a uma hora já passada.');
+        return;
+      }
+    }
+
     setSubmitting(true);
     setSubmitError('');
     try {
@@ -516,6 +532,7 @@ export default function AtividadesPage() {
                   <input
                     type="date"
                     required
+                    min={getLocalDateStr()}
                     value={form.data_atividade}
                     onChange={e => setForm(f => ({ ...f, data_atividade: e.target.value }))}
                   />
