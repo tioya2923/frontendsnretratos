@@ -408,7 +408,7 @@ function formatTime(dateStr) {
 // ─── Componente ──────────────────────────────────────────────────────────────
 
 export default function MensagensPage() {
-  const { token, refreshUnreadMessages } = useUser();
+  const { token, refreshUnreadMessages, utilizadores, loadingUtilizadores, refetchUtilizadores } = useUser();
   const headers = { Authorization: `Bearer ${token}` };
 
   const [tab, setTab]             = useState('recebidas');
@@ -426,12 +426,8 @@ export default function MensagensPage() {
   const [replySending, setReplySending] = useState(false);
 
   // Modal composição
-  const [showModal, setShowModal]             = useState(false);
-  const [utilizadores, setUtilizadores]       = useState([]);
-  const [loadingUsers, setLoadingUsers]       = useState(false);
-  const [usersFetchError, setUsersFetchError] = useState(false);
-  const fetchingUsersRef                      = useRef(false);
-  const [corpo, setCorpo]                     = useState('');
+  const [showModal, setShowModal]         = useState(false);
+  const [corpo, setCorpo]                 = useState('');
   const [tipoDestinatario, setTipo]           = useState('todos');
   const [selectedUsers, setSelectedUsers]     = useState([]);
   const [submitting, setSubmitting]           = useState(false);
@@ -470,36 +466,16 @@ export default function MensagensPage() {
     fetchMensagens(false);
   }, [fetchMensagens]);
 
-  // Polling silencioso — pausa quando o separador está escondido
+  // Polling silencioso — inicia 2 s após a montagem para não coincidir com outros pedidos
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!document.hidden) fetchMensagens(true);
-    }, POLL_INTERVAL_MS);
-    return () => clearInterval(interval);
+    let interval = null;
+    const delay = setTimeout(() => {
+      interval = setInterval(() => {
+        if (!document.hidden) fetchMensagens(true);
+      }, POLL_INTERVAL_MS);
+    }, 2000);
+    return () => { clearTimeout(delay); if (interval) clearInterval(interval); };
   }, [fetchMensagens]);
-
-  // ── Utilizadores ────────────────────────────────────────────────────────────
-
-  const fetchUtilizadores = async (force = false) => {
-    if (!force && utilizadores.length > 0) return; // já carregado
-    if (fetchingUsersRef.current) return;           // já em progresso
-    fetchingUsersRef.current = true;
-    setLoadingUsers(true);
-    setUsersFetchError(false);
-    try {
-      const { data } = await axios.get(
-        `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`,
-        { headers }
-      );
-      setUtilizadores(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error(err);
-      setUsersFetchError(true);
-    } finally {
-      setLoadingUsers(false);
-      fetchingUsersRef.current = false;
-    }
-  };
 
   // ── Ações ───────────────────────────────────────────────────────────────────
 
@@ -509,7 +485,6 @@ export default function MensagensPage() {
     setSelectedUsers([]);
     setSubmitError('');
     setShowModal(true);
-    fetchUtilizadores();
   };
 
   const toggleUser = (id) =>
@@ -737,7 +712,7 @@ export default function MensagensPage() {
                 <RecipBtn
                   type="button"
                   $active={tipoDestinatario === 'selecionar'}
-                  onClick={() => { setTipo('selecionar'); fetchUtilizadores(); }}
+                  onClick={() => setTipo('selecionar')}
                 >
                   <MdPeople size={20} />
                   Selecionar
@@ -745,7 +720,7 @@ export default function MensagensPage() {
                 <RecipBtn
                   type="button"
                   $active={tipoDestinatario === 'um'}
-                  onClick={() => { setTipo('um'); setSelectedUsers([]); fetchUtilizadores(); }}
+                  onClick={() => { setTipo('um'); setSelectedUsers([]); }}
                 >
                   <MdPerson size={20} />
                   Um utilizador
@@ -753,15 +728,15 @@ export default function MensagensPage() {
               </RecipRow>
 
               {(tipoDestinatario === 'selecionar' || tipoDestinatario === 'um') && (
-                loadingUsers
+                loadingUtilizadores
                   ? <Empty style={{ padding: '20px 0' }}>A carregar utilizadores...</Empty>
-                  : (usersFetchError && utilizadores.length === 0)
+                  : utilizadores.length === 0
                     ? (
                       <ErrBox style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                         <span>Erro ao carregar utilizadores.</span>
                         <button
                           type="button"
-                          onClick={() => fetchUtilizadores(true)}
+                          onClick={refetchUtilizadores}
                           style={{ background: 'none', border: 'none', color: '#4b0303', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}
                         >
                           Tentar de novo

@@ -12,6 +12,8 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [utilizadores, setUtilizadores] = useState([]);
+  const [loadingUtilizadores, setLoadingUtilizadores] = useState(!!localStorage.getItem('token'));
 
   const tokenRef = useRef(token);
   useEffect(() => { tokenRef.current = token; }, [token]);
@@ -45,6 +47,8 @@ export const UserProvider = ({ children }) => {
     setToken('');
     setIsAuthenticated(false);
     setUnreadMessages(0);
+    setUtilizadores([]);
+    setLoadingUtilizadores(false);
     localStorage.removeItem('userName');
     localStorage.removeItem('token');
   };
@@ -61,6 +65,27 @@ export const UserProvider = ({ children }) => {
     } catch (_) {}
   }, []);
 
+  // Fetch user list with up to 3 attempts, 2 s apart on failure
+  const fetchUtilizadores = useCallback(async () => {
+    if (!tokenRef.current) return;
+    setLoadingUtilizadores(true);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 2000));
+      try {
+        const res = await fetch(`${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`, {
+          headers: { Authorization: `Bearer ${tokenRef.current}` }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setUtilizadores(Array.isArray(data) ? data : []);
+        setLoadingUtilizadores(false);
+        return;
+      } catch (_) {}
+    }
+    setLoadingUtilizadores(false);
+  }, []);
+
+  // Badge polling
   useEffect(() => {
     if (!isAuthenticated) {
       setUnreadMessages(0);
@@ -73,10 +98,23 @@ export const UserProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [isAuthenticated, refreshUnreadMessages]);
 
+  // User list: fetch once, 1 s after auth (badge poll completes first)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setUtilizadores([]);
+      setLoadingUtilizadores(false);
+      return;
+    }
+    setLoadingUtilizadores(true);
+    const t = setTimeout(fetchUtilizadores, 1000);
+    return () => clearTimeout(t);
+  }, [isAuthenticated, fetchUtilizadores]);
+
   return (
     <UserContext.Provider value={{
       userName, setUserName, token, setToken, isAuthenticated, login, logout,
-      unreadMessages, refreshUnreadMessages
+      unreadMessages, refreshUnreadMessages,
+      utilizadores, loadingUtilizadores, refetchUtilizadores: fetchUtilizadores
     }}>
       {children}
     </UserContext.Provider>
