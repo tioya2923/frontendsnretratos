@@ -356,7 +356,10 @@ export default function AtividadesPage() {
   const [diaAtivo, setDiaAtivo]     = useState(hoje);
   const [atividades, setAtividades] = useState([]);
   const [loading, setLoading]       = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const [showModal, setShowModal]   = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const [form, setForm] = useState({
     tipo: '',
@@ -368,11 +371,14 @@ export default function AtividadesPage() {
   const headers = { Authorization: `Bearer ${token}` };
 
   const fetchAtividades = useCallback(async () => {
+    setFetchError('');
     try {
       const { data } = await axios.get(`${BACKEND}/components/atividades.php`, { headers });
       setAtividades(data);
     } catch (err) {
       console.error(err);
+      const msg = err.response?.data?.error || err.message || 'Erro ao carregar atividades';
+      setFetchError(msg);
     } finally {
       setLoading(false);
     }
@@ -414,12 +420,18 @@ export default function AtividadesPage() {
   const submeter = async (e) => {
     e.preventDefault();
     if (!form.tipo || !form.hora_inicio || form.dias.length === 0) return;
+    setSubmitting(true);
+    setSubmitError('');
     try {
       await axios.post(`${BACKEND}/components/atividades.php`, form, { headers });
       setShowModal(false);
       fetchAtividades();
     } catch (err) {
       console.error(err);
+      const msg = err.response?.data?.error || err.message || 'Erro ao guardar atividade';
+      setSubmitError(msg);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -448,10 +460,17 @@ export default function AtividadesPage() {
         </AddBtn>
       </DayHeader>
 
+      {/* Erro ao carregar */}
+      {fetchError && (
+        <EmptyState style={{ color: '#b91c1c' }}>
+          ⚠ {fetchError}
+        </EmptyState>
+      )}
+
       {/* Lista de atividades */}
       {loading ? (
         <EmptyState>A carregar...</EmptyState>
-      ) : atividadesDoDia.length === 0 ? (
+      ) : !fetchError && atividadesDoDia.length === 0 ? (
         <EmptyState>
           Nenhuma atividade para {DIAS_FULL[diaAtivo].toLowerCase()}.<br />
           Toca em "Adicionar" para criar uma.
@@ -558,11 +577,17 @@ export default function AtividadesPage() {
                 </DayCheckboxes>
               </Field>
 
+              {submitError && (
+                <div style={{ color: '#b91c1c', fontSize: 13, marginBottom: 8, padding: '8px 12px', background: '#fff0f0', borderRadius: 8 }}>
+                  ⚠ {submitError}
+                </div>
+              )}
+
               <SubmitBtn
                 type="submit"
-                disabled={!form.tipo || !form.hora_inicio || form.dias.length === 0}
+                disabled={!form.tipo || !form.hora_inicio || form.dias.length === 0 || submitting}
               >
-                Guardar atividade
+                {submitting ? 'A guardar...' : 'Guardar atividade'}
               </SubmitBtn>
             </form>
           </Modal>
