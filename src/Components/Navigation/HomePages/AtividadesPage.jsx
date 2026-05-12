@@ -4,14 +4,11 @@ import axios from 'axios';
 import {
   MdAdd, MdDelete, MdClose, MdChurch, MdSchool, MdDirectionsWalk,
   MdFlight, MdSportsSoccer, MdWeekend, MdPeople, MdCategory,
-  MdAccessTime, MdSelfImprovement
+  MdAccessTime, MdSelfImprovement, MdCalendarToday
 } from 'react-icons/md';
 import { useUser } from '../../../UserContext';
 
 const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
-
-const DIAS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-const DIAS_FULL = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
 const TIPOS = [
   { value: 'Missa',      label: 'Missa',       Icon: MdChurch,          color: '#92400e' },
@@ -29,71 +26,40 @@ function getTipo(value) {
   return TIPOS.find(t => t.value === value) || TIPOS[TIPOS.length - 1];
 }
 
+function getLocalDateStr() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function getTomorrowStr() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function formatDateHeader(dateStr, todayStr, tomorrowStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  const weekday = d.toLocaleDateString('pt-PT', { weekday: 'long' });
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  if (dateStr === todayStr)    return `Hoje · ${cap(weekday)}`;
+  if (dateStr === tomorrowStr) return `Amanhã · ${cap(weekday)}`;
+  return cap(d.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+}
+
 // ─── Estilos ────────────────────────────────────────────────────────────────
 
 const Page = styled.div`
   max-width: 900px;
   margin: 0 auto;
-  padding: 16px;
   font-family: sans-serif;
 `;
 
-const PageTitle = styled.h1`
-  font-size: 1.4rem;
-  color: #4b0303;
+const TopBar = styled.div`
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 16px;
-  text-align: center;
-`;
-
-const DayTabs = styled.div`
-  display: flex;
-  overflow-x: auto;
-  gap: 6px;
-  padding-bottom: 4px;
-  margin-bottom: 20px;
-  scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
-`;
-
-const DayTab = styled.button`
-  flex-shrink: 0;
-  padding: 8px 14px;
-  border-radius: 20px;
-  border: 2px solid ${({ $active }) => ($active ? '#4b0303' : '#ddd')};
-  background: ${({ $active }) => ($active ? '#4b0303' : '#fff')};
-  color: ${({ $active }) => ($active ? '#fff' : '#555')};
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-
-  ${({ $today }) => $today && `
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 5px;
-      height: 5px;
-      background: #4b0303;
-      border-radius: 50%;
-    }
-  `}
-`;
-
-const DayHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-`;
-
-const DayTitle = styled.h2`
-  font-size: 1.1rem;
-  color: #333;
-  margin: 0;
 `;
 
 const AddBtn = styled.button`
@@ -118,6 +84,24 @@ const EmptyState = styled.div`
   font-size: 14px;
 `;
 
+const DateGroup = styled.div`
+  margin-bottom: 20px;
+`;
+
+const DateLabel = styled.div`
+  font-size: 13px;
+  font-weight: 700;
+  color: ${({ $past }) => $past ? '#aaa' : '#4b0303'};
+  background: ${({ $today }) => $today ? '#4b030310' : 'transparent'};
+  border-left: 3px solid ${({ $past }) => $past ? '#ddd' : '#4b0303'};
+  padding: 4px 10px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
 const ActivityCard = styled.div`
   display: flex;
   align-items: center;
@@ -125,10 +109,10 @@ const ActivityCard = styled.div`
   background: #fff;
   border-radius: 12px;
   padding: 14px 16px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  margin-bottom: 8px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
   border-left: 4px solid ${({ $color }) => $color};
-  opacity: ${({ $ativo }) => ($ativo ? 1 : 0.5)};
+  opacity: ${({ $ativo }) => ($ativo ? 1 : 0.45)};
   transition: opacity 0.2s;
 `;
 
@@ -176,9 +160,7 @@ const Toggle = styled.label`
   width: 42px;
   height: 24px;
   cursor: pointer;
-
   input { opacity: 0; width: 0; height: 0; }
-
   span {
     position: absolute;
     inset: 0;
@@ -211,7 +193,7 @@ const DeleteBtn = styled.button`
   &:hover { color: #e53e3e; background: #fff0f0; }
 `;
 
-// ─── Modal ──────────────────────────────────────────────────────────────────
+// ─── Modal ───────────────────────────────────────────────────────────────────
 
 const Overlay = styled.div`
   position: fixed;
@@ -221,10 +203,7 @@ const Overlay = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-
-  @media (min-width: 600px) {
-    align-items: center;
-  }
+  @media (min-width: 600px) { align-items: center; }
 `;
 
 const Modal = styled.div`
@@ -235,10 +214,7 @@ const Modal = styled.div`
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
-
-  @media (min-width: 600px) {
-    border-radius: 20px;
-  }
+  @media (min-width: 600px) { border-radius: 20px; }
 `;
 
 const ModalHeader = styled.div`
@@ -288,6 +264,12 @@ const Field = styled.div`
   }
 `;
 
+const DateTimeRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+`;
+
 const TypeGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -310,28 +292,6 @@ const TypeBtn = styled.button`
   transition: all 0.15s;
 `;
 
-const DayCheckboxes = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-`;
-
-const DayChip = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
-  border: 1.5px solid ${({ $checked }) => ($checked ? '#4b0303' : '#ddd')};
-  background: ${({ $checked }) => ($checked ? '#4b030315' : '#fafafa')};
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: ${({ $checked }) => ($checked ? '#4b0303' : '#888')};
-  cursor: pointer;
-  user-select: none;
-  input { display: none; }
-`;
-
 const SubmitBtn = styled.button`
   width: 100%;
   padding: 14px;
@@ -347,13 +307,20 @@ const SubmitBtn = styled.button`
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
-// ─── Componente principal ────────────────────────────────────────────────────
+const ErrorBox = styled.div`
+  color: #b91c1c;
+  font-size: 13px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #fff0f0;
+  border-radius: 8px;
+`;
+
+// ─── Componente ──────────────────────────────────────────────────────────────
 
 export default function AtividadesPage() {
   const { token } = useUser();
-  const hoje = new Date().getDay(); // 0=Dom, 6=Sab
 
-  const [diaAtivo, setDiaAtivo]     = useState(hoje);
   const [atividades, setAtividades] = useState([]);
   const [loading, setLoading]       = useState(true);
   const [fetchError, setFetchError] = useState('');
@@ -364,7 +331,7 @@ export default function AtividadesPage() {
   const [form, setForm] = useState({
     tipo: '',
     titulo: '',
-    dias: [],
+    data_atividade: getLocalDateStr(),
     hora_inicio: '',
   });
 
@@ -377,8 +344,7 @@ export default function AtividadesPage() {
       setAtividades(data);
     } catch (err) {
       console.error(err);
-      const msg = err.response?.data?.error || err.message || 'Erro ao carregar atividades';
-      setFetchError(msg);
+      setFetchError(err.response?.data?.error || err.message || 'Erro ao carregar atividades');
     } finally {
       setLoading(false);
     }
@@ -386,9 +352,18 @@ export default function AtividadesPage() {
 
   useEffect(() => { fetchAtividades(); }, [fetchAtividades]);
 
-  const atividadesDoDia = atividades
-    .filter(a => a.dia_semana === diaAtivo)
-    .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio));
+  const todayStr    = getLocalDateStr();
+  const tomorrowStr = getTomorrowStr();
+
+  // Agrupa por data
+  const grouped = {};
+  [...atividades]
+    .sort((a, b) => `${a.data_atividade} ${a.hora_inicio}`.localeCompare(`${b.data_atividade} ${b.hora_inicio}`))
+    .forEach(atv => {
+      if (!grouped[atv.data_atividade]) grouped[atv.data_atividade] = [];
+      grouped[atv.data_atividade].push(atv);
+    });
+  const dateKeys = Object.keys(grouped).sort();
 
   const toggleAtivo = async (atv) => {
     setAtividades(prev =>
@@ -406,20 +381,14 @@ export default function AtividadesPage() {
   };
 
   const openModal = () => {
-    setForm({ tipo: '', titulo: '', dias: [diaAtivo], hora_inicio: '' });
+    setForm({ tipo: '', titulo: '', data_atividade: getLocalDateStr(), hora_inicio: '' });
+    setSubmitError('');
     setShowModal(true);
-  };
-
-  const toggleDia = (d) => {
-    setForm(f => ({
-      ...f,
-      dias: f.dias.includes(d) ? f.dias.filter(x => x !== d) : [...f.dias, d]
-    }));
   };
 
   const submeter = async (e) => {
     e.preventDefault();
-    if (!form.tipo || !form.hora_inicio || form.dias.length === 0) return;
+    if (!form.tipo || !form.data_atividade || !form.hora_inicio) return;
     setSubmitting(true);
     setSubmitError('');
     try {
@@ -428,8 +397,7 @@ export default function AtividadesPage() {
       fetchAtividades();
     } catch (err) {
       console.error(err);
-      const msg = err.response?.data?.error || err.message || 'Erro ao guardar atividade';
-      setSubmitError(msg);
+      setSubmitError(err.response?.data?.error || err.message || 'Erro ao guardar atividade');
     } finally {
       setSubmitting(false);
     }
@@ -438,75 +406,66 @@ export default function AtividadesPage() {
   return (
     <Page style={{ padding: 0 }}>
 
-      {/* Tabs dos dias */}
-      <DayTabs>
-        {DIAS.map((d, i) => (
-          <DayTab
-            key={i}
-            $active={diaAtivo === i}
-            $today={hoje === i}
-            onClick={() => setDiaAtivo(i)}
-          >
-            {d}
-          </DayTab>
-        ))}
-      </DayTabs>
-
-      {/* Cabeçalho do dia */}
-      <DayHeader>
-        <DayTitle>{DIAS_FULL[diaAtivo]}</DayTitle>
+      <TopBar>
         <AddBtn onClick={openModal}>
           <MdAdd size={18} /> Adicionar
         </AddBtn>
-      </DayHeader>
+      </TopBar>
 
-      {/* Erro ao carregar */}
-      {fetchError && (
-        <EmptyState style={{ color: '#b91c1c' }}>
-          ⚠ {fetchError}
-        </EmptyState>
-      )}
+      {fetchError && <EmptyState style={{ color: '#b91c1c' }}>⚠ {fetchError}</EmptyState>}
 
-      {/* Lista de atividades */}
       {loading ? (
         <EmptyState>A carregar...</EmptyState>
-      ) : !fetchError && atividadesDoDia.length === 0 ? (
+      ) : !fetchError && dateKeys.length === 0 ? (
         <EmptyState>
-          Nenhuma atividade para {DIAS_FULL[diaAtivo].toLowerCase()}.<br />
+          Nenhuma atividade registada.<br />
           Toca em "Adicionar" para criar uma.
         </EmptyState>
       ) : (
-        atividadesDoDia.map(atv => {
-          const tipo = getTipo(atv.tipo);
-          const { Icon } = tipo;
-          const nome = atv.titulo || atv.tipo;
+        dateKeys.map(dateStr => {
+          const isPast  = dateStr < todayStr;
+          const isToday = dateStr === todayStr;
           return (
-            <ActivityCard key={atv.id} $color={tipo.color} $ativo={atv.ativo}>
-              <ActivityIcon $color={tipo.color}>
-                <Icon size={22} />
-              </ActivityIcon>
-              <ActivityInfo>
-                <ActivityName>{nome}</ActivityName>
-                <ActivitySub>
-                  <MdAccessTime size={13} />
-                  {atv.hora_inicio}
-                  {!atv.ativo && ' · inativa'}
-                </ActivitySub>
-              </ActivityInfo>
-              <ActivityActions>
-                <Toggle $checked={atv.ativo} title={atv.ativo ? 'Desativar' : 'Ativar'}>
-                  <input
-                    type="checkbox"
-                    checked={atv.ativo}
-                    onChange={() => toggleAtivo(atv)}
-                  />
-                  <span />
-                </Toggle>
-                <DeleteBtn onClick={() => deletar(atv.id)} title="Eliminar">
-                  <MdDelete size={18} />
-                </DeleteBtn>
-              </ActivityActions>
-            </ActivityCard>
+            <DateGroup key={dateStr}>
+              <DateLabel $past={isPast} $today={isToday}>
+                <MdCalendarToday size={13} />
+                {formatDateHeader(dateStr, todayStr, tomorrowStr)}
+              </DateLabel>
+
+              {grouped[dateStr].map(atv => {
+                const tipo = getTipo(atv.tipo);
+                const { Icon } = tipo;
+                const nome = atv.titulo || atv.tipo;
+                return (
+                  <ActivityCard key={atv.id} $color={tipo.color} $ativo={atv.ativo}>
+                    <ActivityIcon $color={tipo.color}>
+                      <Icon size={22} />
+                    </ActivityIcon>
+                    <ActivityInfo>
+                      <ActivityName>{nome}</ActivityName>
+                      <ActivitySub>
+                        <MdAccessTime size={13} />
+                        {atv.hora_inicio}
+                        {!atv.ativo && ' · inativa'}
+                      </ActivitySub>
+                    </ActivityInfo>
+                    <ActivityActions>
+                      <Toggle $checked={atv.ativo} title={atv.ativo ? 'Desativar' : 'Ativar'}>
+                        <input
+                          type="checkbox"
+                          checked={atv.ativo}
+                          onChange={() => toggleAtivo(atv)}
+                        />
+                        <span />
+                      </Toggle>
+                      <DeleteBtn onClick={() => deletar(atv.id)} title="Eliminar">
+                        <MdDelete size={18} />
+                      </DeleteBtn>
+                    </ActivityActions>
+                  </ActivityCard>
+                );
+              })}
+            </DateGroup>
           );
         })
       )}
@@ -551,41 +510,32 @@ export default function AtividadesPage() {
                 </Field>
               )}
 
-              <Field>
-                <label>Hora</label>
-                <input
-                  type="time"
-                  required
-                  value={form.hora_inicio}
-                  onChange={e => setForm(f => ({ ...f, hora_inicio: e.target.value }))}
-                />
-              </Field>
+              <DateTimeRow>
+                <Field>
+                  <label>Data</label>
+                  <input
+                    type="date"
+                    required
+                    value={form.data_atividade}
+                    onChange={e => setForm(f => ({ ...f, data_atividade: e.target.value }))}
+                  />
+                </Field>
+                <Field>
+                  <label>Hora</label>
+                  <input
+                    type="time"
+                    required
+                    value={form.hora_inicio}
+                    onChange={e => setForm(f => ({ ...f, hora_inicio: e.target.value }))}
+                  />
+                </Field>
+              </DateTimeRow>
 
-              <Field>
-                <label>Dias da semana</label>
-                <DayCheckboxes>
-                  {DIAS.map((d, i) => (
-                    <DayChip key={i} $checked={form.dias.includes(i)}>
-                      <input
-                        type="checkbox"
-                        checked={form.dias.includes(i)}
-                        onChange={() => toggleDia(i)}
-                      />
-                      {d}
-                    </DayChip>
-                  ))}
-                </DayCheckboxes>
-              </Field>
-
-              {submitError && (
-                <div style={{ color: '#b91c1c', fontSize: 13, marginBottom: 8, padding: '8px 12px', background: '#fff0f0', borderRadius: 8 }}>
-                  ⚠ {submitError}
-                </div>
-              )}
+              {submitError && <ErrorBox>⚠ {submitError}</ErrorBox>}
 
               <SubmitBtn
                 type="submit"
-                disabled={!form.tipo || !form.hora_inicio || form.dias.length === 0 || submitting}
+                disabled={!form.tipo || !form.data_atividade || !form.hora_inicio || submitting}
               >
                 {submitting ? 'A guardar...' : 'Guardar atividade'}
               </SubmitBtn>
