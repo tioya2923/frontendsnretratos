@@ -4,20 +4,21 @@ import "./Navbar.css";
 import logo from './Logo/logopsn.png';
 import InstallPwaButton from "../InstallPwaButton";
 import NotificationToggle from "../NotificationToggle";
+import { useUser } from "../../UserContext";
+
+function initials(name = '') {
+    return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
+}
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { userName } = useUser();
 
     const navigation = [
-        { link: "/atividades", text: "As Minhas Atividades" },
         { link: "/refeicoes", text: "Inscrição para as refeições" },
         { link: '/InscritosRefeicoes', text: 'Refeições' },
         { link: "/Privacidade", text: "Admin" },
     ];
-
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
 
     return (
         <nav className="navbar-init">
@@ -39,7 +40,10 @@ const Navbar = () => {
                 <div className="navbar-actions">
                     <NotificationToggle />
                     <InstallPwaButton />
-                    <div className="hamburger-menu" onClick={toggleMenu}>
+                    <Link to="/perfil" className="avatar-link" title="O meu perfil">
+                        <div className="avatar-circle">{initials(userName)}</div>
+                    </Link>
+                    <div className="hamburger-menu" onClick={() => setMenuOpen(o => !o)}>
                         <div></div>
                         <div></div>
                         <div></div>

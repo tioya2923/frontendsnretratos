@@ -35,6 +35,7 @@ import ProtectedRoute from "./Components/Pages/LoginSignup/ProtectedRoute";
 import { UserProvider, useUser } from './UserContext';
 import InscreverVisita from "./Components/Navigation/HomePages/InscreverVisita";
 import AtividadesPage from "./Components/Navigation/HomePages/AtividadesPage";
+import PerfilPage from "./Components/Navigation/HomePages/PerfilPage";
 
 
 
@@ -105,6 +106,7 @@ function AppRoutes() {
       <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><Footer /></></AuthRoute>} />
       <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
       <Route path="/atividades" element={<AuthRoute><><Navbar /><AtividadesPage /><Footer /></></AuthRoute>} />
+      <Route path="/perfil" element={<AuthRoute><><Navbar /><PerfilPage /><Footer /></></AuthRoute>} />
     </Routes>
   );
 }

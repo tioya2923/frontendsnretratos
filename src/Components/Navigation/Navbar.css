@@ -46,6 +46,31 @@
     gap: 10px;
 }
 
+.avatar-link {
+    text-decoration: none;
+}
+
+.avatar-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.5px;
+}
+
+.avatar-circle:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
 .hamburger-menu {
     display: block; /* Mostrar o menu hambúrguer por padrão */
     cursor: pointer;

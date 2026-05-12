@@ -424,8 +424,7 @@ export default function AtividadesPage() {
   };
 
   return (
-    <Page>
-      <PageTitle>As Minhas Atividades</PageTitle>
+    <Page style={{ padding: 0 }}>
 
       {/* Tabs dos dias */}
       <DayTabs>
