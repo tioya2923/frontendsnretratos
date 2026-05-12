@@ -19,6 +19,10 @@ export const UserProvider = ({ children }) => {
   const tokenRef = useRef(token);
   useEffect(() => { tokenRef.current = token; }, [token]);
 
+  // Guards to prevent concurrent in-flight requests
+  const badgePollInFlightRef = useRef(false);
+  const userListFetchedRef   = useRef(false);
+
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
@@ -51,23 +55,13 @@ export const UserProvider = ({ children }) => {
     setUtilizadores([]);
     setLoadingUtilizadores(false);
     setUtilizadoresFailed(false);
+    badgePollInFlightRef.current = false;
+    userListFetchedRef.current = false;
     localStorage.removeItem('userName');
     localStorage.removeItem('token');
   };
 
-  const refreshUnreadMessages = useCallback(async () => {
-    if (!tokenRef.current) return;
-    try {
-      const res = await fetch(`${BACKEND}/components/mensagens.php?nao_lidas=1&_=${Date.now()}`, {
-        headers: { Authorization: `Bearer ${tokenRef.current}` }
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      setUnreadMessages(data.count ?? 0);
-    } catch (_) {}
-  }, []);
-
-  // Fetch user list with up to 3 attempts, 2 s apart on failure
+  // Fetch user list — up to 3 attempts, 2 s apart on failure
   const fetchUtilizadores = useCallback(async () => {
     if (!tokenRef.current) { setLoadingUtilizadores(false); return; }
     setLoadingUtilizadores(true);
@@ -75,9 +69,10 @@ export const UserProvider = ({ children }) => {
     for (let attempt = 0; attempt < 3; attempt++) {
       if (attempt > 0) await new Promise(r => setTimeout(r, 2000));
       try {
-        const res = await fetch(`${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`, {
-          headers: { Authorization: `Bearer ${tokenRef.current}` }
-        });
+        const res = await fetch(
+          `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`,
+          { headers: { Authorization: `Bearer ${tokenRef.current}` } }
+        );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error('Resposta inválida');
@@ -90,6 +85,30 @@ export const UserProvider = ({ children }) => {
     setUtilizadoresFailed(true);
     setLoadingUtilizadores(false);
   }, []);
+
+  // Badge poll — guards against concurrent calls; chains user list fetch on first success
+  const refreshUnreadMessages = useCallback(async () => {
+    if (!tokenRef.current) return;
+    if (badgePollInFlightRef.current) return; // skip if previous poll still in flight
+    badgePollInFlightRef.current = true;
+    try {
+      const res = await fetch(
+        `${BACKEND}/components/mensagens.php?nao_lidas=1&_=${Date.now()}`,
+        { headers: { Authorization: `Bearer ${tokenRef.current}` } }
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      setUnreadMessages(data.count ?? 0);
+      // Fetch user list after first badge poll — guarantees the dyno is awake and idle
+      if (!userListFetchedRef.current) {
+        userListFetchedRef.current = true;
+        fetchUtilizadores();
+      }
+    } catch (_) {}
+    finally {
+      badgePollInFlightRef.current = false;
+    }
+  }, [fetchUtilizadores]);
 
   // Badge polling
   useEffect(() => {
@@ -104,18 +123,18 @@ export const UserProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [isAuthenticated, refreshUnreadMessages]);
 
-  // User list: fetch once, 1 s after auth (badge poll completes first)
+  // User list state — actual fetch is chained from refreshUnreadMessages on first success
   useEffect(() => {
     if (!isAuthenticated) {
+      userListFetchedRef.current = false;
+      badgePollInFlightRef.current = false;
       setUtilizadores([]);
       setLoadingUtilizadores(false);
       setUtilizadoresFailed(false);
       return;
     }
     setLoadingUtilizadores(true);
-    const t = setTimeout(fetchUtilizadores, 1000);
-    return () => clearTimeout(t);
-  }, [isAuthenticated, fetchUtilizadores]);
+  }, [isAuthenticated]);
 
   return (
     <UserContext.Provider value={{

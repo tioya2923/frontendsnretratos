@@ -396,7 +396,8 @@ const ErrBox = styled.div`
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatTime(dateStr) {
-  const d = new Date(dateStr);
+  // MySQL TIMESTAMP is stored/returned in UTC; add 'Z' so JS parses it as UTC
+  const d = new Date(dateStr.replace(' ', 'T') + 'Z');
   const now = new Date();
   const diffDays = Math.floor((now - d) / 86400000);
   if (diffDays === 0) return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
