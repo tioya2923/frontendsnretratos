@@ -11,7 +11,7 @@ function initials(name = '') {
 }
 
 const navigation = [
-    { link: "/refeicoes",       text: "Inscrição para as refeições" },
+    { link: "/refeicoes",       text: "Inscrição" },
     { link: '/InscritosRefeicoes', text: 'Refeições' },
     { link: "/Privacidade",     text: "Admin" },
 ];

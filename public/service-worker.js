@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `psn-cache-${CACHE_VERSION}`;
 const API_HOSTNAME = 'snref-backend-8d85ffa999cd.herokuapp.com';
 
@@ -85,46 +85,52 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Push Notifications
+// ── Push Notifications ────────────────────────────────────────────────────────
+
 self.addEventListener('push', event => {
-  let data = { title: 'Paróquia de São Nicolau', body: '', url: '/', tag: 'psn' };
+  let payload = { title: 'Paróquia de São Nicolau', body: '', url: '/', tag: 'psn' };
 
   try {
-    if (event.data) data = { ...data, ...event.data.json() };
-  } catch (e) {
-    if (event.data) data.body = event.data.text();
+    if (event.data) payload = { ...payload, ...event.data.json() };
+  } catch (_) {
+    if (event.data) payload.body = event.data.text();
   }
 
-  // Padrão de vibração agressivo: 4 pulsos fortes com pausas curtas
-  const vibrationPattern = [600, 200, 600, 200, 600, 200, 600];
+  // Padrão de vibração: 4 pulsos de 600 ms com 200 ms de pausa
+  // Funciona no Android (Chrome). No iOS, a vibração é gerida pelo sistema.
+  const VIBRATE = [600, 200, 600, 200, 600, 200, 600];
 
   const options = {
-    body:             data.body,
-    icon:             '/icon-192.png',
-    badge:            '/icon-192.png',
-    data:             { url: data.url },
-    tag:              data.tag,
-    renotify:         true,           // vibra/toca mesmo se já existe notificação com o mesmo tag
-    requireInteraction: true,         // fica visível até o utilizador interagir (Android)
-    vibrate:          vibrationPattern,
-    silent:           false,          // garante que o som não está silenciado pela API
-    timestamp:        Date.now(),
-    actions: [
-      { action: 'open',  title: '📱 Abrir app' },
-      { action: 'close', title: 'Fechar'        }
-    ]
+    body:               payload.body,
+    icon:               '/icon-192.png',
+    badge:              '/icon-192.png',
+    tag:                payload.tag || 'psn',
+    renotify:           true,   // vibra/toca mesmo se já existe notificação com o mesmo tag
+    requireInteraction: true,   // fica no ecrã até o utilizador interagir (Android/desktop)
+    vibrate:            VIBRATE,
+    timestamp:          Date.now(),
+    data:               { url: payload.url }
+    // NOTA: silent não está definido → padrão false (com som)
+    // NOTA: actions removidos → evita falhas silenciosas em iOS e Android antigo
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title, options)
+    self.registration.showNotification(payload.title, options)
+      .catch(() =>
+        // Fallback com opções mínimas caso o browser rejeite alguma opção acima
+        self.registration.showNotification(payload.title, {
+          body:  payload.body,
+          icon:  '/icon-192.png',
+          badge: '/icon-192.png',
+          tag:   payload.tag || 'psn',
+          data:  { url: payload.url }
+        })
+      )
   );
 });
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-
-  if (event.action === 'close') return;
-
   const targetUrl = event.notification.data?.url || '/';
 
   event.waitUntil(
