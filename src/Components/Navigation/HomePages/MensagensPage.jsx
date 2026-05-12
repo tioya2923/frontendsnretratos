@@ -408,7 +408,7 @@ function formatTime(dateStr) {
 // ─── Componente ──────────────────────────────────────────────────────────────
 
 export default function MensagensPage() {
-  const { token, refreshUnreadMessages, utilizadores, loadingUtilizadores, refetchUtilizadores } = useUser();
+  const { token, refreshUnreadMessages, utilizadores, loadingUtilizadores, utilizadoresFailed, refetchUtilizadores } = useUser();
   const headers = { Authorization: `Bearer ${token}` };
 
   const [tab, setTab]             = useState('recebidas');
@@ -730,7 +730,7 @@ export default function MensagensPage() {
               {(tipoDestinatario === 'selecionar' || tipoDestinatario === 'um') && (
                 loadingUtilizadores
                   ? <Empty style={{ padding: '20px 0' }}>A carregar utilizadores...</Empty>
-                  : utilizadores.length === 0
+                  : utilizadoresFailed
                     ? (
                       <ErrBox style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                         <span>Erro ao carregar utilizadores.</span>

@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [utilizadores, setUtilizadores] = useState([]);
   const [loadingUtilizadores, setLoadingUtilizadores] = useState(!!localStorage.getItem('token'));
+  const [utilizadoresFailed, setUtilizadoresFailed] = useState(false);
 
   const tokenRef = useRef(token);
   useEffect(() => { tokenRef.current = token; }, [token]);
@@ -49,6 +50,7 @@ export const UserProvider = ({ children }) => {
     setUnreadMessages(0);
     setUtilizadores([]);
     setLoadingUtilizadores(false);
+    setUtilizadoresFailed(false);
     localStorage.removeItem('userName');
     localStorage.removeItem('token');
   };
@@ -67,8 +69,9 @@ export const UserProvider = ({ children }) => {
 
   // Fetch user list with up to 3 attempts, 2 s apart on failure
   const fetchUtilizadores = useCallback(async () => {
-    if (!tokenRef.current) return;
+    if (!tokenRef.current) { setLoadingUtilizadores(false); return; }
     setLoadingUtilizadores(true);
+    setUtilizadoresFailed(false);
     for (let attempt = 0; attempt < 3; attempt++) {
       if (attempt > 0) await new Promise(r => setTimeout(r, 2000));
       try {
@@ -77,11 +80,14 @@ export const UserProvider = ({ children }) => {
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setUtilizadores(Array.isArray(data) ? data : []);
+        if (!Array.isArray(data)) throw new Error('Resposta inválida');
+        setUtilizadores(data);
+        setUtilizadoresFailed(false);
         setLoadingUtilizadores(false);
         return;
       } catch (_) {}
     }
+    setUtilizadoresFailed(true);
     setLoadingUtilizadores(false);
   }, []);
 
@@ -103,6 +109,7 @@ export const UserProvider = ({ children }) => {
     if (!isAuthenticated) {
       setUtilizadores([]);
       setLoadingUtilizadores(false);
+      setUtilizadoresFailed(false);
       return;
     }
     setLoadingUtilizadores(true);
@@ -114,7 +121,7 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider value={{
       userName, setUserName, token, setToken, isAuthenticated, login, logout,
       unreadMessages, refreshUnreadMessages,
-      utilizadores, loadingUtilizadores, refetchUtilizadores: fetchUtilizadores
+      utilizadores, loadingUtilizadores, utilizadoresFailed, refetchUtilizadores: fetchUtilizadores
     }}>
       {children}
     </UserContext.Provider>
