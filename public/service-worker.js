@@ -87,7 +87,7 @@ self.addEventListener('fetch', event => {
 
 // Push Notifications
 self.addEventListener('push', event => {
-  let data = { title: 'Paróquia de São Nicolau', body: '', url: '/' };
+  let data = { title: 'Paróquia de São Nicolau', body: '', url: '/', tag: 'psn' };
 
   try {
     if (event.data) data = { ...data, ...event.data.json() };
@@ -95,20 +95,36 @@ self.addEventListener('push', event => {
     if (event.data) data.body = event.data.text();
   }
 
+  // Padrão de vibração agressivo: 4 pulsos fortes com pausas curtas
+  const vibrationPattern = [600, 200, 600, 200, 600, 200, 600];
+
+  const options = {
+    body:             data.body,
+    icon:             '/icon-192.png',
+    badge:            '/icon-192.png',
+    data:             { url: data.url },
+    tag:              data.tag,
+    renotify:         true,           // vibra/toca mesmo se já existe notificação com o mesmo tag
+    requireInteraction: true,         // fica visível até o utilizador interagir (Android)
+    vibrate:          vibrationPattern,
+    silent:           false,          // garante que o som não está silenciado pela API
+    timestamp:        Date.now(),
+    actions: [
+      { action: 'open',  title: '📱 Abrir app' },
+      { action: 'close', title: 'Fechar'        }
+    ]
+  };
+
   event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
-      data: { url: data.url },
-      vibrate: [200, 100, 200],
-      requireInteraction: false
-    })
+    self.registration.showNotification(data.title, options)
   );
 });
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
+
+  if (event.action === 'close') return;
+
   const targetUrl = event.notification.data?.url || '/';
 
   event.waitUntil(
