@@ -18,7 +18,7 @@ const navigation = [
 ];
 
 const Navbar = () => {
-    const { userName } = useUser();
+    const { userName, unreadMessages } = useUser();
 
     return (
         <nav className="navbar-init">
@@ -33,7 +33,14 @@ const Navbar = () => {
                 <ul className="menu-links">
                     {navigation.map((nav) => (
                         <li key={nav.link}>
-                            <Link to={nav.link} className="nav-link">{nav.text}</Link>
+                            <Link to={nav.link} className="nav-link">
+                                {nav.text}
+                                {nav.link === '/mensagens' && unreadMessages > 0 && (
+                                    <span className="nav-badge">
+                                        {unreadMessages > 99 ? '99+' : unreadMessages}
+                                    </span>
+                                )}
+                            </Link>
                         </li>
                     ))}
                 </ul>

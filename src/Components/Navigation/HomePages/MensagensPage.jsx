@@ -408,7 +408,7 @@ function formatTime(dateStr) {
 // ─── Componente ──────────────────────────────────────────────────────────────
 
 export default function MensagensPage() {
-  const { token } = useUser();
+  const { token, refreshUnreadMessages } = useUser();
   const headers = { Authorization: `Bearer ${token}` };
 
   const [tab, setTab]             = useState('recebidas');
@@ -518,6 +518,7 @@ export default function MensagensPage() {
       try {
         await axios.put(`${BACKEND}/components/mensagens.php`, { id: msg.id }, { headers });
         setMensagens(prev => prev.map(m => m.id === msg.id ? { ...m, lida: true } : m));
+        refreshUnreadMessages();
       } catch (_) {}
     }
   };
