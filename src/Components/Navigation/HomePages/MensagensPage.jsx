@@ -504,7 +504,9 @@ export default function MensagensPage() {
         await axios.put(`${BACKEND}/components/mensagens.php`, { id: msg.id }, { headers });
         setMensagens(prev => prev.map(m => m.id === msg.id ? { ...m, lida: true } : m));
         refreshUnreadMessages();
-      } catch (_) {}
+      } catch (err) {
+        if (err.response?.status === 401) logout();
+      }
     }
   };
 
