@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import logo from './Logo/logopsn.png';
@@ -10,45 +10,42 @@ function initials(name = '') {
     return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
 }
 
-const Navbar = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const { userName } = useUser();
+const navigation = [
+    { link: "/refeicoes",       text: "Inscrição para as refeições" },
+    { link: '/InscritosRefeicoes', text: 'Refeições' },
+    { link: "/Privacidade",     text: "Admin" },
+];
 
-    const navigation = [
-        { link: "/refeicoes", text: "Inscrição para as refeições" },
-        { link: '/InscritosRefeicoes', text: 'Refeições' },
-        { link: "/Privacidade", text: "Admin" },
-    ];
+const Navbar = () => {
+    const { userName } = useUser();
 
     return (
         <nav className="navbar-init">
             <div className="navbar-content">
+
+                {/* Logo */}
                 <Link to="/home" className="logo-container">
                     <img src={logo} alt="Logo" className="logo" />
                 </Link>
 
-                <ul className={`menu-links ${menuOpen ? 'show' : ''}`}>
+                {/* Links — sempre visíveis */}
+                <ul className="menu-links">
                     {navigation.map((nav) => (
-                        <li key={nav.text} className="nav-item">
-                            <Link to={nav.link} className="nav-link">
-                                {nav.text}
-                            </Link>
+                        <li key={nav.link}>
+                            <Link to={nav.link} className="nav-link">{nav.text}</Link>
                         </li>
                     ))}
                 </ul>
 
+                {/* Ações */}
                 <div className="navbar-actions">
                     <NotificationToggle />
                     <InstallPwaButton />
                     <Link to="/perfil" className="avatar-link" title="O meu perfil">
                         <div className="avatar-circle">{initials(userName)}</div>
                     </Link>
-                    <div className="hamburger-menu" onClick={() => setMenuOpen(o => !o)}>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
                 </div>
+
             </div>
         </nav>
     );
