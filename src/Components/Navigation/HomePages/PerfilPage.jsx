@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { MdEdit, MdCheck, MdClose, MdLogout, MdWhatsapp, MdEmail, MdPerson } from 'react-icons/md';
+import { MdEdit, MdCheck, MdClose, MdLogout, MdWhatsapp, MdEmail } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../UserContext';
-import NotificationToggle from '../../NotificationToggle';
 import AtividadesPage from './AtividadesPage';
 
 const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
@@ -163,28 +162,6 @@ const IconBtn = styled.button`
   &:hover { opacity: 0.8; }
 `;
 
-const NotifRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-`;
-
-const NotifLabel = styled.div`
-  flex: 1;
-`;
-
-const NotifTitle = styled.div`
-  font-size: 14px;
-  color: #222;
-`;
-
-const NotifSub = styled.div`
-  font-size: 11px;
-  color: #9ca3af;
-  margin-top: 2px;
-`;
-
 const SectionTitle = styled.h2`
   font-size: 1.1rem;
   color: #4b0303;
@@ -304,17 +281,6 @@ export default function PerfilPage() {
           </EditActions>
         </DataRow>
 
-        <Divider />
-
-        {/* Notificações push */}
-        <NotifRow>
-          <DataIcon><MdPerson size={18} /></DataIcon>
-          <NotifLabel>
-            <NotifTitle>Notificações push</NotifTitle>
-            <NotifSub>Recebe alertas de atividades e refeições</NotifSub>
-          </NotifLabel>
-          <NotificationToggle />
-        </NotifRow>
       </ProfileCard>
 
       {/* ── Atividades ── */}
