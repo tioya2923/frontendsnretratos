@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `psn-cache-${CACHE_VERSION}`;
 const API_HOSTNAME = 'snref-backend-8d85ffa999cd.herokuapp.com';
 
@@ -131,17 +131,27 @@ self.addEventListener('push', event => {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || '/';
+
+  const rawUrl   = event.notification.data?.url || '/';
+  const targetUrl = new URL(rawUrl, self.location.origin).href;
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
-      for (const client of clientList) {
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          client.navigate(targetUrl);
-          return client.focus();
+      // 1. Se já há uma janela exactamente nessa URL, foca-a
+      const exact = clientList.find(c => c.url === targetUrl);
+      if (exact && 'focus' in exact) return exact.focus();
+
+      // 2. Se há qualquer janela da app, navega-a para o URL alvo
+      const appWin = clientList.find(c => c.url.startsWith(self.location.origin));
+      if (appWin) {
+        if ('navigate' in appWin) {
+          return appWin.navigate(targetUrl).then(() => appWin.focus());
         }
+        return appWin.focus();
       }
-      if (clients.openWindow) return clients.openWindow(targetUrl);
+
+      // 3. Abre uma nova janela
+      return clients.openWindow(targetUrl);
     })
   );
 });
