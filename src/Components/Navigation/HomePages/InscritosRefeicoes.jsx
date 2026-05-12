@@ -1,57 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import '../../Styles/InscritosRefeicoes.css'; // Importar o arquivo CSS
-//import './Notificacoes'
-//import Notificacoes from './Notificacoes';
+import '../../Styles/InscritosRefeicoes.css';
 
 const InscritosRefeicoes = () => {
     const [refeicoes, setRefeicoes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedId, setSelectedId] = useState(null); // Estado para controlar o nome selecionado
-    const [nomes, setNomes] = useState([]); // Estado para armazenar os nomes e datas de aniversário
+    const [selectedId, setSelectedId] = useState(null);
+    const [nomes, setNomes] = useState([]);
     const envUrl = process.env.REACT_APP_BACKEND_URL;
     const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
-    useEffect(() => {
-        const fetchRefeicoes = async () => {
-            try {
-                const response = await axios.get(`${backendUrl}components/refeicoes.php`);
-                // Garante que refeicoes é sempre um array
-                if (Array.isArray(response.data)) {
-                    setRefeicoes(response.data);
-                } else if (response.data && typeof response.data === 'object') {
-                    setRefeicoes([response.data]);
-                } else {
-                    setRefeicoes([]);
-                }
-            } catch (err) {
-                setError('Erro ao carregar refeições. Tente novamente mais tarde.');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const toArray = d => Array.isArray(d) ? d : (d && typeof d === 'object') ? [d] : [];
 
-        const fetchNomes = async () => {
-            try {
-                const response = await axios.get(`${backendUrl}components/nomes.php`);
-                // Garante que nomes é sempre um array
-                if (Array.isArray(response.data)) {
-                    setNomes(response.data);
-                } else if (response.data && typeof response.data === 'object') {
-                    setNomes([response.data]);
-                } else {
-                    setNomes([]);
-                }
-            } catch (err) {
-                setError('Erro ao carregar aniversariantes.');
-            }
-        };
-
-        fetchRefeicoes();
-        fetchNomes();
+    const fetchAll = useCallback(async () => {
+        const t = Date.now();
+        try {
+            const [refRes, nomesRes] = await Promise.all([
+                axios.get(`${backendUrl}components/refeicoes.php?_=${t}`),
+                axios.get(`${backendUrl}components/nomes.php?_=${t}`)
+            ]);
+            setRefeicoes(toArray(refRes.data));
+            setNomes(toArray(nomesRes.data));
+            setError(null);
+        } catch (err) {
+            setError('Erro ao carregar dados. Tente novamente mais tarde.');
+        } finally {
+            setLoading(false);
+        }
     }, [backendUrl]);
+
+    useEffect(() => {
+        fetchAll();
+
+        const interval = setInterval(() => {
+            if (!document.hidden) fetchAll();
+        }, 60000);
+
+        const onVisible = () => { if (!document.hidden) fetchAll(); };
+        document.addEventListener('visibilitychange', onVisible);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisible);
+        };
+    }, [fetchAll]);
 
     const handleDelete = async (id) => {
         const refeicao = refeicoes.find(refeicao => refeicao.id === id);

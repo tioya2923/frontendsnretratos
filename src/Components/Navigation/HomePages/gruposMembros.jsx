@@ -18,7 +18,7 @@ const Grupos = () => {
 
     const fetchGrupos = async () => {
         try {
-            const response = await axios.get(`${backendUrl}components/grupos.php`);
+            const response = await axios.get(`${backendUrl}components/grupos.php?_=${Date.now()}`);
             setGrupos(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Erro ao buscar grupos:', error);
@@ -27,7 +27,7 @@ const Grupos = () => {
 
     const fetchMembros = async (grupoId) => {
         try {
-            const response = await axios.get(`${backendUrl}components/grupos.php?grupo_id=${grupoId}`);
+            const response = await axios.get(`${backendUrl}components/grupos.php?grupo_id=${grupoId}&_=${Date.now()}`);
             setMembros((prevMembros) => ({ ...prevMembros, [grupoId]: response.data }));
         } catch (error) {
             console.error('Erro ao buscar membros:', error);

@@ -12,7 +12,7 @@ const Notificacoes = () => {
     useEffect(() => {
         const fetchNotificacoes = async () => {
             try {
-                const response = await axios.get(`${backendUrl}components/notificar_refeicoes.php`);
+                const response = await axios.get(`${backendUrl}components/notificar_refeicoes.php?_=${Date.now()}`);
                 console.log('Notificações carregadas:', response.data);
                 setNotificacoes(response.data);
             } catch (err) {

@@ -340,7 +340,7 @@ export default function AtividadesPage() {
   const fetchAtividades = useCallback(async () => {
     setFetchError('');
     try {
-      const { data } = await axios.get(`${BACKEND}/components/atividades.php`, { headers });
+      const { data } = await axios.get(`${BACKEND}/components/atividades.php?_=${Date.now()}`, { headers });
       setAtividades(data);
     } catch (err) {
       console.error(err);
@@ -350,7 +350,12 @@ export default function AtividadesPage() {
     }
   }, [token]);
 
-  useEffect(() => { fetchAtividades(); }, [fetchAtividades]);
+  useEffect(() => {
+    fetchAtividades();
+    const onVisible = () => { if (!document.hidden) fetchAtividades(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [fetchAtividades]);
 
   const todayStr    = getLocalDateStr();
   const tomorrowStr = getTomorrowStr();
