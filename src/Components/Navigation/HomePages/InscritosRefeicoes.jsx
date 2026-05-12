@@ -256,6 +256,11 @@ const InscritosRefeicoes = () => {
                             </tr>
                             <tr>
                                 <td colSpan={tiposRefeicoesAlmoco.length}>
+                                    <p>Lugares à mesa: {refeicoes.filter(refeicao => refeicao.almoco).length}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={tiposRefeicoesAlmoco.length}>
                                     <p><strong>Total Geral para o Almoço: {refeicoes.filter(refeicao => refeicao.almoco || refeicao.almoco_mais_cedo || refeicao.almoco_mais_tarde).length}</strong></p>
                                 </td>
                             </tr>
@@ -301,6 +306,11 @@ const InscritosRefeicoes = () => {
                                         </td>
                                     );
                                 })}
+                            </tr>
+                            <tr>
+                                <td colSpan={tiposRefeicoesJantar.length}>
+                                    <p>Lugares à mesa: {refeicoes.filter(refeicao => refeicao.jantar).length}</p>
+                                </td>
                             </tr>
                             <tr>
                                 <td colSpan={tiposRefeicoesJantar.length}>
