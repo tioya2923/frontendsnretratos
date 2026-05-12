@@ -36,6 +36,7 @@ import { UserProvider, useUser } from './UserContext';
 import InscreverVisita from "./Components/Navigation/HomePages/InscreverVisita";
 import AtividadesPage from "./Components/Navigation/HomePages/AtividadesPage";
 import PerfilPage from "./Components/Navigation/HomePages/PerfilPage";
+import MensagensPage from "./Components/Navigation/HomePages/MensagensPage";
 
 
 
@@ -107,6 +108,7 @@ function AppRoutes() {
       <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
       <Route path="/atividades" element={<AuthRoute><><Navbar /><AtividadesPage /><Footer /></></AuthRoute>} />
       <Route path="/perfil" element={<AuthRoute><><Navbar /><PerfilPage /><Footer /></></AuthRoute>} />
+      <Route path="/mensagens" element={<AuthRoute><><Navbar /><MensagensPage /><Footer /></></AuthRoute>} />
     </Routes>
   );
 }

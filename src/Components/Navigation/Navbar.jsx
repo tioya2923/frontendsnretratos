@@ -11,9 +11,10 @@ function initials(name = '') {
 }
 
 const navigation = [
-    { link: "/refeicoes",       text: "Inscrição" },
+    { link: "/refeicoes",          text: "Inscrição" },
     { link: '/InscritosRefeicoes', text: 'Refeições' },
-    { link: "/Privacidade",     text: "Admin" },
+    { link: "/mensagens",          text: "Mensagens" },
+    { link: "/Privacidade",        text: "Admin" },
 ];
 
 const Navbar = () => {
