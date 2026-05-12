@@ -426,14 +426,15 @@ export default function MensagensPage() {
   const [replySending, setReplySending] = useState(false);
 
   // Modal composição
-  const [showModal, setShowModal]         = useState(false);
-  const [utilizadores, setUtilizadores]   = useState([]);
-  const [loadingUsers, setLoadingUsers]   = useState(false);
-  const [corpo, setCorpo]                 = useState('');
-  const [tipoDestinatario, setTipo]       = useState('todos');
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [submitting, setSubmitting]       = useState(false);
-  const [submitError, setSubmitError]     = useState('');
+  const [showModal, setShowModal]           = useState(false);
+  const [utilizadores, setUtilizadores]     = useState([]);
+  const [loadingUsers, setLoadingUsers]     = useState(false);
+  const [usersFetchError, setUsersFetchError] = useState(false);
+  const [corpo, setCorpo]                   = useState('');
+  const [tipoDestinatario, setTipo]         = useState('todos');
+  const [selectedUsers, setSelectedUsers]   = useState([]);
+  const [submitting, setSubmitting]         = useState(false);
+  const [submitError, setSubmitError]       = useState('');
 
   // ── Fetch / Polling ─────────────────────────────────────────────────────────
 
@@ -478,20 +479,23 @@ export default function MensagensPage() {
 
   // ── Utilizadores ────────────────────────────────────────────────────────────
 
-  const fetchUtilizadores = async () => {
-    if (utilizadores.length > 0) return;
+  const fetchUtilizadores = useCallback(async (force = false) => {
+    if (!force && utilizadores.length > 0) return; // já carregado
     setLoadingUsers(true);
+    setUsersFetchError(false);
     try {
       const { data } = await axios.get(
-        `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`, { headers }
+        `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setUtilizadores(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
+      setUsersFetchError(true);
     } finally {
       setLoadingUsers(false);
     }
-  };
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Ações ───────────────────────────────────────────────────────────────────
 
@@ -729,7 +733,7 @@ export default function MensagensPage() {
                 <RecipBtn
                   type="button"
                   $active={tipoDestinatario === 'selecionar'}
-                  onClick={() => setTipo('selecionar')}
+                  onClick={() => { setTipo('selecionar'); fetchUtilizadores(); }}
                 >
                   <MdPeople size={20} />
                   Selecionar
@@ -737,7 +741,7 @@ export default function MensagensPage() {
                 <RecipBtn
                   type="button"
                   $active={tipoDestinatario === 'um'}
-                  onClick={() => { setTipo('um'); setSelectedUsers([]); }}
+                  onClick={() => { setTipo('um'); setSelectedUsers([]); fetchUtilizadores(); }}
                 >
                   <MdPerson size={20} />
                   Um utilizador
@@ -747,27 +751,40 @@ export default function MensagensPage() {
               {(tipoDestinatario === 'selecionar' || tipoDestinatario === 'um') && (
                 loadingUsers
                   ? <Empty style={{ padding: '20px 0' }}>A carregar utilizadores...</Empty>
-                  : (
-                    <UserList>
-                      {utilizadores.map(u => (
-                        <UserItem key={u.id}>
-                          <input
-                            type={tipoDestinatario === 'um' ? 'radio' : 'checkbox'}
-                            name="destinatario"
-                            checked={selectedUsers.includes(u.id)}
-                            onChange={() => {
-                              if (tipoDestinatario === 'um') {
-                                setSelectedUsers([u.id]);
-                              } else {
-                                toggleUser(u.id);
-                              }
-                            }}
-                          />
-                          {u.name}
-                        </UserItem>
-                      ))}
-                    </UserList>
-                  )
+                  : usersFetchError
+                    ? (
+                      <ErrBox style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                        <span>Erro ao carregar utilizadores.</span>
+                        <button
+                          type="button"
+                          onClick={() => fetchUtilizadores(true)}
+                          style={{ background: 'none', border: 'none', color: '#4b0303', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}
+                        >
+                          Tentar de novo
+                        </button>
+                      </ErrBox>
+                    )
+                    : (
+                      <UserList>
+                        {utilizadores.map(u => (
+                          <UserItem key={u.id}>
+                            <input
+                              type={tipoDestinatario === 'um' ? 'radio' : 'checkbox'}
+                              name="destinatario"
+                              checked={selectedUsers.includes(u.id)}
+                              onChange={() => {
+                                if (tipoDestinatario === 'um') {
+                                  setSelectedUsers([u.id]);
+                                } else {
+                                  toggleUser(u.id);
+                                }
+                              }}
+                            />
+                            {u.name}
+                          </UserItem>
+                        ))}
+                      </UserList>
+                    )
               )}
 
               <FieldLabel style={{ marginTop: 4 }}>Mensagem</FieldLabel>
