@@ -409,7 +409,7 @@ function formatTime(dateStr) {
 // ─── Componente ──────────────────────────────────────────────────────────────
 
 export default function MensagensPage() {
-  const { token, refreshUnreadMessages, utilizadores, loadingUtilizadores, utilizadoresFailed, refetchUtilizadores } = useUser();
+  const { token, logout, refreshUnreadMessages, utilizadores, loadingUtilizadores, utilizadoresFailed, refetchUtilizadores } = useUser();
   const headers = { Authorization: `Bearer ${token}` };
 
   const [tab, setTab]             = useState('recebidas');
@@ -455,11 +455,12 @@ export default function MensagensPage() {
       msgs.forEach(m => seenIdsRef.current.add(m.id));
       setMensagens(msgs);
     } catch (err) {
+      if (err.response?.status === 401) { logout(); return; }
       console.error(err);
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [token, tab]);
+  }, [token, tab, logout]);
 
   // Fetch inicial ao montar ou mudar de tab
   useEffect(() => {
@@ -514,6 +515,7 @@ export default function MensagensPage() {
       await axios.delete(`${BACKEND}/components/mensagens.php`, { data: { id }, headers });
       setMensagens(prev => prev.filter(m => m.id !== id));
     } catch (err) {
+      if (err.response?.status === 401) { logout(); return; }
       alert(err.response?.data?.error || 'Erro ao eliminar');
     }
   };
@@ -544,6 +546,7 @@ export default function MensagensPage() {
       setReplyCorpo('');
       // Atualiza enviadas se o utilizador trocar de tab
     } catch (err) {
+      if (err.response?.status === 401) { logout(); return; }
       alert(err.response?.data?.error || 'Erro ao enviar resposta');
     } finally {
       setReplySending(false);
@@ -569,6 +572,7 @@ export default function MensagensPage() {
       setShowModal(false);
       if (tab === 'enviadas') fetchMensagens(false);
     } catch (err) {
+      if (err.response?.status === 401) { logout(); return; }
       setSubmitError(err.response?.data?.error || 'Erro ao enviar mensagem.');
     } finally {
       setSubmitting(false);

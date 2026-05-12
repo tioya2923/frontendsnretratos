@@ -16,7 +16,8 @@ export const UserProvider = ({ children }) => {
   const [loadingUtilizadores, setLoadingUtilizadores] = useState(!!localStorage.getItem('token'));
   const [utilizadoresFailed, setUtilizadoresFailed] = useState(false);
 
-  const tokenRef = useRef(token);
+  const tokenRef  = useRef(token);
+  const logoutRef = useRef(null);
   useEffect(() => { tokenRef.current = token; }, [token]);
 
   // Guards to prevent concurrent in-flight requests
@@ -41,12 +42,7 @@ export const UserProvider = ({ children }) => {
     }
   }, [userName]);
 
-  const login = (name, tokenValue) => {
-    setUserName(name);
-    setToken(tokenValue);
-    setIsAuthenticated(true);
-  };
-
+  // Keep logoutRef current so stable useCallback functions can call logout()
   const logout = () => {
     setUserName('');
     setToken('');
@@ -59,6 +55,13 @@ export const UserProvider = ({ children }) => {
     userListFetchedRef.current = false;
     localStorage.removeItem('userName');
     localStorage.removeItem('token');
+  };
+  logoutRef.current = logout;
+
+  const login = (name, tokenValue) => {
+    setUserName(name);
+    setToken(tokenValue);
+    setIsAuthenticated(true);
   };
 
   // Fetch user list — up to 3 attempts, 2 s apart on failure
@@ -73,6 +76,7 @@ export const UserProvider = ({ children }) => {
           `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`,
           { headers: { Authorization: `Bearer ${tokenRef.current}` } }
         );
+        if (res.status === 401) { logoutRef.current?.(); return; }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error('Resposta inválida');
@@ -96,6 +100,7 @@ export const UserProvider = ({ children }) => {
         `${BACKEND}/components/mensagens.php?nao_lidas=1&_=${Date.now()}`,
         { headers: { Authorization: `Bearer ${tokenRef.current}` } }
       );
+      if (res.status === 401) { logoutRef.current?.(); return; }
       if (!res.ok) return;
       const data = await res.json();
       setUnreadMessages(data.count ?? 0);
