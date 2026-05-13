@@ -89,21 +89,24 @@ self.addEventListener('fetch', event => {
 
 self.addEventListener('push', event => {
   let payload = { title: 'Paróquia de São Nicolau', body: '', url: '/', tag: 'psn' };
-
+  console.log('[Service Worker] Push event recebido:', event);
   if (event.data) {
     try {
-      // Tenta decodificar como JSON
       const data = event.data.json();
+      console.log('[Service Worker] Payload JSON:', data);
       payload = { ...payload, ...data };
-    } catch (_) {
-      // Se não for JSON, tenta como texto simples
+    } catch (err) {
+      console.warn('[Service Worker] Falha ao decodificar JSON, tentando como texto:', err);
       event.data.text().then(text => {
+        console.log('[Service Worker] Payload texto:', text);
         payload.body = text || 'Nova notificação';
         payload.title = 'Paróquia de São Nicolau';
         mostrarNotificacao(payload);
       });
       return;
     }
+  } else {
+    console.warn('[Service Worker] Push event sem data!');
   }
   mostrarNotificacao(payload);
 });
