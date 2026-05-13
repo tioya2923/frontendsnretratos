@@ -76,7 +76,6 @@ export const UserProvider = ({ children }) => {
           `${BACKEND}/components/mensagens.php?utilizadores=1&_=${Date.now()}`,
           { headers: { Authorization: `Bearer ${tokenRef.current}` } }
         );
-        if (res.status === 401) { logoutRef.current?.(); return; }
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!Array.isArray(data)) throw new Error('Resposta inválida');
@@ -100,7 +99,6 @@ export const UserProvider = ({ children }) => {
         `${BACKEND}/components/mensagens.php?nao_lidas=1&_=${Date.now()}`,
         { headers: { Authorization: `Bearer ${tokenRef.current}` } }
       );
-      if (res.status === 401) { logoutRef.current?.(); return; }
       if (!res.ok) return;
       const data = await res.json();
       setUnreadMessages(data.count ?? 0);

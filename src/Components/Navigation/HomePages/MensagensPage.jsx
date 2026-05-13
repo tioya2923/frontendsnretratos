@@ -455,12 +455,11 @@ export default function MensagensPage() {
       msgs.forEach(m => seenIdsRef.current.add(m.id));
       setMensagens(msgs);
     } catch (err) {
-      if (err.response?.status === 401) { logout(); return; }
       console.error(err);
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [token, tab, logout]);
+  }, [token, tab]);
 
   // Fetch inicial ao montar ou mudar de tab
   useEffect(() => {
@@ -504,9 +503,7 @@ export default function MensagensPage() {
         await axios.put(`${BACKEND}/components/mensagens.php`, { id: msg.id }, { headers });
         setMensagens(prev => prev.map(m => m.id === msg.id ? { ...m, lida: true } : m));
         refreshUnreadMessages();
-      } catch (err) {
-        if (err.response?.status === 401) logout();
-      }
+      } catch (_) {}
     }
   };
 
