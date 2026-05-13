@@ -90,44 +90,48 @@ self.addEventListener('fetch', event => {
 self.addEventListener('push', event => {
   let payload = { title: 'Paróquia de São Nicolau', body: '', url: '/', tag: 'psn' };
 
-  try {
-    if (event.data) payload = { ...payload, ...event.data.json() };
-  } catch (_) {
-    if (event.data) payload.body = event.data.text();
+  if (event.data) {
+    try {
+      // Tenta decodificar como JSON
+      const data = event.data.json();
+      payload = { ...payload, ...data };
+    } catch (_) {
+      // Se não for JSON, tenta como texto simples
+      event.data.text().then(text => {
+        payload.body = text || 'Nova notificação';
+        payload.title = 'Paróquia de São Nicolau';
+        mostrarNotificacao(payload);
+      });
+      return;
+    }
   }
+  mostrarNotificacao(payload);
+});
 
-  // Padrão de vibração: 4 pulsos de 600 ms com 200 ms de pausa
-  // Funciona no Android (Chrome). No iOS, a vibração é gerida pelo sistema.
+function mostrarNotificacao(payload) {
   const VIBRATE = [600, 200, 600, 200, 600, 200, 600];
-
   const options = {
     body:               payload.body,
     icon:               '/icon-192.png',
     badge:              '/icon-192.png',
     tag:                payload.tag || 'psn',
-    renotify:           true,   // vibra/toca mesmo se já existe notificação com o mesmo tag
-    requireInteraction: true,   // fica no ecrã até o utilizador interagir (Android/desktop)
+    renotify:           true,
+    requireInteraction: true,
     vibrate:            VIBRATE,
     timestamp:          Date.now(),
     data:               { url: payload.url }
-    // NOTA: silent não está definido → padrão false (com som)
-    // NOTA: actions removidos → evita falhas silenciosas em iOS e Android antigo
   };
-
-  event.waitUntil(
-    self.registration.showNotification(payload.title, options)
-      .catch(() =>
-        // Fallback com opções mínimas caso o browser rejeite alguma opção acima
-        self.registration.showNotification(payload.title, {
-          body:  payload.body,
-          icon:  '/icon-192.png',
-          badge: '/icon-192.png',
-          tag:   payload.tag || 'psn',
-          data:  { url: payload.url }
-        })
-      )
-  );
-});
+  self.registration.showNotification(payload.title, options)
+    .catch(() =>
+      self.registration.showNotification(payload.title, {
+        body:  payload.body,
+        icon:  '/icon-192.png',
+        badge: '/icon-192.png',
+        tag:   payload.tag || 'psn',
+        data:  { url: payload.url }
+      })
+    );
+}
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
