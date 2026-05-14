@@ -4,15 +4,16 @@ import axios from 'axios';
 import {
   MdAdd, MdDelete, MdClose, MdChurch, MdSchool, MdDirectionsWalk,
   MdFlight, MdSportsSoccer, MdWeekend, MdPeople, MdCategory,
-  MdAccessTime, MdSelfImprovement, MdCalendarToday
+  MdAccessTime, MdCalendarToday
 } from 'react-icons/md';
+import { FaPersonBooth } from 'react-icons/fa6';
 import { useUser } from '../../../UserContext';
 
 const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
 
 const TIPOS = [
   { value: 'Missa',      label: 'Missa',       Icon: MdChurch,          color: '#92400e' },
-  { value: 'Confissão',  label: 'Confissão',   Icon: MdSelfImprovement, color: '#6d28d9' },
+  { value: 'Confissão',  label: 'Confissão',   Icon: FaPersonBooth,     color: '#6d28d9' },
   { value: 'Aula',       label: 'Aula',         Icon: MdSchool,          color: '#1d4ed8' },
   { value: 'Explicação', label: 'Explicação',   Icon: MdPeople,          color: '#0e7490' },
   { value: 'Desporto',   label: 'Desporto',     Icon: MdSportsSoccer,    color: '#15803d' },
