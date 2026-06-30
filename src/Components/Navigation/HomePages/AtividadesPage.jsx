@@ -9,7 +9,7 @@ import {
 import { FaPersonBooth } from 'react-icons/fa6';
 import { useUser } from '../../../UserContext';
 
-const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
+const BACKEND = (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 
 const TIPOS = [
   { value: 'Missa',      label: 'Missa',       Icon: MdChurch,          color: '#92400e' },

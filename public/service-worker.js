@@ -1,6 +1,6 @@
 const CACHE_VERSION = 'v4';
 const CACHE_NAME = `psn-cache-${CACHE_VERSION}`;
-const API_HOSTNAME = 'snref-backend-8d85ffa999cd.herokuapp.com';
+const API_HOSTNAME = '__API_HOSTNAME__'; // substituído em post-build.sh a partir de REACT_APP_BACKEND_URL
 
 const APP_SHELL = [
   '/',

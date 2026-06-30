@@ -5,7 +5,7 @@ const UserContext = createContext();
 
 export const useUser = () => useContext(UserContext);
 
-const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
+const BACKEND = (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 
 export const UserProvider = ({ children }) => {
   const [userName, setUserName] = useState(localStorage.getItem('userName') || '');

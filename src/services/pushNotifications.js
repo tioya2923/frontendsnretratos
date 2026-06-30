@@ -1,5 +1,5 @@
 const VAPID_PUBLIC_KEY = 'BOMk6zRnm2Bg6T8bVCbDv3gGESt2qlN4F0IJ6DFo68xYlu1Ue7tZ0jpJ-ICnSJJD6u-Y3j0ibVWiul7idYffmks';
-const BACKEND_URL = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
+const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);

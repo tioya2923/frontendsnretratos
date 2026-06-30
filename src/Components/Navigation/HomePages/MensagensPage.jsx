@@ -7,7 +7,7 @@ import {
 } from 'react-icons/md';
 import { useUser } from '../../../UserContext';
 
-const BACKEND = 'https://snref-backend-8d85ffa999cd.herokuapp.com';
+const BACKEND = (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 const POLL_INTERVAL_MS = 12000; // 12 segundos
 
 // ─── Animações ───────────────────────────────────────────────────────────────
