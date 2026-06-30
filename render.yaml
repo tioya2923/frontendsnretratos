@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: frontendsnretratos
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: REACT_APP_BACKEND_URL
+        value: https://snretratos-backend.onrender.com/
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /service-worker.js
+        name: Cache-Control
+        value: no-cache
