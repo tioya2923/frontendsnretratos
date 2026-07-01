@@ -9,12 +9,10 @@ import Footer from "./Components/FooterPage/Footer";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Components/Navigation/HomePages/home";
-import InsertImages from "./Components/Store/insertImages";
 import Login from "./Components/Pages/LoginSignup/login";
 import Register from "./Components/Pages/LoginSignup/register";
 import Unsubscribe from "./Components/Pages/LoginSignup/unsubscribe";
 import AreaPessoal from "./Components/Navigation/HomePages/areaPessoal";
-import DeletePhoto from "./Components/delete/DeletePhoto";
 import Administracao from "./Components/Navigation/HomePages/Administracao";
 import Privacidade from "./Components/Pages/LoginSignup/Privacidade";
 import UpdateUsuarios from "./Components/Navigation/HomePages/updateUsuarios";
@@ -89,8 +87,6 @@ function AppRoutes() {
       {/* Rotas protegidas — requerem login */}
       <Route path="/home" element={<AuthRoute><><Navbar /><Home /><Footer /></></AuthRoute>} />
       <Route path="/areaPessoal" element={<AuthRoute><><Navbar /><AreaPessoal /><Footer /></></AuthRoute>} />
-      <Route path="/insertImages" element={<AuthRoute><><Navbar /><InsertImages /><Footer /></></AuthRoute>} />
-      <Route path="/deletePhoto" element={<AuthRoute><><Navbar /><DeletePhoto /><Footer /></></AuthRoute>} />
       <Route path="/administracao" element={<AuthRoute><><Navbar /><Administracao /><Footer /></></AuthRoute>} />
       <Route path="/updateUsuarios" element={<AuthRoute><><Navbar /><UpdateUsuarios /><Footer /></></AuthRoute>} />
       <Route path="/updateAdministradores" element={<AuthRoute><><Navbar /><UpdateAdministradores /><Footer /></></AuthRoute>} />
