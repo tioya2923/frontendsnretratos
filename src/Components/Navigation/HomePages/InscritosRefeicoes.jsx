@@ -72,23 +72,21 @@ const InscritosRefeicoes = () => {
     };
 
     const isBirthday = (data, aniversario) => {
-        // Convertendo datas para objetos Date e ajustando o fuso horário para Portugal Continental
-        const dataAtual = new Date(data);
-        const dataAniversario = new Date(aniversario);
-        dataAniversario.setFullYear(dataAtual.getFullYear());
+        if (!aniversario) return false;
 
-        // Convertendo para o formato DD/MM/YYYY para comparação
-        const formatarData = (data) => {
-            const dia = data.getDate().toString().padStart(2, '0');
-            const mes = (data.getMonth() + 1).toString().padStart(2, '0');
-            const ano = data.getFullYear();
-            return `${dia}/${mes}/${ano}`;
-        };
+        // Extrai mês/dia diretamente da string (evita usar objetos Date para
+        // o ano de nascimento: para anos muito antigos, anteriores à
+        // padronização dos fusos horários, o motor de datas do browser pode
+        // aplicar um deslocamento histórico e "empurrar" o dia para o dia
+        // anterior — não interessa o ano, só precisamos do mês/dia).
+        const match = String(aniversario).match(/^\d{4}-(\d{2})-(\d{2})/);
+        if (!match) return false;
+        const [, mesAniversario, diaAniversario] = match;
 
-        const dataAtualFormatada = formatarData(dataAtual);
-        const dataAniversarioFormatada = formatarData(dataAniversario);
+        const mesDataAlvo = (data.getMonth() + 1).toString().padStart(2, '0');
+        const diaDataAlvo = data.getDate().toString().padStart(2, '0');
 
-        return dataAtualFormatada === dataAniversarioFormatada;
+        return mesDataAlvo === mesAniversario && diaDataAlvo === diaAniversario;
     };
 
     if (loading) {
