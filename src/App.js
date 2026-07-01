@@ -20,11 +20,6 @@ import AdPrivacidade from "./Components/Pages/LoginSignup/AdPrivacidade";
 import UpdateAdministradores from "./Components/Navigation/HomePages/updateAdministradores";
 import CalendarioRefeicoes from "./Components/Navigation/HomePages/refeicoes";
 import InscritosRefeicoes from "./Components/Navigation/HomePages/InscritosRefeicoes";
-import ConfissoesHorarios from "./Components/Navigation/HomePages/ConfissoesHoraios";
-import InserirNome from "./Components/Navigation/HomePages/InserirNome";
-import InserirNomeConf from "./Components/Navigation/HomePages/InserirNomeConf";
-import GerenciamentoRefeicoes from "./Components/Navigation/HomePages/GerenciamentoRefeicoes";
-import AdicionarNome from "./Components/Navigation/HomePages/AdicionarNome";
 import MembrosGrupos from "./Components/Navigation/HomePages/gruposMembros";
 import AddGroupsToMeal from "./Components/Navigation/HomePages/AddGroupsToMeal";
 import RefeicoesGrupo from "./Components/Navigation/HomePages/RefeicoesGrupo";
@@ -92,11 +87,6 @@ function AppRoutes() {
       <Route path="/updateAdministradores" element={<AuthRoute><><Navbar /><UpdateAdministradores /><Footer /></></AuthRoute>} />
       <Route path="/refeicoes" element={<AuthRoute><><Navbar /><CalendarioRefeicoes /><Footer /></></AuthRoute>} />
       <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></></AuthRoute>} />
-      <Route path="/ConfissoesHorarios" element={<AuthRoute><><Navbar /><ConfissoesHorarios /><Footer /></></AuthRoute>} />
-      <Route path="/InserirNome" element={<AuthRoute><><Navbar /><InserirNome /><Footer /></></AuthRoute>} />
-      <Route path="/InserirNomeConf" element={<AuthRoute><><Navbar /><InserirNomeConf /><Footer /></></AuthRoute>} />
-      <Route path="/GerenciamentoRefeicoes" element={<AuthRoute><><Navbar /><GerenciamentoRefeicoes /><Footer /></></AuthRoute>} />
-      <Route path="/AdicionarNome" element={<AuthRoute><><Navbar /><AdicionarNome /><Footer /></></AuthRoute>} />
       <Route path="/gruposMembros" element={<AuthRoute><><Navbar /><MembrosGrupos /><Footer /></></AuthRoute>} />
       <Route path="/AddGroupsToMeal" element={<AuthRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AuthRoute>} />
       <Route path="/RefeicoesGrupo" element={<AuthRoute><><Navbar /><RefeicoesGrupo /><Footer /></></AuthRoute>} />

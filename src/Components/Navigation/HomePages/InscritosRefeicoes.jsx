@@ -19,7 +19,7 @@ const InscritosRefeicoes = () => {
         try {
             const [refRes, nomesRes] = await Promise.all([
                 axios.get(`${backendUrl}components/refeicoes.php?_=${t}`),
-                axios.get(`${backendUrl}components/nomes.php?_=${t}`)
+                axios.get(`${backendUrl}components/aniversarios_usuarios.php?_=${t}`)
             ]);
             setRefeicoes(toArray(refRes.data));
             setNomes(toArray(nomesRes.data));
