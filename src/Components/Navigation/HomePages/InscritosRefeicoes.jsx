@@ -200,12 +200,12 @@ const InscritosRefeicoes = () => {
 
 
                     {aniversariantesNatalicio.length > 0 && (
-                        <p className='calenderAniversario'> <strong>Aniversariante do dia: {aniversariantesNatalicio.join(', ')}</strong></p>
+                        <p className='calenderAniversario'> <strong>Aniversariante do Dia: {aniversariantesNatalicio.join(', ')}</strong></p>
                     )}
 
 
                     {aniversariantesSacerdotal.length > 0 && (
-                        <p className='calenderAniversario'><strong>Aniversário Sacerdotal: {aniversariantesSacerdotal.join(', ')}</strong></p>
+                        <p className='calenderAniversario'><strong>Aniversariante Sacerdotal do Dia: {aniversariantesSacerdotal.join(', ')}</strong></p>
                     )}
 
                     <h3 className='calendarioDiaData'>Almoço: 13h30</h3>

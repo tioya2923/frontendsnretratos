@@ -28,12 +28,12 @@ function AniversariosHoje() {
     <div className="aniversarios-hoje">
       {natalicio.length > 0 && (
         <p className="aniversarios-hoje-linha">
-          🎂 <strong>Aniversário hoje:</strong> {natalicio.map((u) => u.name).join(', ')} — vamos parabenizá-lo!
+          🎂 <strong>Aniversariante do Dia:</strong> {natalicio.map((u) => u.name).join(', ')}
         </p>
       )}
       {sacerdotal.length > 0 && (
         <p className="aniversarios-hoje-linha">
-          ⛪ <strong>Aniversário Sacerdotal hoje:</strong> {sacerdotal.map((u) => u.name).join(', ')} — vamos parabenizá-lo!
+          ⛪ <strong>Aniversariante Sacerdotal do Dia:</strong> {sacerdotal.map((u) => u.name).join(', ')}
         </p>
       )}
     </div>

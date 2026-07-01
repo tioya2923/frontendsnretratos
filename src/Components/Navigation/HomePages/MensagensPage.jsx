@@ -651,7 +651,7 @@ export default function MensagensPage() {
               {isExpanded && (
                 <>
                   <MsgActions>
-                    {tab === 'recebidas' && (
+                    {tab === 'recebidas' && msg.remetente_id != null && (
                       <ActionBtn onClick={(e) => abrirResposta(e, msg.id)}>
                         <MdReply size={15} /> Responder
                       </ActionBtn>
