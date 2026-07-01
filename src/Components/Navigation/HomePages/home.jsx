@@ -15,7 +15,7 @@ function Home() {
             <img src={logo} alt="Logo" className="snImage" />
             <AniversariosHoje />
             <div className="home-content">
-                <Refeicoes />
+                <Refeicoes mostrarAniversarios={false} />
             </div>
         </div>
     );

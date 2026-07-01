@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../Styles/InscritosRefeicoes.css';
 
-const InscritosRefeicoes = () => {
+const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     const [refeicoes, setRefeicoes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -197,12 +197,12 @@ const InscritosRefeicoes = () => {
                     {feriado && <p className='calenderAniversario'><strong>{feriado}</strong></p>}
 
 
-                    {aniversariantesNatalicio.length > 0 && (
+                    {mostrarAniversarios && aniversariantesNatalicio.length > 0 && (
                         <p className='calenderAniversario'> <strong>Aniversariante do Dia: {aniversariantesNatalicio.join(', ')}</strong></p>
                     )}
 
 
-                    {aniversariantesSacerdotal.length > 0 && (
+                    {mostrarAniversarios && aniversariantesSacerdotal.length > 0 && (
                         <p className='calenderAniversario'><strong>Aniversariante Sacerdotal do Dia: {aniversariantesSacerdotal.join(', ')}</strong></p>
                     )}
 
