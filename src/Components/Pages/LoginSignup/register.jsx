@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import "flag-icons/css/flag-icons.min.css";
 import "./Register.css";
@@ -21,12 +21,17 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [dataAniversario, setDataAniversario] = useState("");
+  const [dataAniversarioSacerdotal, setDataAniversarioSacerdotal] = useState("");
 
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [whatsappError, setWhatsappError] = useState("");
   const [confirmError, setConfirmError] = useState("");
+  const [dataAniversarioError, setDataAniversarioError] = useState("");
+
+  const hoje = new Date().toISOString().split("T")[0];
 
   const backendEnv = process.env.REACT_APP_BACKEND_URL;
   const backendUrl = backendEnv.endsWith("/") ? backendEnv : backendEnv + "/";
@@ -39,6 +44,7 @@ export default function Register() {
     let emailErr = "";
     let passwordErr = "";
     let whatsappErr = "";
+    let dataAniversarioErr = "";
 
     if (!name.trim()) {
       nameErr = "Insira o seu nome";
@@ -69,10 +75,19 @@ export default function Register() {
       errors.push(whatsappErr);
     }
 
+    if (!dataAniversario) {
+      dataAniversarioErr = "Insira a data de aniversário natalício";
+      errors.push(dataAniversarioErr);
+    } else if (dataAniversario > hoje) {
+      dataAniversarioErr = "A data de aniversário não pode ser no futuro";
+      errors.push(dataAniversarioErr);
+    }
+
     setNameError(nameErr);
     setEmailError(emailErr);
     setPasswordError(passwordErr);
     setWhatsappError(whatsappErr);
+    setDataAniversarioError(dataAniversarioErr);
 
     return errors;
   };
@@ -95,6 +110,8 @@ export default function Register() {
       email,
       password,
       whatsapp: selectedCountry.code.replace("+", "") + whatsapp,
+      dataAniversario,
+      dataAniversarioSacerdotal: dataAniversarioSacerdotal || null,
       newRegistration: true
     };
 
@@ -112,8 +129,10 @@ export default function Register() {
         setPassword("");
         setConfirmPassword("");
         setWhatsapp("");
+        setDataAniversario("");
+        setDataAniversarioSacerdotal("");
       } else {
-        toast.error("Erro ao registrar. Tente novamente.");
+        toast.error(response.data.message || "Erro ao registrar. Tente novamente.");
       }
 
     } catch (error) {
@@ -188,6 +207,32 @@ export default function Register() {
               />
             </div>
             {whatsappError && <span className="error">{whatsappError}</span>}
+          </div>
+
+          {/* Datas de aniversário */}
+          <div className="form-group">
+            <div className="form-group-row dates-row">
+              <div className="date-field">
+                <label>Aniversário Natalício</label>
+                <input
+                  type="date"
+                  value={dataAniversario}
+                  max={hoje}
+                  onChange={(e) => setDataAniversario(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="date-field">
+                <label>Aniversário Sacerdotal <span className="optional-tag">(opcional)</span></label>
+                <input
+                  type="date"
+                  value={dataAniversarioSacerdotal}
+                  max={hoje}
+                  onChange={(e) => setDataAniversarioSacerdotal(e.target.value)}
+                />
+              </div>
+            </div>
+            {dataAniversarioError && <span className="error">{dataAniversarioError}</span>}
           </div>
 
           {/* Password */}

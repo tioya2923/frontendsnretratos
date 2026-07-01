@@ -1,0 +1,24 @@
+.aniversarios-hoje {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.aniversarios-hoje-linha {
+    background-color: #42e684;
+    font-size: 1.2rem;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .aniversarios-hoje-linha {
+        font-size: 1rem;
+        padding: 8px 12px;
+    }
+}

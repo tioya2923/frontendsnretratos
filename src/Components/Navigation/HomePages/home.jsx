@@ -3,6 +3,7 @@ import { useUser } from '../../../UserContext';
 import logo from '../Logo/sn.png';
 import Refeicoes from './InscritosRefeicoes';
 import Calendario from './refeicoes';
+import AniversariosHoje from './AniversariosHoje';
 import '../../Styles/home.css'; // Importar o arquivo CSS
 
 function Home() {
@@ -12,8 +13,9 @@ function Home() {
         <div className="home-container">
             <h1 className="home-title">{userName}, seja bem-vindo!</h1>
             <img src={logo} alt="Logo" className="snImage" />
+            <AniversariosHoje />
             <div className="home-content">
-                <Refeicoes />                         
+                <Refeicoes />
             </div>
         </div>
     );
