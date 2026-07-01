@@ -270,6 +270,14 @@ button[type=submit]:hover {
         width: 100%;
     }
 
+    /* Empilhados, não há campo irmão ao lado para alinhar — a reserva de
+       altura de 2 linhas (para o "(opcional)") só cria espaço vazio aqui. */
+    .date-field label {
+        min-height: 0;
+        justify-content: flex-start;
+        margin-bottom: 6px;
+    }
+
     .date-field input[type="date"] {
         max-width: none;
         width: 100%;
