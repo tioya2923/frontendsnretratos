@@ -5,9 +5,7 @@ services:
     buildCommand: npm install && npm run build
     staticPublishPath: build
     pullRequestPreviewsEnabled: false
-    envVars:
-      - key: REACT_APP_BACKEND_URL
-        value: https://snretratos-backend.onrender.com/
+    # Defina REACT_APP_BACKEND_URL no ambiente do Render ou no painel da aplicação.
     routes:
       - type: rewrite
         source: /*
