@@ -2,14 +2,14 @@
 
 ## Integração com o Backend
 
-1. Certifique-se de que o backend está rodando localmente (exemplo: http://localhost:8000/backend-sn/).
+1. Certifique-se de que o backend está rodando localmente (exemplo: http://localhost:8000/).
 2. Configure a URL do backend no arquivo `.env` do frontend:
 
 ```
-REACT_APP_BACKEND_URL=http://localhost:8000/backend-sn/
+REACT_APP_BACKEND_URL=http://localhost:8000/
 ```
 
-3. Para produção, altere a URL para o domínio correto do backend.
+3. Para produção, altere a URL para o domínio correto do backend (por exemplo, `https://snretratos-backend.onrender.com/`).
 
 4. O frontend faz requisições usando a variável `REACT_APP_BACKEND_URL`.
 
