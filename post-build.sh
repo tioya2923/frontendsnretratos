@@ -13,7 +13,8 @@ if [ -n "$REACT_APP_BACKEND_URL" ]; then
   sed -i "s#__API_HOSTNAME__#$API_HOSTNAME#g" ./build/service-worker.js
   echo "service-worker.js: API_HOSTNAME definido para $API_HOSTNAME"
 else
-  echo "AVISO: REACT_APP_BACKEND_URL não definido; service-worker.js fica com o placeholder"
+  echo "ERRO: REACT_APP_BACKEND_URL não definido; o build não pode injetar o hostname no service worker" >&2
+  exit 1
 fi
 
 echo "Script pós-build concluído!"

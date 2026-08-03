@@ -5,7 +5,6 @@
   "description": "Comunidade de São Nicolau",
   "main": "index.js",
   "homepage": "./",
-  "proxy": "https://snretratos-backend.onrender.com/",
   "author": "João Dumba",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
