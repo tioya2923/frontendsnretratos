@@ -2,9 +2,11 @@
 
 echo "Executando script pós-build..."
 
-# Exemplos de comandos
-cp -R ./src/assets ./build/assets
-chmod -R 755 ./build/assets
+# Exemplo de comando, só corre se a pasta existir (evita erro em cada build)
+if [ -d ./src/assets ]; then
+  cp -R ./src/assets ./build/assets
+  chmod -R 755 ./build/assets
+fi
 
 # Injetar o hostname do backend no service worker (ficheiros em public/ não
 # passam pelo build do React, por isso não recebem process.env.* em tempo de build)
