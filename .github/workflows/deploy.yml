@@ -1,0 +1,41 @@
+name: Deploy - Frontend para PTisp
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Compilar (build)
+        run: npm run build
+        env:
+          REACT_APP_BACKEND_URL: ${{ secrets.PTISP_BACKEND_URL }}
+
+      - name: Enviar build/ por FTP/FTPS para a PTisp
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.PTISP_FTP_SERVER }}
+          username: ${{ secrets.PTISP_FTP_USERNAME }}
+          password: ${{ secrets.PTISP_FTP_PASSWORD }}
+          protocol: ftps
+          # Pasta pública do domínio principal (normalmente public_html).
+          server-dir: ${{ secrets.PTISP_FRONTEND_SERVER_DIR || './public_html/' }}
+          local-dir: "./build/"
+          exclude: |
+            **/.git*
+            **/.git*/**
