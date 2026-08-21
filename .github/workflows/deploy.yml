@@ -21,23 +21,14 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: DEBUG temporário - confirmar secret (remover depois)
-        run: |
-          if [ "$V" = "https://api-sn.paroquiasaonicolau.pt" ]; then echo "MATCH: valor correto"; else echo "NAO-MATCH: valor diferente do esperado (tamanho: ${#V})"; fi
-          node -e "console.log('DEBUG node process.env:', JSON.stringify(process.env.REACT_APP_BACKEND_URL))"
-        env:
-          V: ${{ secrets.PTISP_BACKEND_URL }}
-          REACT_APP_BACKEND_URL: ${{ secrets.PTISP_BACKEND_URL }}
-
       - name: Compilar (build)
         run: |
           rm -rf node_modules/.cache
           npm run build
-          echo "--- grep do valor no bundle gerado ---"
-          grep -o 'REACT_APP_BACKEND_URL[^,}]*' build/static/js/main.*.js | head -3
         env:
           REACT_APP_BACKEND_URL: ${{ secrets.PTISP_BACKEND_URL }}
           CI: false
+
       - name: Enviar build/ por FTP/FTPS para a PTisp
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -48,6 +39,12 @@ jobs:
           # Pasta pública do domínio principal (normalmente public_html).
           server-dir: ${{ secrets.PTISP_FRONTEND_SERVER_DIR || './public_html/' }}
           local-dir: "./build/"
+          # Limpa sempre o servidor para o estado exato do build local.
+          # Seguro aqui (ao contrário do backend): public_html só tem os
+          # ficheiros gerados pelo build + .htaccess, versionado em public/.
+          # Sem isto, ficheiros JS/CSS com hash antigo ficam órfãos no
+          # servidor e o index.html pode não ser atualizado corretamente.
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**
