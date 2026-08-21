@@ -21,6 +21,12 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: DEBUG temporário - confirmar secret (remover depois)
+        run: |
+          if [ "$V" = "https://api-sn.paroquiasaonicolau.pt" ]; then echo "MATCH: valor correto"; else echo "NAO-MATCH: valor diferente do esperado (tamanho: ${#V})"; fi
+        env:
+          V: ${{ secrets.PTISP_BACKEND_URL }}
+
       - name: Compilar (build)
         run: npm run build
         env:
