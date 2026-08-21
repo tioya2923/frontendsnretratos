@@ -14,7 +14,12 @@ jobs:
 
       - name: DEBUG temporário - listar estrutura de pastas da conta FTP
         run: |
-          curl --ssl-reqd --list-only "ftp://$SERVER/" --user "$USER:$PASS" -k --max-time 30 || echo "list root failed"
+          echo "--- dentro de sn.paroquiasaonicolau.pt/ ---"
+          curl --ssl-reqd --list-only "ftp://$SERVER/sn.paroquiasaonicolau.pt/" --user "$USER:$PASS" -k --max-time 30 || echo "falhou"
+          echo "--- dentro de api-sn.paroquiasaonicolau.pt/ ---"
+          curl --ssl-reqd --list-only "ftp://$SERVER/api-sn.paroquiasaonicolau.pt/" --user "$USER:$PASS" -k --max-time 30 || echo "falhou"
+          echo "--- dentro de backendsnretratos/ ---"
+          curl --ssl-reqd --list-only "ftp://$SERVER/backendsnretratos/" --user "$USER:$PASS" -k --max-time 30 || echo "falhou"
         env:
           SERVER: ${{ secrets.PTISP_FTP_SERVER }}
           USER: ${{ secrets.PTISP_FTP_USERNAME }}
