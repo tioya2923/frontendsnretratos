@@ -12,6 +12,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: DEBUG temporário - listar estrutura de pastas da conta FTP
+        run: |
+          curl --ssl-reqd --list-only "ftp://$SERVER/" --user "$USER:$PASS" -k --max-time 30 || echo "list root failed"
+        env:
+          SERVER: ${{ secrets.PTISP_FTP_SERVER }}
+          USER: ${{ secrets.PTISP_FTP_USERNAME }}
+          PASS: ${{ secrets.PTISP_FTP_PASSWORD }}
+
       - name: Configurar Node
         uses: actions/setup-node@v4
         with:
@@ -36,14 +44,8 @@ jobs:
           username: ${{ secrets.PTISP_FTP_USERNAME }}
           password: ${{ secrets.PTISP_FTP_PASSWORD }}
           protocol: ftps
-          # Pasta pública do domínio principal (normalmente public_html).
           server-dir: ${{ secrets.PTISP_FRONTEND_SERVER_DIR || './public_html/' }}
           local-dir: "./build/"
-          # Limpa sempre o servidor para o estado exato do build local.
-          # Seguro aqui (ao contrário do backend): public_html só tem os
-          # ficheiros gerados pelo build + .htaccess, versionado em public/.
-          # Sem isto, ficheiros JS/CSS com hash antigo ficam órfãos no
-          # servidor e o index.html pode não ser atualizado corretamente.
           dangerous-clean-slate: true
           exclude: |
             **/.git*
