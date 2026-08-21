@@ -12,17 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: DEBUG temporário - comparar ficheiro real via FTP vs HTTP
-        run: |
-          echo "--- LIST detalhado (tamanhos/datas) de sn.paroquiasaonicolau.pt/ ---"
-          curl --ssl-reqd "ftp://$SERVER/sn.paroquiasaonicolau.pt/" --user "$USER:$PASS" -k --max-time 30 || echo "falhou"
-          echo "--- conteudo de index.html via FTP direto ---"
-          curl --ssl-reqd "ftp://$SERVER/sn.paroquiasaonicolau.pt/index.html" --user "$USER:$PASS" -k --max-time 30 || echo "falhou"
-        env:
-          SERVER: ${{ secrets.PTISP_FTP_SERVER }}
-          USER: ${{ secrets.PTISP_FTP_USERNAME }}
-          PASS: ${{ secrets.PTISP_FTP_PASSWORD }}
-
       - name: Configurar Node
         uses: actions/setup-node@v4
         with:
@@ -47,8 +36,14 @@ jobs:
           username: ${{ secrets.PTISP_FTP_USERNAME }}
           password: ${{ secrets.PTISP_FTP_PASSWORD }}
           protocol: ftps
-          server-dir: ${{ secrets.PTISP_FRONTEND_SERVER_DIR || './public_html/' }}
+          # Pasta real do subdomínio (confirmado por listagem FTP direta:
+          # é uma pasta própria na raiz da conta, não dentro de public_html,
+          # que pertence ao domínio principal da paróquia).
+          server-dir: ${{ secrets.PTISP_FRONTEND_SERVER_DIR || './sn.paroquiasaonicolau.pt/' }}
           local-dir: "./build/"
+          # Limpa sempre o servidor para o estado exato do build local.
+          # Seguro aqui (ao contrário do backend): esta pasta só tem os
+          # ficheiros gerados pelo build + .htaccess, versionado em public/.
           dangerous-clean-slate: true
           exclude: |
             **/.git*
