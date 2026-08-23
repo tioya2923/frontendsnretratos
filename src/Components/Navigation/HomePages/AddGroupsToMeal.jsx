@@ -50,6 +50,7 @@ const AddGroupsToMeal = () => {
       })
       .catch(error => {
         console.error('Erro ao adicionar refeição:', error);
+        alert(error.response?.data?.message || 'Erro ao adicionar refeição.');
       });
   };
 

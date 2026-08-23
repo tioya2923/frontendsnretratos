@@ -36,6 +36,11 @@ const Grupos = () => {
         }
     };
 
+    // O backend passou a devolver códigos de erro HTTP reais (antes, um
+    // nome de grupo duplicado ou dados incompletos vinham sempre com
+    // 200 OK, e este try/catch nunca via a falha).
+    const erroServidor = (error, fallback) => error.response?.data?.message || fallback;
+
     const createGrupo = async () => {
         try {
             await axios.post(`${backendUrl}components/grupos.php`, { nome_grupo: nomeGrupo }, adminHeaders());
@@ -43,6 +48,7 @@ const Grupos = () => {
             setNomeGrupo('');
         } catch (error) {
             console.error('Erro ao criar grupo:', error);
+            alert(erroServidor(error, 'Erro ao criar grupo.'));
         }
     };
 
@@ -54,6 +60,7 @@ const Grupos = () => {
             setId(null);
         } catch (error) {
             console.error('Erro ao atualizar grupo:', error);
+            alert(erroServidor(error, 'Erro ao atualizar grupo.'));
         }
     };
 
@@ -63,6 +70,7 @@ const Grupos = () => {
             fetchGrupos();
         } catch (error) {
             console.error('Erro ao deletar grupo:', error);
+            alert(erroServidor(error, 'Erro ao eliminar grupo.'));
         }
     };
 
@@ -74,6 +82,7 @@ const Grupos = () => {
             setNovoMembro((prevMembros) => ({ ...prevMembros, [grupoId]: '' }));
         } catch (error) {
             console.error('Erro ao criar membro:', error);
+            alert(erroServidor(error, 'Erro ao adicionar membro.'));
         }
     };
 
@@ -83,6 +92,7 @@ const Grupos = () => {
             fetchMembros(grupoId); // Atualiza a lista de membros após deletar um membro
         } catch (error) {
             console.error('Erro ao deletar membro:', error);
+            alert(erroServidor(error, 'Erro ao eliminar membro.'));
         }
     };
 

@@ -71,24 +71,25 @@ const CalendarioRefeicoes = () => {
         })
             .then(response => {
                 console.log('Response:', response.data); // Adicionar log para depuração
-                if (response.data.message === "Já inscrito para esta refeição") {
-                    setErros(prev => ({ ...prev, [data]: "Já inscrito." }));
-                } else {
-                    setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
-                    // Limpar checkboxes
-                    setLevarRefeicao(prev => ({ ...prev, [data]: false }));
-                    setAlmoco(prev => ({ ...prev, [data]: false }));
-                    setAlmocoMaisCedo(prev => ({ ...prev, [data]: false }));
-                    setAlmocoMaisTarde(prev => ({ ...prev, [data]: false }));
-                    setJantar(prev => ({ ...prev, [data]: false }));
-                    setJantarMaisCedo(prev => ({ ...prev, [data]: false }));
-                    setJantarMaisTarde(prev => ({ ...prev, [data]: false }));
-                }
+                setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
+                // Limpar checkboxes
+                setLevarRefeicao(prev => ({ ...prev, [data]: false }));
+                setAlmoco(prev => ({ ...prev, [data]: false }));
+                setAlmocoMaisCedo(prev => ({ ...prev, [data]: false }));
+                setAlmocoMaisTarde(prev => ({ ...prev, [data]: false }));
+                setJantar(prev => ({ ...prev, [data]: false }));
+                setJantarMaisCedo(prev => ({ ...prev, [data]: false }));
+                setJantarMaisTarde(prev => ({ ...prev, [data]: false }));
             })
             .catch(error => {
                 console.error('Erro ao inscrever-se:', error);
-                if (error.response && error.response.data) {
-                    console.error('Erro no servidor:', error.response.data);
+                // O backend passou a devolver 409 (com a mesma mensagem) para
+                // inscrições duplicadas, em vez de 200 — por isso este caso
+                // específico já chega aqui, não ao .then() de sucesso.
+                if (error.response?.data?.message === "Já inscrito para esta refeição") {
+                    setErros(prev => ({ ...prev, [data]: "Já inscrito." }));
+                } else {
+                    setErros(prev => ({ ...prev, [data]: error.response?.data?.message || 'Erro ao inscrever-se.' }));
                 }
             });
     };
