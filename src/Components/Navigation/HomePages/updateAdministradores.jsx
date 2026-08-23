@@ -4,7 +4,8 @@ import axios from 'axios';
 const UpdateAdministradores = () => {
     const [users, setUsers] = useState([]);
 
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const envUrl = process.env.REACT_APP_BACKEND_URL;
+    const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
     // Memorize getUsers usando useCallback
     const getUsers = useCallback(() => {

@@ -17,7 +17,8 @@ const CalendarioRefeicoes = () => {
     const [jantarMaisCedo, setJantarMaisCedo] = useState({}); // Estado para jantar mais cedo
     const [jantarMaisTarde, setJantarMaisTarde] = useState({}); // Estado para jantar mais tarde
 
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const envUrl = process.env.REACT_APP_BACKEND_URL;
+    const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
     useEffect(() => {
         // Função para calcular a próxima sexta-feira a partir da data atual

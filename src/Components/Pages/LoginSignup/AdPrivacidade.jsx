@@ -10,7 +10,8 @@ const AdPrivacidade = () => {
     const [isSuper, setIsSuper] = useState(false);
 
 
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const envUrl = process.env.REACT_APP_BACKEND_URL;
+    const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
     const handleSubmit = async (event) => {
         event.preventDefault();

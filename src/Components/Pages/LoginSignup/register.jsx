@@ -34,7 +34,7 @@ export default function Register() {
   const hoje = new Date().toISOString().split("T")[0];
 
   const backendEnv = process.env.REACT_APP_BACKEND_URL;
-  const backendUrl = backendEnv.endsWith("/") ? backendEnv : backendEnv + "/";
+  const backendUrl = backendEnv ? (backendEnv.endsWith("/") ? backendEnv : backendEnv + "/") : '/';
 
   // ---------------- VALIDAR CAMPOS ----------------
   const validateInputs = () => {

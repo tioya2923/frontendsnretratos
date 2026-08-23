@@ -10,7 +10,8 @@ const Grupos = () => {
     const [selectedGrupo, setSelectedGrupo] = useState(null);
     const [novoMembro, setNovoMembro] = useState({});
 
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const envUrl = process.env.REACT_APP_BACKEND_URL;
+    const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
     const adminHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` } });
 
     useEffect(() => {

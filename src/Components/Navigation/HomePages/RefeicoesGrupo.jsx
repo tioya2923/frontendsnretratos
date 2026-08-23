@@ -5,7 +5,8 @@ const GruposList = () => {
   const [grupos, setGrupos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const envUrl = process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
   useEffect(() => {
     axios.get(`${backendUrl}components/grupo_refeicao.php`)

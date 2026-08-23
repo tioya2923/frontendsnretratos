@@ -14,7 +14,8 @@ const InscreverVisitas = () => {
   const [jantarMaisTarde, setJantarMaisTarde] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const envUrl = process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
