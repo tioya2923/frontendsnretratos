@@ -86,6 +86,7 @@ function Login() {
         fData.append('id', pendingUserId);
         fData.append('whatsapp', whatsappFull);
         fData.append('action', 'updateWhatsapp');
+        fData.append('password', password);
         axios.post(`${backendUrl}components/updateUsuarios.php`, fData)
             .then(() => {
                 toast.success('Número de WhatsApp atualizado! Fazendo login...');

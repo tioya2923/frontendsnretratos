@@ -11,6 +11,7 @@ const Grupos = () => {
     const [novoMembro, setNovoMembro] = useState({});
 
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const adminHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` } });
 
     useEffect(() => {
         fetchGrupos();
@@ -36,7 +37,7 @@ const Grupos = () => {
 
     const createGrupo = async () => {
         try {
-            await axios.post(`${backendUrl}components/grupos.php`, { nome_grupo: nomeGrupo });
+            await axios.post(`${backendUrl}components/grupos.php`, { nome_grupo: nomeGrupo }, adminHeaders());
             fetchGrupos();
             setNomeGrupo('');
         } catch (error) {
@@ -46,7 +47,7 @@ const Grupos = () => {
 
     const updateGrupo = async () => {
         try {
-            await axios.put(`${backendUrl}components/grupos.php`, { id, nome_grupo: nomeGrupo });
+            await axios.put(`${backendUrl}components/grupos.php`, { id, nome_grupo: nomeGrupo }, adminHeaders());
             fetchGrupos();
             setNomeGrupo('');
             setId(null);
@@ -57,7 +58,7 @@ const Grupos = () => {
 
     const deleteGrupo = async (id) => {
         try {
-            await axios.delete(`${backendUrl}components/grupos.php`, { data: { id } });
+            await axios.delete(`${backendUrl}components/grupos.php`, { data: { id }, ...adminHeaders() });
             fetchGrupos();
         } catch (error) {
             console.error('Erro ao deletar grupo:', error);
@@ -67,7 +68,7 @@ const Grupos = () => {
     const createMembro = async (grupoId) => {
         try {
             const nomeMembro = novoMembro[grupoId];
-            await axios.post(`${backendUrl}components/grupos.php`, { nome_membro: nomeMembro, grupo_id: grupoId });
+            await axios.post(`${backendUrl}components/grupos.php`, { nome_membro: nomeMembro, grupo_id: grupoId }, adminHeaders());
             fetchMembros(grupoId); // Atualiza a lista de membros após adicionar um novo membro
             setNovoMembro((prevMembros) => ({ ...prevMembros, [grupoId]: '' }));
         } catch (error) {
@@ -77,7 +78,7 @@ const Grupos = () => {
 
     const deleteMembro = async (membroId, grupoId) => {
         try {
-            await axios.delete(`${backendUrl}components/grupos.php`, { data: { membro_id: membroId } });
+            await axios.delete(`${backendUrl}components/grupos.php`, { data: { membro_id: membroId }, ...adminHeaders() });
             fetchMembros(grupoId); // Atualiza a lista de membros após deletar um membro
         } catch (error) {
             console.error('Erro ao deletar membro:', error);

@@ -8,7 +8,10 @@ const UpdateAdministradores = () => {
 
     // Memorize getUsers usando useCallback
     const getUsers = useCallback(() => {
-        axios.get(`${backendUrl}components/updateAdministradores.php`)
+        const adminToken = localStorage.getItem('adminToken');
+        axios.get(`${backendUrl}components/updateAdministradores.php`, {
+            headers: { Authorization: `Bearer ${adminToken}` }
+        })
             .then(response => {
                 console.log(response.data);
                 if (Array.isArray(response.data)) {

@@ -33,7 +33,9 @@ const AddGroupsToMeal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${backendUrl}components/grupo_refeicao.php`, formData)
+    axios.post(`${backendUrl}components/grupo_refeicao.php`, formData, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+    })
       .then(response => {
         alert('Refeição adicionada com sucesso!');
         // Limpar o formulário

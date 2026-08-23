@@ -29,13 +29,16 @@ function Privacidade() {
         fData.append('password', password);
         axios.post(url, fData)
             .then(response => {
-                if (response.data === 'Login bem-sucedido') {
+                const data = response.data;
+                if (data && data.status === 'success') {
                     toast.success('Login bem-sucedido');
+                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('adminName', data.name);
                     setLoggedIn(true);
-                } else if (response.data === 'área não permitida') {
+                } else if (data && data.message === 'área não permitida') {
                     toast.error('área não permitida');
                 } else {
-                    toast.error('Email ou palavra passe incorretos');
+                    toast.error((data && data.message) || 'Email ou palavra passe incorretos');
                 }
             })
             .catch(error => toast.error(error));
