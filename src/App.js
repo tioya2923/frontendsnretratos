@@ -7,7 +7,7 @@ import Navbar from "./Components/Navigation/Navbar";
 import PwaUpdateBanner from "./Components/PwaUpdateBanner";
 import Footer from "./Components/FooterPage/Footer";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Components/Navigation/HomePages/home";
 import Login from "./Components/Pages/LoginSignup/login";
 import Register from "./Components/Pages/LoginSignup/register";
@@ -68,6 +68,18 @@ function AuthRoute({ children }) {
   );
 }
 
+// Páginas de gestão (administradores, utilizadores, grupos) — o backend
+// já exige a sessão de admin em qualquer dos casos; isto só evita que um
+// utilizador normal veja a página a tentar carregar e falhar, mandando-o
+// antes para o login de administrador (não o de utilizador normal).
+function AdminRoute({ children }) {
+  const isAdminAuthenticated = !!localStorage.getItem('adminToken');
+  if (!isAdminAuthenticated) {
+    return <Navigate to="/privacidade" />;
+  }
+  return children;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -83,12 +95,12 @@ function AppRoutes() {
       <Route path="/home" element={<AuthRoute><><Navbar /><Home /><Footer /></></AuthRoute>} />
       <Route path="/areaPessoal" element={<AuthRoute><><Navbar /><AreaPessoal /><Footer /></></AuthRoute>} />
       <Route path="/administracao" element={<AuthRoute><><Navbar /><Administracao /><Footer /></></AuthRoute>} />
-      <Route path="/updateUsuarios" element={<AuthRoute><><Navbar /><UpdateUsuarios /><Footer /></></AuthRoute>} />
-      <Route path="/updateAdministradores" element={<AuthRoute><><Navbar /><UpdateAdministradores /><Footer /></></AuthRoute>} />
+      <Route path="/updateUsuarios" element={<AdminRoute><><Navbar /><UpdateUsuarios /><Footer /></></AdminRoute>} />
+      <Route path="/updateAdministradores" element={<AdminRoute><><Navbar /><UpdateAdministradores /><Footer /></></AdminRoute>} />
       <Route path="/refeicoes" element={<AuthRoute><><Navbar /><CalendarioRefeicoes /><Footer /></></AuthRoute>} />
       <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></></AuthRoute>} />
-      <Route path="/gruposMembros" element={<AuthRoute><><Navbar /><MembrosGrupos /><Footer /></></AuthRoute>} />
-      <Route path="/AddGroupsToMeal" element={<AuthRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AuthRoute>} />
+      <Route path="/gruposMembros" element={<AdminRoute><><Navbar /><MembrosGrupos /><Footer /></></AdminRoute>} />
+      <Route path="/AddGroupsToMeal" element={<AdminRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AdminRoute>} />
       <Route path="/RefeicoesGrupo" element={<AuthRoute><><Navbar /><RefeicoesGrupo /><Footer /></></AuthRoute>} />
       <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><Footer /></></AuthRoute>} />
       <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
