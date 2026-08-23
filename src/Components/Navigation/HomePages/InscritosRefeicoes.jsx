@@ -13,13 +13,14 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
     const toArray = d => Array.isArray(d) ? d : (d && typeof d === 'object') ? [d] : [];
+    const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
     const fetchAll = useCallback(async () => {
         const t = Date.now();
         try {
             const [refRes, nomesRes] = await Promise.all([
-                axios.get(`${backendUrl}components/refeicoes.php?_=${t}`),
-                axios.get(`${backendUrl}components/aniversarios_usuarios.php?_=${t}`)
+                axios.get(`${backendUrl}components/refeicoes.php?_=${t}`, authHeaders()),
+                axios.get(`${backendUrl}components/aniversarios_usuarios.php?_=${t}`, authHeaders())
             ]);
             setRefeicoes(toArray(refRes.data));
             setNomes(toArray(nomesRes.data));
@@ -55,7 +56,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
 
         if (diferencaHoras > 24) {
             try {
-                await axios.delete(`${backendUrl}components/refeicoes.php`, { data: { id } });
+                await axios.delete(`${backendUrl}components/refeicoes.php`, { data: { id }, ...authHeaders() });
                 setRefeicoes(refeicoes.filter(refeicao => refeicao.id !== id));
             } catch (err) {
                 setError('Erro ao eliminar inscrição.');

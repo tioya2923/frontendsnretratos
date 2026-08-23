@@ -3,6 +3,7 @@ import axios from "axios";
 
 export default function Unsubscribe() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState(null);
 
   // URL do backend
@@ -17,7 +18,8 @@ export default function Unsubscribe() {
       const url = `${backendUrl}components/unsubscribe.php`;
 
       const response = await axios.post(url, {
-        email: email.trim()
+        email: email.trim(),
+        password
       });
 
       if (response.data.status === "success") {
@@ -45,6 +47,15 @@ export default function Unsubscribe() {
           id="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
+          required
+          style={{ width: "100%", margin: "12px 0", padding: 8 }}
+        />
+        <label htmlFor="password">E a tua palavra-passe, para confirmar que és mesmo tu:</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           required
           style={{ width: "100%", margin: "12px 0", padding: 8 }}
         />

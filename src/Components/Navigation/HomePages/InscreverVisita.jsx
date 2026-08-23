@@ -29,6 +29,8 @@ const InscreverVisitas = () => {
         jantar,
         jantar_mais_cedo: jantarMaisCedo,
         jantar_mais_tarde: jantarMaisTarde,
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setMensagem(response.data.message);
     } catch (error) {

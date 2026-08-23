@@ -12,7 +12,9 @@ const Notificacoes = () => {
     useEffect(() => {
         const fetchNotificacoes = async () => {
             try {
-                const response = await axios.get(`${backendUrl}components/notificar_refeicoes.php?_=${Date.now()}`);
+                const response = await axios.get(`${backendUrl}components/notificar_refeicoes.php?_=${Date.now()}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                });
                 console.log('Notificações carregadas:', response.data);
                 setNotificacoes(response.data);
             } catch (err) {

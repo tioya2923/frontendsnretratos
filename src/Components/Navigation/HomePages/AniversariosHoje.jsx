@@ -10,7 +10,9 @@ function AniversariosHoje() {
   useEffect(() => {
     let cancelado = false;
 
-    fetch(`${backendUrl}/components/aniversarios_hoje.php`)
+    fetch(`${backendUrl}/components/aniversarios_hoje.php`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
       .then((res) => res.json())
       .then((data) => {
         if (cancelado) return;
