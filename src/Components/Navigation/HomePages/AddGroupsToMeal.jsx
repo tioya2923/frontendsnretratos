@@ -67,7 +67,14 @@ const AddGroupsToMeal = () => {
       </div>
       <div>
         <label>Tipo de Refeição:</label>
-        <input type="text" name="tipo_refeicao" value={formData.tipo_refeicao} onChange={handleChange} required />
+        {/* Valores fixos (não texto livre): é isto que permite ao mapa de
+            refeições (InscritosRefeicoes.jsx) somar o número de pessoas do
+            grupo ao total certo (Almoço ou Jantar) do dia. */}
+        <select name="tipo_refeicao" value={formData.tipo_refeicao} onChange={handleChange} required>
+          <option value="">Selecione</option>
+          <option value="almoco">Almoço</option>
+          <option value="jantar">Jantar</option>
+        </select>
       </div>
       <div>
         <label>Data da Refeição:</label>

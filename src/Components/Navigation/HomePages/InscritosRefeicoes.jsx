@@ -12,6 +12,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     const [selectedId, setSelectedId] = useState(null);
     const [nomes, setNomes] = useState([]);
     const [confirmacoes, setConfirmacoes] = useState([]);
+    const [grupos, setGrupos] = useState([]);
     const envUrl = process.env.REACT_APP_BACKEND_URL;
     const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
@@ -26,14 +27,16 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     const fetchAll = useCallback(async () => {
         const t = Date.now();
         try {
-            const [refRes, nomesRes, confRes] = await Promise.all([
+            const [refRes, nomesRes, confRes, gruposRes] = await Promise.all([
                 axios.get(`${backendUrl}components/refeicoes.php?_=${t}`, authHeaders()),
                 axios.get(`${backendUrl}components/aniversarios_usuarios.php?_=${t}`, authHeaders()),
-                axios.get(`${backendUrl}components/confirmar_presenca.php?_=${t}`, authHeaders())
+                axios.get(`${backendUrl}components/confirmar_presenca.php?_=${t}`, authHeaders()),
+                axios.get(`${backendUrl}components/grupo_refeicao.php?_=${t}`, authHeaders())
             ]);
             setRefeicoes(toArray(refRes.data));
             setNomes(toArray(nomesRes.data));
             setConfirmacoes(toArray(confRes.data));
+            setGrupos(toArray(gruposRes.data));
             setError(null);
         } catch (err) {
             setError('Erro ao carregar dados. Tente novamente mais tarde.');
@@ -202,8 +205,24 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
         return calcularFeriados(ano);
     };
 
+    // Todas as refeições de grupo (data + tipo + número de pessoas), já
+    // achatadas numa lista simples — mais fácil de cruzar por dia a seguir.
+    // O tipo aceita tanto os valores novos ('almoco'/'jantar', escolhidos
+    // num <select>) como texto livre antigo ('Almoço', 'ALMOÇO', ...),
+    // por isso a comparação é por sub-string, não por igualdade exata.
+    const refeicoesDeGrupo = grupos.flatMap(grupo =>
+        (grupo.refeicoes || []).map(r => ({
+            data: r.data_refeicao,
+            tipo: r.tipo_refeicao,
+            numeroPessoas: grupo.numero_pessoas || 0,
+            nomeGrupo: grupo.nome_grupo
+        }))
+    );
+    const ehTipoAlmoco = (tipo) => /almo/i.test(tipo || '');
+    const ehTipoJantar = (tipo) => /jant/i.test(tipo || '');
+
     const organizarPorDia = (refeicoes) => {
-        
+
         const hoje = new Date();
         const seteDias = Array.from({ length: 7 }, (_, i) => {
             const data = new Date();
@@ -223,6 +242,16 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
 
             const horarioJantar = data.getDay() === 0 ? '20h30' : (feriado || Object.keys(feriadosFixos).includes(dataFormatada.substring(0, 5))) ? '20h30' : '20h00';
 
+            // Grupos marcados para este dia — separados por tipo, para
+            // somar ao total certo (Almoço ou Jantar) mais abaixo.
+            const gruposDoDia = refeicoesDeGrupo.filter(
+                g => new Date(g.data).toDateString() === data.toDateString()
+            );
+            const gruposAlmoco = gruposDoDia.filter(g => ehTipoAlmoco(g.tipo));
+            const gruposJantar = gruposDoDia.filter(g => ehTipoJantar(g.tipo));
+            const totalPessoasGruposAlmoco = gruposAlmoco.reduce((soma, g) => soma + g.numeroPessoas, 0);
+            const totalPessoasGruposJantar = gruposJantar.reduce((soma, g) => soma + g.numeroPessoas, 0);
+
             return {
                 dia: diasDaSemana[data.getDay()],
                 data: dataFormatada,
@@ -236,7 +265,11 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                     }
                     return dataRefeicao.toDateString() === data.toDateString();
                 }),
-                horarioJantar
+                horarioJantar,
+                gruposAlmoco,
+                gruposJantar,
+                totalPessoasGruposAlmoco,
+                totalPessoasGruposJantar
             };
         });
         return refeicoesPorDia;
@@ -250,7 +283,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
         <div className='calendarioContainer'>
          
             <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>
-            {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar }) => (
+            {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar, gruposAlmoco, gruposJantar, totalPessoasGruposAlmoco, totalPessoasGruposJantar }) => (
                 <div className='calendarioData' key={data}>
                     <h2 className='calendarioDiaData'>{dia}: {data}</h2>
 
@@ -311,9 +344,19 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                     <p>Lugares à mesa: {refeicoes.filter(refeicao => refeicao.almoco).length}</p>
                                 </td>
                             </tr>
+                            {gruposAlmoco.length > 0 && (
+                                <tr>
+                                    <td colSpan={tiposRefeicoesAlmoco.length}>
+                                        <p>Grupos: {gruposAlmoco.map(g => `${g.nomeGrupo} (${g.numeroPessoas})`).join(', ')}</p>
+                                    </td>
+                                </tr>
+                            )}
                             <tr>
                                 <td colSpan={tiposRefeicoesAlmoco.length}>
-                                    <p><strong>Total Geral para o Almoço: {refeicoes.filter(refeicao => refeicao.almoco || refeicao.almoco_mais_cedo || refeicao.almoco_mais_tarde).length}</strong></p>
+                                    <p><strong>Total Geral para o Almoço: {
+                                        refeicoes.filter(refeicao => refeicao.almoco || refeicao.almoco_mais_cedo || refeicao.almoco_mais_tarde).length
+                                        + totalPessoasGruposAlmoco
+                                    }</strong></p>
                                 </td>
                             </tr>
                         </tbody>
@@ -364,13 +407,21 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                     <p>Lugares à mesa: {refeicoes.filter(refeicao => refeicao.jantar).length}</p>
                                 </td>
                             </tr>
+                            {gruposJantar.length > 0 && (
+                                <tr>
+                                    <td colSpan={tiposRefeicoesJantar.length}>
+                                        <p>Grupos: {gruposJantar.map(g => `${g.nomeGrupo} (${g.numeroPessoas})`).join(', ')}</p>
+                                    </td>
+                                </tr>
+                            )}
                             <tr>
                                 <td colSpan={tiposRefeicoesJantar.length}>
                                     <p><strong>Total Geral para o Jantar: {
                                         refeicoes.filter(refeicao => refeicao.jantar).length +
                                         refeicoes.filter(refeicao => refeicao.jantar_mais_cedo).length +
                                         refeicoes.filter(refeicao => refeicao.jantar_mais_tarde).length +
-                                        refeicoes.filter(refeicao => refeicao.levar_refeicao).length
+                                        refeicoes.filter(refeicao => refeicao.levar_refeicao).length +
+                                        totalPessoasGruposJantar
                                     }</strong></p>
                                 </td>
                             </tr>

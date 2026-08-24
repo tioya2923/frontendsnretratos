@@ -5,6 +5,7 @@ import '../../Styles/Grupos.css'; // Importando o arquivo CSS
 const Grupos = () => {
     const [grupos, setGrupos] = useState([]);
     const [nomeGrupo, setNomeGrupo] = useState('');
+    const [numeroPessoas, setNumeroPessoas] = useState('');
     const [id, setId] = useState(null);
     const [membros, setMembros] = useState({});
     const [selectedGrupo, setSelectedGrupo] = useState(null);
@@ -52,9 +53,14 @@ const Grupos = () => {
 
     const createGrupo = async () => {
         try {
-            await axios.post(`${backendUrl}components/grupos.php`, { nome_grupo: nomeGrupo }, adminHeaders());
+            await axios.post(
+                `${backendUrl}components/grupos.php`,
+                { nome_grupo: nomeGrupo, numero_pessoas: Number(numeroPessoas) || 0 },
+                adminHeaders()
+            );
             fetchGrupos();
             setNomeGrupo('');
+            setNumeroPessoas('');
         } catch (error) {
             console.error('Erro ao criar grupo:', error);
             alert(erroServidor(error, 'Erro ao criar grupo.'));
@@ -63,9 +69,14 @@ const Grupos = () => {
 
     const updateGrupo = async () => {
         try {
-            await axios.put(`${backendUrl}components/grupos.php`, { id, nome_grupo: nomeGrupo }, adminHeaders());
+            await axios.put(
+                `${backendUrl}components/grupos.php`,
+                { id, nome_grupo: nomeGrupo, numero_pessoas: Number(numeroPessoas) || 0 },
+                adminHeaders()
+            );
             fetchGrupos();
             setNomeGrupo('');
+            setNumeroPessoas('');
             setId(null);
         } catch (error) {
             console.error('Erro ao atualizar grupo:', error);
@@ -126,6 +137,15 @@ const Grupos = () => {
                     onChange={(e) => setNomeGrupo(e.target.value)}
                     placeholder="Novo Grupo"
                 />
+                <input
+                    className="input"
+                    type="number"
+                    min="0"
+                    value={numeroPessoas}
+                    onChange={(e) => setNumeroPessoas(e.target.value)}
+                    placeholder="Número de pessoas"
+                    title="Quantas pessoas o grupo representa — soma ao total geral da refeição no dia em que o grupo estiver marcado"
+                />
                 <button className="button" onClick={id ? updateGrupo : createGrupo}>
                     {id ? 'Atualizar Grupo' : 'Criar Grupo'}
                 </button>
@@ -134,10 +154,12 @@ const Grupos = () => {
                 {grupos.map((grupo) => (
                     <li key={grupo.id} className={`group-item ${selectedGrupo === grupo.id ? 'active' : ''}`}>
                         <div className="group-name" onClick={() => handleGrupoClick(grupo.id)}>
-                            {grupo.nome_grupo}: {grupo.total_membros}
+                            {grupo.nome_grupo} — {grupo.numero_pessoas} pessoa{grupo.numero_pessoas === 1 ? '' : 's'}
+                            {grupo.total_membros > 0 && ` (${grupo.total_membros} nomeado${grupo.total_membros === 1 ? '' : 's'})`}
                         </div>
                         <button className="button edit-button" onClick={() => {
                             setNomeGrupo(grupo.nome_grupo);
+                            setNumeroPessoas(String(grupo.numero_pessoas ?? 0));
                             setId(grupo.id);
                         }}>Editar</button>
                         <button className="button delete-button" onClick={() => deleteGrupo(grupo.id)}>Apagar</button>
