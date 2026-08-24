@@ -109,7 +109,10 @@ function AppRoutes() {
       <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></></AuthRoute>} />
       <Route path="/gruposMembros" element={<AdminRoute><><Navbar /><MembrosGrupos /><Footer /></></AdminRoute>} />
       <Route path="/AddGroupsToMeal" element={<AdminRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AdminRoute>} />
-      <Route path="/RefeicoesGrupo" element={<AuthRoute><><Navbar /><RefeicoesGrupo /><Footer /></></AuthRoute>} />
+      {/* O nome do componente é GruposList — a rota usa o mesmo nome para
+          bater certo com o link em updateUsuarios.jsx ("Refeições em
+          Grupos") e com o URL que os utilizadores já possam ter guardado. */}
+      <Route path="/GruposList" element={<AuthRoute><><Navbar /><RefeicoesGrupo /><Footer /></></AuthRoute>} />
       <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><Footer /></></AuthRoute>} />
       <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
       <Route path="/atividades" element={<AuthRoute><><Navbar /><AtividadesPage /><Footer /></></AuthRoute>} />
