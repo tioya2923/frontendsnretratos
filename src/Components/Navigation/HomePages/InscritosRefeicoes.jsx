@@ -1,16 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useUser } from '../../../UserContext';
 import '../../Styles/InscritosRefeicoes.css';
 
 const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
+    const { userName } = useUser();
     const [refeicoes, setRefeicoes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
     const [nomes, setNomes] = useState([]);
+    const [confirmacoes, setConfirmacoes] = useState([]);
     const envUrl = process.env.REACT_APP_BACKEND_URL;
     const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
+
+    // Data de hoje em Lisboa, no mesmo formato YYYY-MM-DD que o backend
+    // devolve em refeicao.data — só se oferece o botão de confirmar no
+    // próprio dia da refeição.
+    const hojeStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Lisbon' }).format(new Date());
 
     const toArray = d => Array.isArray(d) ? d : (d && typeof d === 'object') ? [d] : [];
     const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -18,12 +26,14 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     const fetchAll = useCallback(async () => {
         const t = Date.now();
         try {
-            const [refRes, nomesRes] = await Promise.all([
+            const [refRes, nomesRes, confRes] = await Promise.all([
                 axios.get(`${backendUrl}components/refeicoes.php?_=${t}`, authHeaders()),
-                axios.get(`${backendUrl}components/aniversarios_usuarios.php?_=${t}`, authHeaders())
+                axios.get(`${backendUrl}components/aniversarios_usuarios.php?_=${t}`, authHeaders()),
+                axios.get(`${backendUrl}components/confirmar_presenca.php?_=${t}`, authHeaders())
             ]);
             setRefeicoes(toArray(refRes.data));
             setNomes(toArray(nomesRes.data));
+            setConfirmacoes(toArray(confRes.data));
             setError(null);
         } catch (err) {
             setError('Erro ao carregar dados. Tente novamente mais tarde.');
@@ -31,6 +41,55 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
             setLoading(false);
         }
     }, [backendUrl]);
+
+    const isConfirmado = (refeicaoId, tipoBase) =>
+        confirmacoes.some(c => c.refeicao_id === refeicaoId && c.tipo === tipoBase);
+
+    const handleConfirmarPresenca = async (event, refeicaoId, tipoBase) => {
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+            await axios.post(
+                `${backendUrl}components/confirmar_presenca.php`,
+                { refeicao_id: refeicaoId, tipo: tipoBase },
+                authHeaders()
+            );
+            setConfirmacoes(prev => [...prev, { refeicao_id: refeicaoId, tipo: tipoBase }]);
+        } catch (err) {
+            alert(err.response?.data?.message || 'Não foi possível confirmar a presença.');
+        }
+    };
+
+    // Nome + "visto" de quem já confirmou + botão de confirmar para o
+    // próprio utilizador, no próprio dia da refeição (a janela horária
+    // exata é sempre validada — e reforçada — no backend). tipoBase a
+    // null (ex.: coluna de Takeaway) desliga a confirmação — não faz
+    // sentido "confirmar presença" em quem vai levar a refeição para casa.
+    const renderNome = (refeicao, tipoBase) => {
+        if (!tipoBase) return refeicao.nome_completo;
+
+        const confirmado = isConfirmado(refeicao.id, tipoBase);
+        const ehHoje = refeicao.data === hojeStr;
+        const ehOProprio = !!userName &&
+            refeicao.nome_completo?.trim().toLowerCase() === userName.trim().toLowerCase();
+
+        return (
+            <>
+                {refeicao.nome_completo}
+                {confirmado && (
+                    <span className="presencaConfirmada" title="Presença confirmada">✓</span>
+                )}
+                {!confirmado && ehHoje && ehOProprio && (
+                    <button
+                        className="confirmarPresencaButton"
+                        onClick={(e) => handleConfirmarPresenca(e, refeicao.id, tipoBase)}
+                    >
+                        Confirmar presença
+                    </button>
+                )}
+            </>
+        );
+    };
 
     useEffect(() => {
         fetchAll();
@@ -226,7 +285,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                             <ul>
                                                 {inscritos.map((refeicao) => (
                                                     <li key={refeicao.id} className="nomeContainer" onClick={(event) => handleClick(event, refeicao.id)}>
-                                                        {refeicao.nome_completo}
+                                                        {renderNome(refeicao, 'almoco')}
                                                         {selectedId === refeicao.id && (
                                                             <button className="calendarioButton" onClick={() => handleDelete(refeicao.id)}>Não vem</button>
                                                         )}
@@ -279,7 +338,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                             <ul>
                                                 {inscritos.map((refeicao) => (
                                                     <li key={refeicao.id} className="nomeContainer" onClick={(event) => handleClick(event, refeicao.id)}>
-                                                        {refeicao.nome_completo}
+                                                        {renderNome(refeicao, tipo === 'Takeaway' ? null : 'jantar')}
                                                         {selectedId === refeicao.id && (
                                                             <button className="calendarioButton" onClick={() => handleDelete(refeicao.id)}>Não vem</button>
                                                         )}

@@ -105,6 +105,28 @@ table tr:hover {
     background-color: #ff1a1a; /* Cor de fundo ao passar o mouse */
 }
 
+.presencaConfirmada {
+    color: #147a1e;
+    font-weight: bold;
+    margin-left: 0.4rem;
+}
+
+.confirmarPresencaButton {
+    background-color: #147a1e;
+    color: white;
+    border: none;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.confirmarPresencaButton:hover {
+    background-color: #0f5c16;
+}
+
 .inscricao-link {
     display: inline-block;
     padding: 10px 20px;
