@@ -1,33 +1,20 @@
 import React, { useState } from "react";
-import Select from "react-select";
-import "flag-icons/css/flag-icons.min.css";
 import "./Register.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { allCountries } from "./countryCodes";
-
-// Ordenação dos países
-const sortedCountries = [...allCountries].sort((a, b) => {
-  if (a.code === "+1") return -1;
-  if (b.code === "+1") return 1;
-  return parseInt(a.code.replace(/\D/g, "")) - parseInt(b.code.replace(/\D/g, ""));
-});
 
 export default function Register() {
-  const [selectedCountry, setSelectedCountry] = useState(sortedCountries[0]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
   const [dataAniversario, setDataAniversario] = useState("");
   const [dataAniversarioSacerdotal, setDataAniversarioSacerdotal] = useState("");
 
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [whatsappError, setWhatsappError] = useState("");
   const [confirmError, setConfirmError] = useState("");
   const [dataAniversarioError, setDataAniversarioError] = useState("");
 
@@ -43,7 +30,6 @@ export default function Register() {
     let nameErr = "";
     let emailErr = "";
     let passwordErr = "";
-    let whatsappErr = "";
     let dataAniversarioErr = "";
 
     if (!name.trim()) {
@@ -67,14 +53,6 @@ export default function Register() {
       errors.push(passwordErr);
     }
 
-    if (!whatsapp.trim()) {
-      whatsappErr = "Insira o número do WhatsApp";
-      errors.push(whatsappErr);
-    } else if (!/^\d{8,12}$/.test(whatsapp)) {
-      whatsappErr = "Número inválido. Insira apenas o número, sem o código do país.";
-      errors.push(whatsappErr);
-    }
-
     if (!dataAniversario) {
       dataAniversarioErr = "Insira a data de aniversário natalício";
       errors.push(dataAniversarioErr);
@@ -86,7 +64,6 @@ export default function Register() {
     setNameError(nameErr);
     setEmailError(emailErr);
     setPasswordError(passwordErr);
-    setWhatsappError(whatsappErr);
     setDataAniversarioError(dataAniversarioErr);
 
     return errors;
@@ -109,7 +86,6 @@ export default function Register() {
       name,
       email,
       password,
-      whatsapp: selectedCountry.code.replace("+", "") + whatsapp,
       dataAniversario,
       dataAniversarioSacerdotal: dataAniversarioSacerdotal || null,
       newRegistration: true
@@ -128,7 +104,6 @@ export default function Register() {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        setWhatsapp("");
         setDataAniversario("");
         setDataAniversarioSacerdotal("");
       } else {
@@ -163,50 +138,6 @@ export default function Register() {
             <label>Email</label>
             <input value={email} onChange={(e) => setEmail(e.target.value)} required />
             {emailError && <span className="error">{emailError}</span>}
-          </div>
-
-          {/* WhatsApp */}
-          <div className="form-group">
-            <label>WhatsApp</label>
-            <div className="form-group-row">
-              <Select
-                className="whatsapp-select"
-                classNamePrefix="react-select"
-                value={{
-                  value: selectedCountry.code,
-                  label: (
-                    <span>
-                      <span className={`fi fi-${selectedCountry.iso}`} style={{ marginRight: 8 }}></span>
-                      {selectedCountry.code}
-                    </span>
-                  ),
-                }}
-                onChange={(option) => {
-                  const found = sortedCountries.find((c) => c.code === option.value);
-                  setSelectedCountry(found || sortedCountries[0]);
-                }}
-                options={sortedCountries.map((country) => ({
-                  value: country.code,
-                  label: (
-                    <span>
-                      <span className={`fi fi-${country.iso}`} style={{ marginRight: 8 }}></span>
-                      {country.code}
-                    </span>
-                  ),
-                }))}
-                isSearchable
-              />
-
-              <input
-                type="text"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value.replace(/\D/g, ""))}
-                required
-                placeholder="Número sem código"
-                className="whatsapp-input"
-              />
-            </div>
-            {whatsappError && <span className="error">{whatsappError}</span>}
           </div>
 
           {/* Datas de aniversário */}

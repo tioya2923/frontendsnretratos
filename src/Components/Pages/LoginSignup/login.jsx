@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import WhatsappForm from "./WhatsappForm";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,9 +13,6 @@ function Login() {
     const [userName, setUserName] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const [showWhatsappForm, setShowWhatsappForm] = useState(false);
-    const [pendingUserId, setPendingUserId] = useState(null);
-    const [loadingWhatsapp, setLoadingWhatsapp] = useState(false);
     const navigate = useNavigate();
 
     const envUrl = process.env.REACT_APP_BACKEND_URL;
@@ -55,10 +51,7 @@ function Login() {
         fData.append('password', password);
         axios.post(url, fData)
             .then(response => {
-                if (response.data.status === 'whatsapp_required') {
-                    setPendingUserId(response.data.user_id);
-                    setShowWhatsappForm(true);
-                } else if (response.data.message === 'Login bem-sucedido') {
+                if (response.data.message === 'Login bem-sucedido') {
                     toast.success('Login bem-sucedido');
                     setUserName(response.data.name);
                     localStorage.setItem('userName', response.data.name);
@@ -76,52 +69,6 @@ function Login() {
                 } else {
                     toast.error('Erro de conexão. Tente novamente mais tarde.');
                 }
-            });
-    };
-
-    const handleWhatsappSubmit = (whatsappFull) => {
-        setLoadingWhatsapp(true);
-        // Enviar como FormData, pois o backend espera POST multipart/form-data
-        let fData = new FormData();
-        fData.append('id', pendingUserId);
-        fData.append('whatsapp', whatsappFull);
-        fData.append('action', 'updateWhatsapp');
-        fData.append('password', password);
-        axios.post(`${backendUrl}components/updateUsuarios.php`, fData)
-            .then(() => {
-                toast.success('Número de WhatsApp atualizado! Fazendo login...');
-                setShowWhatsappForm(false);
-                // Tentar login automático após atualizar o WhatsApp
-                const url = `${backendUrl}components/login.php`;
-                let loginData = new FormData();
-                loginData.append('email', email);
-                loginData.append('password', password);
-                axios.post(url, loginData)
-                    .then(response => {
-                        if (response.data.message === 'Login bem-sucedido') {
-                            setUserName(response.data.name);
-                            localStorage.setItem('userName', response.data.name);
-                            localStorage.setItem('token', response.data.token);
-                            setLoggedIn(true);
-                        } else if (response.data.message === 'A sua conta ainda não foi aprovada pelo administrador.') {
-                            toast.error('A sua conta ainda não foi aprovada pelo administrador.');
-                        } else {
-                            toast.error('Falha no login. Verifique seus dados.');
-                        }
-                    })
-                    .catch(error => {
-                        if (error.response && error.response.data && error.response.data.message) {
-                            toast.error('Erro: ' + error.response.data.message);
-                        } else {
-                            toast.error('Erro de conexão. Tente novamente mais tarde.');
-                        }
-                    });
-            })
-            .catch(() => {
-                toast.error('Erro ao atualizar WhatsApp. Tente novamente.');
-            })
-            .finally(() => {
-                setLoadingWhatsapp(false);
             });
     };
 
@@ -160,15 +107,6 @@ function Login() {
                             </Link>
                         </span>
                     </div>
-                    {showWhatsappForm && (
-                        <div style={{ background: 'rgba(0,0,0,0.7)', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ background: '#fff', padding: 32, borderRadius: 8, minWidth: 320, boxShadow: '0 2px 16px #0003', position: 'relative' }}>
-                                <h3>Informe seu número de WhatsApp</h3>
-                                <WhatsappForm onSubmit={handleWhatsappSubmit} loading={loadingWhatsapp} />
-                                <button onClick={() => setShowWhatsappForm(false)} style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer' }} title="Fechar">×</button>
-                            </div>
-                        </div>
-                    )}
                     <ToastContainer />
                 </div>
             </div>

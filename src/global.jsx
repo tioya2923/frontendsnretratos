@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import "flag-icons/css/flag-icons.min.css";
 
 export const GlobalStyles = createGlobalStyle`
     html, body {
