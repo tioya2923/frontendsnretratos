@@ -21,6 +21,16 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     // próprio dia da refeição.
     const hojeStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Lisbon' }).format(new Date());
 
+    // Dia anterior (calendário local, sem passar por UTC) — usado para o
+    // Takeaway, que se confirma na véspera da data da refeição.
+    const diaAnterior = (dataStr) => {
+        const [ano, mes, dia] = dataStr.split('-').map(Number);
+        const d = new Date(ano, mes - 1, dia);
+        d.setDate(d.getDate() - 1);
+        const pad = n => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    };
+
     const toArray = d => Array.isArray(d) ? d : (d && typeof d === 'object') ? [d] : [];
     const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
@@ -64,15 +74,19 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     };
 
     // Nome + "visto" de quem já confirmou + botão de confirmar para o
-    // próprio utilizador, no próprio dia da refeição (a janela horária
-    // exata é sempre validada — e reforçada — no backend). tipoBase a
-    // null (ex.: coluna de Takeaway) desliga a confirmação — não faz
-    // sentido "confirmar presença" em quem vai levar a refeição para casa.
+    // próprio utilizador (a janela horária exata é sempre validada — e
+    // reforçada — no backend). tipoBase a null desliga a confirmação.
     const renderNome = (refeicao, tipoBase) => {
         if (!tipoBase) return refeicao.nome_completo;
 
         const confirmado = isConfirmado(refeicao.id, tipoBase);
-        const ehHoje = refeicao.data === hojeStr;
+
+        // Takeaway é levantado na véspera da data da refeição — por isso
+        // o botão de confirmar aparece nesse dia, não no dia da refeição.
+        const diaConfirmacaoStr = tipoBase === 'levar_refeicao'
+            ? diaAnterior(refeicao.data)
+            : refeicao.data;
+        const ehHoje = diaConfirmacaoStr === hojeStr;
         const ehOProprio = !!userName &&
             refeicao.nome_completo?.trim().toLowerCase() === userName.trim().toLowerCase();
 
@@ -162,17 +176,25 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
 
     const diasDaSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
+    // tipoConfirmacao é sempre o nome exato da coluna correspondente em
+    // `refeicoes` — é o mesmo valor que o backend espera em
+    // confirmar_presenca.php (ver TIPOS_CONFIRMACAO_VALIDOS). Cada
+    // variante (incluindo Mais Cedo/Mais Tarde e Takeaway) confirma-se
+    // à parte, com a sua própria janela de horário.
     const tiposRefeicoesAlmoco = [
-        { tipo: 'Almoço', filtro: refeicao => refeicao.almoco },
-        { tipo: 'Mais Cedo', filtro: refeicao => refeicao.almoco_mais_cedo },
-        { tipo: 'Mais Tarde', filtro: refeicao => refeicao.almoco_mais_tarde }
+        { tipo: 'Almoço', filtro: refeicao => refeicao.almoco, tipoConfirmacao: 'almoco' },
+        { tipo: 'Mais Cedo', filtro: refeicao => refeicao.almoco_mais_cedo, tipoConfirmacao: 'almoco_mais_cedo' },
+        { tipo: 'Mais Tarde', filtro: refeicao => refeicao.almoco_mais_tarde, tipoConfirmacao: 'almoco_mais_tarde' }
     ];
 
     const tiposRefeicoesJantar = [
-        { tipo: 'Jantar', filtro: refeicao => refeicao.jantar },
-        { tipo: 'Mais Cedo', filtro: refeicao => refeicao.jantar_mais_cedo },
-        { tipo: 'Mais Tarde', filtro: refeicao => refeicao.jantar_mais_tarde },
-        { tipo: 'Takeaway', filtro: refeicao => refeicao.levar_refeicao }
+        { tipo: 'Jantar', filtro: refeicao => refeicao.jantar, tipoConfirmacao: 'jantar' },
+        { tipo: 'Mais Cedo', filtro: refeicao => refeicao.jantar_mais_cedo, tipoConfirmacao: 'jantar_mais_cedo' },
+        { tipo: 'Mais Tarde', filtro: refeicao => refeicao.jantar_mais_tarde, tipoConfirmacao: 'jantar_mais_tarde' },
+        // Takeaway é levantado na véspera da data da refeição — ver o
+        // desvio de -1 dia usado tanto aqui (ehHoje) como no agrupamento
+        // por dia mais abaixo, e diaConfirmacao() no backend.
+        { tipo: 'Takeaway', filtro: refeicao => refeicao.levar_refeicao, tipoConfirmacao: 'levar_refeicao' }
     ];
 
     const feriadosFixos = {
@@ -311,14 +333,14 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                         </thead>
                         <tbody>
                             <tr>
-                                {tiposRefeicoesAlmoco.map(({ tipo, filtro }) => {
+                                {tiposRefeicoesAlmoco.map(({ tipo, filtro, tipoConfirmacao }) => {
                                     const inscritos = refeicoes.filter(filtro);
                                     return inscritos.length > 0 && (
                                         <td key={tipo}>
                                             <ul>
                                                 {inscritos.map((refeicao) => (
                                                     <li key={refeicao.id} className="nomeContainer" onClick={(event) => handleClick(event, refeicao.id)}>
-                                                        {renderNome(refeicao, 'almoco')}
+                                                        {renderNome(refeicao, tipoConfirmacao)}
                                                         {selectedId === refeicao.id && (
                                                             <button className="calendarioButton" onClick={() => handleDelete(refeicao.id)}>Não vem</button>
                                                         )}
@@ -374,14 +396,14 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                         </thead>
                         <tbody>
                             <tr>
-                                {tiposRefeicoesJantar.map(({ tipo, filtro }) => {
+                                {tiposRefeicoesJantar.map(({ tipo, filtro, tipoConfirmacao }) => {
                                     const inscritos = refeicoes.filter(filtro);
                                     return inscritos.length > 0 && (
                                         <td key={tipo}>
                                             <ul>
                                                 {inscritos.map((refeicao) => (
                                                     <li key={refeicao.id} className="nomeContainer" onClick={(event) => handleClick(event, refeicao.id)}>
-                                                        {renderNome(refeicao, tipo === 'Takeaway' ? null : 'jantar')}
+                                                        {renderNome(refeicao, tipoConfirmacao)}
                                                         {selectedId === refeicao.id && (
                                                             <button className="calendarioButton" onClick={() => handleDelete(refeicao.id)}>Não vem</button>
                                                         )}
