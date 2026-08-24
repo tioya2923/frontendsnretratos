@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // ToastContainer é global (ver App.js)
 import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import './Login.css';
@@ -77,7 +76,6 @@ function Privacidade() {
             </div>
             <span id="password-error" className="error"></span>
             <button onClick={handleSubmit}>Entrar</button>
-            <ToastContainer />
         </div>
     );
 }

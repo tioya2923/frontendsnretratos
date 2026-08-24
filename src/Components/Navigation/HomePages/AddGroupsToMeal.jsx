@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const AddGroupsToMeal = () => {
   const [grupos, setGrupos] = useState([]);
@@ -43,7 +44,7 @@ const AddGroupsToMeal = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
     })
       .then(response => {
-        alert('Refeição adicionada com sucesso!');
+        toast.success('Refeição adicionada com sucesso!');
         // Limpar o formulário, mas manter o grupo selecionado — é comum
         // marcar o mesmo grupo para mais do que uma refeição de seguida.
         setFormData({
@@ -56,7 +57,7 @@ const AddGroupsToMeal = () => {
       })
       .catch(error => {
         console.error('Erro ao adicionar refeição:', error);
-        alert(error.response?.data?.message || 'Erro ao adicionar refeição.');
+        toast.error(error.response?.data?.message || 'Erro ao adicionar refeição.');
       });
   };
 

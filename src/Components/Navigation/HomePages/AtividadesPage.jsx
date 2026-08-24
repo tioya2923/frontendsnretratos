@@ -8,6 +8,7 @@ import {
 } from 'react-icons/md';
 import { FaPersonBooth } from 'react-icons/fa6';
 import { useUser } from '../../../UserContext';
+import { useConfirm } from '../../ConfirmDialog';
 
 const BACKEND = (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 
@@ -321,6 +322,7 @@ const ErrorBox = styled.div`
 
 export default function AtividadesPage() {
   const { token } = useUser();
+  const confirmar = useConfirm();
 
   const [atividades, setAtividades] = useState([]);
   const [loading, setLoading]       = useState(true);
@@ -386,7 +388,7 @@ export default function AtividadesPage() {
   };
 
   const deletar = async (id) => {
-    if (!window.confirm('Eliminar esta atividade?')) return;
+    if (!(await confirmar('Eliminar esta atividade?'))) return;
     setAtividades(prev => prev.filter(a => a.id !== id));
     await axios.delete(`${BACKEND}/components/atividades.php`,
       { data: { id }, headers });

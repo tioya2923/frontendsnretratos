@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify"; // ToastContainer é global (ver App.js)
 import "../../Styles/AreaPessoal.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
@@ -76,7 +75,6 @@ function AreaPessoal() {
             <span id="password-error" className="error"></span>
             <button onClick={handleSubmit}>Entrar</button>
             {loggedIn && <Navigate to="/administracao" replace />}
-            <ToastContainer />
         </div>
     );
 }

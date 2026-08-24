@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import '../../Styles/Grupos.css'; // Importando o arquivo CSS
 
 const Grupos = () => {
@@ -64,7 +65,7 @@ const Grupos = () => {
             setNumeroPessoas('');
         } catch (error) {
             console.error('Erro ao criar grupo:', error);
-            alert(erroServidor(error, 'Erro ao criar grupo.'));
+            toast.error(erroServidor(error, 'Erro ao criar grupo.'));
         }
     };
 
@@ -81,7 +82,7 @@ const Grupos = () => {
             setId(null);
         } catch (error) {
             console.error('Erro ao atualizar grupo:', error);
-            alert(erroServidor(error, 'Erro ao atualizar grupo.'));
+            toast.error(erroServidor(error, 'Erro ao atualizar grupo.'));
         }
     };
 
@@ -91,7 +92,7 @@ const Grupos = () => {
             fetchGrupos();
         } catch (error) {
             console.error('Erro ao deletar grupo:', error);
-            alert(erroServidor(error, 'Erro ao eliminar grupo.'));
+            toast.error(erroServidor(error, 'Erro ao eliminar grupo.'));
         }
     };
 
@@ -103,7 +104,7 @@ const Grupos = () => {
             setNovoMembro((prevMembros) => ({ ...prevMembros, [grupoId]: '' }));
         } catch (error) {
             console.error('Erro ao criar membro:', error);
-            alert(erroServidor(error, 'Erro ao adicionar membro.'));
+            toast.error(erroServidor(error, 'Erro ao adicionar membro.'));
         }
     };
 
@@ -113,7 +114,7 @@ const Grupos = () => {
             fetchMembros(grupoId); // Atualiza a lista de membros após deletar um membro
         } catch (error) {
             console.error('Erro ao deletar membro:', error);
-            alert(erroServidor(error, 'Erro ao eliminar membro.'));
+            toast.error(erroServidor(error, 'Erro ao eliminar membro.'));
         }
     };
 

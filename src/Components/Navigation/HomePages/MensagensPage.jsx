@@ -5,7 +5,9 @@ import {
   MdSend, MdClose, MdAdd, MdDelete, MdGroup, MdPerson, MdPeople,
   MdMailOutline, MdMail, MdReply
 } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import { useUser } from '../../../UserContext';
+import { useConfirm } from '../../ConfirmDialog';
 
 const BACKEND = (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 const POLL_INTERVAL_MS = 12000; // 12 segundos
@@ -410,6 +412,7 @@ function formatTime(dateStr) {
 
 export default function MensagensPage() {
   const { token, logout, refreshUnreadMessages, utilizadores, loadingUtilizadores, utilizadoresFailed, refetchUtilizadores } = useUser();
+  const confirmar = useConfirm();
   const headers = { Authorization: `Bearer ${token}` };
 
   const [tab, setTab]             = useState('recebidas');
@@ -509,13 +512,13 @@ export default function MensagensPage() {
 
   const eliminar = async (e, id) => {
     e.stopPropagation();
-    if (!window.confirm('Eliminar esta mensagem?')) return;
+    if (!(await confirmar('Eliminar esta mensagem?'))) return;
     try {
       await axios.delete(`${BACKEND}/components/mensagens.php`, { data: { id }, headers });
       setMensagens(prev => prev.filter(m => m.id !== id));
     } catch (err) {
       if (err.response?.status === 401) { logout(); return; }
-      alert(err.response?.data?.error || 'Erro ao eliminar');
+      toast.error(err.response?.data?.error || 'Erro ao eliminar');
     }
   };
 
@@ -546,7 +549,7 @@ export default function MensagensPage() {
       // Atualiza enviadas se o utilizador trocar de tab
     } catch (err) {
       if (err.response?.status === 401) { logout(); return; }
-      alert(err.response?.data?.error || 'Erro ao enviar resposta');
+      toast.error(err.response?.data?.error || 'Erro ao enviar resposta');
     } finally {
       setReplySending(false);
     }

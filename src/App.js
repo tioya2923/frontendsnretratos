@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./global";
@@ -26,6 +27,7 @@ import RefeicoesGrupo from "./Components/Navigation/HomePages/RefeicoesGrupo";
 import Notificacoes from "./Components/Navigation/HomePages/Notificacoes";
 import ProtectedRoute from "./Components/Pages/LoginSignup/ProtectedRoute";
 import { UserProvider, useUser } from './UserContext';
+import { ConfirmProvider } from './Components/ConfirmDialog';
 import InscreverVisita from "./Components/Navigation/HomePages/InscreverVisita";
 import AtividadesPage from "./Components/Navigation/HomePages/AtividadesPage";
 import PerfilPage from "./Components/Navigation/HomePages/PerfilPage";
@@ -48,12 +50,18 @@ function App() {
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyles />
+        {/* Container único de notificações — substitui o alert() nativo em
+            toda a app. Cada página só precisa de chamar toast.success()/
+            toast.error(), sem montar o seu próprio <ToastContainer />. */}
+        <ToastContainer position="top-center" autoClose={4000} />
         {swRegistration && <PwaUpdateBanner registration={swRegistration} />}
-        <Router>
-          <UserProvider>
-            <AppRoutes />
-          </UserProvider>
-        </Router>
+        <ConfirmProvider>
+          <Router>
+            <UserProvider>
+              <AppRoutes />
+            </UserProvider>
+          </Router>
+        </ConfirmProvider>
       </>
     </ThemeProvider>
   );

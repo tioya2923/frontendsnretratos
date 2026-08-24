@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import "./AdPrivacidade.css";
 
 const AdPrivacidade = () => {
@@ -30,13 +31,13 @@ const AdPrivacidade = () => {
             const data = response.data;
 
             if (data === 'O email já está em uso') {
-                alert('O email já está em uso');
+                toast.error('O email já está em uso');
             } else if (data === 'Registo bem-sucedido') {
-                alert('Registo bem-sucedido');
+                toast.success('Registo bem-sucedido');
             } else if (data === 'Apenas super administradores podem inserir outros administradores') {
-                alert('Apenas super administradores podem inserir outros administradores');
+                toast.error('Apenas super administradores podem inserir outros administradores');
             } else if (data === 'Usuário não encontrado') {
-                alert('Usuário não encontrado');
+                toast.error('Usuário não encontrado');
             }
 
         } catch (error) {

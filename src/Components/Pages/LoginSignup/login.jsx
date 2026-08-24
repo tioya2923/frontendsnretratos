@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // ToastContainer é global (ver App.js)
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useUser } from '../../../UserContext';
 
@@ -112,7 +111,6 @@ function Login() {
                             </Link>
                         </span>
                     </div>
-                    <ToastContainer />
                 </div>
             </div>
         </div>

@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify"; // ToastContainer é global (ver App.js)
 
 export default function Register() {
   const navigate = useNavigate();
@@ -204,8 +203,6 @@ export default function Register() {
             </a>
           </span>
         </div>
-
-        <ToastContainer />
       </div>
     </div>
   );

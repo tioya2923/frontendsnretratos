@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { useUser } from '../../../UserContext';
 import '../../Styles/InscritosRefeicoes.css';
 
@@ -69,7 +70,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
             );
             setConfirmacoes(prev => [...prev, { refeicao_id: refeicaoId, tipo: tipoBase }]);
         } catch (err) {
-            alert(err.response?.data?.message || 'Não foi possível confirmar a presença.');
+            toast.error(err.response?.data?.message || 'Não foi possível confirmar a presença.');
         }
     };
 
@@ -138,7 +139,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                 setError('Erro ao eliminar inscrição.');
             }
         } else {
-            alert('Não é possível eliminar o nome 24 horas antes da refeição.');
+            toast.warn('Não é possível eliminar o nome 24 horas antes da refeição.');
         }
     };
 

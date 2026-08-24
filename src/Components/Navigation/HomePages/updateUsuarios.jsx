@@ -2,29 +2,33 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import "../../Styles/updateUsuarios.css";
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useConfirm } from '../../ConfirmDialog';
 
 const UpdateUsuarios = () => {
     const [users, setUsers] = useState([]);
     const [triggerUpdate, setTriggerUpdate] = useState(0);
+    const confirmar = useConfirm();
 
     const envUrl = process.env.REACT_APP_BACKEND_URL;
     const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
-    const deleteUser = (id) => {
-        if (window.confirm('Tem a certeza de que deseja eliminar?')) {
-            const adminToken = localStorage.getItem('adminToken');
-            axios.delete(`${backendUrl}components/deleteUsuario.php?id=${id}`, {
-                headers: { Authorization: `Bearer ${adminToken}` }
+    const deleteUser = async (id) => {
+        if (!(await confirmar('Tem a certeza de que deseja eliminar?'))) return;
+
+        const adminToken = localStorage.getItem('adminToken');
+        axios.delete(`${backendUrl}components/deleteUsuario.php?id=${id}`, {
+            headers: { Authorization: `Bearer ${adminToken}` }
+        })
+            .then(response => {
+                console.log(response);
+                toast.success('Usuário eliminado com sucesso');
+                setTriggerUpdate(prevState => prevState + 1);
             })
-                .then(response => {
-                    console.log(response);
-                    alert('Usuário eliminado com sucesso');
-                    setTriggerUpdate(prevState => prevState + 1);
-                })
-                .catch(error => {
-                    console.error(`There was an error deleting the user: ${error}`);
-                });
-        }
+            .catch(error => {
+                console.error(`There was an error deleting the user: ${error}`);
+                toast.error('Erro ao eliminar utilizador.');
+            });
     }
 
     const getUsers = useCallback(() => {
