@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import '../../Styles/Grupos.css'; // Importando o arquivo CSS
 
 const Grupos = () => {
@@ -163,6 +164,11 @@ const Grupos = () => {
                             setId(grupo.id);
                         }}>Editar</button>
                         <button className="button delete-button" onClick={() => deleteGrupo(grupo.id)}>Apagar</button>
+                        <Link
+                            className="button add-button"
+                            to={`/AddGroupsToMeal?grupo_id=${grupo.id}`}
+                            title="Marcar este grupo para uma refeição (data, tipo e local)"
+                        >Marcar para Refeição</Link>
                         {selectedGrupo === grupo.id && (
                             <>
                                 <div className="member-input-container">

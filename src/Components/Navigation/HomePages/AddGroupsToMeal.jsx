@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const AddGroupsToMeal = () => {
   const [grupos, setGrupos] = useState([]);
+  // Ao vir da página de Grupos (link "Marcar para Refeição"), o grupo já
+  // vem escolhido via ?grupo_id=, para não obrigar a procurá-lo de novo.
+  const [searchParams] = useSearchParams();
+  const grupoIdInicial = searchParams.get('grupo_id') || '';
   const [formData, setFormData] = useState({
-    grupo_id: '',
+    grupo_id: grupoIdInicial,
     tipo_refeicao: '',
     data_refeicao: '',
     hora_refeicao: '',
@@ -39,9 +44,10 @@ const AddGroupsToMeal = () => {
     })
       .then(response => {
         alert('Refeição adicionada com sucesso!');
-        // Limpar o formulário
+        // Limpar o formulário, mas manter o grupo selecionado — é comum
+        // marcar o mesmo grupo para mais do que uma refeição de seguida.
         setFormData({
-          grupo_id: '',
+          grupo_id: formData.grupo_id,
           tipo_refeicao: '',
           data_refeicao: '',
           hora_refeicao: '',
@@ -56,6 +62,10 @@ const AddGroupsToMeal = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <h2>Adicionar Refeições em Grupos</h2>
+      <div>
+        <Link to="/gruposMembros">← Voltar aos Grupos</Link>
+      </div>
       <div>
         <label>Grupo:</label>
         <select name="grupo_id" value={formData.grupo_id} onChange={handleChange} required>
