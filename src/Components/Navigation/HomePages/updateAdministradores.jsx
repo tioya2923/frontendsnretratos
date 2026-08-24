@@ -29,6 +29,15 @@ const UpdateAdministradores = () => {
     // Obter a lista de usuários quando o componente é montado
     useEffect(() => {
         getUsers();
+        const interval = setInterval(() => {
+            if (!document.hidden) getUsers();
+        }, 60000);
+        const onVisible = () => { if (!document.hidden) getUsers(); };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisible);
+        };
     }, [getUsers]); // getUsers é agora uma dependência memorizada
 
     return (

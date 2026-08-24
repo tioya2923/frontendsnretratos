@@ -355,7 +355,13 @@ export default function AtividadesPage() {
     fetchAtividades();
     const onVisible = () => { if (!document.hidden) fetchAtividades(); };
     document.addEventListener('visibilitychange', onVisible);
-    return () => document.removeEventListener('visibilitychange', onVisible);
+    const interval = setInterval(() => {
+      if (!document.hidden) fetchAtividades();
+    }, 30000);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      clearInterval(interval);
+    };
   }, [fetchAtividades]);
 
   const todayStr    = getLocalDateStr();

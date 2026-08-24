@@ -16,6 +16,15 @@ const Grupos = () => {
 
     useEffect(() => {
         fetchGrupos();
+        const interval = setInterval(() => {
+            if (!document.hidden) fetchGrupos();
+        }, 30000);
+        const onVisible = () => { if (!document.hidden) fetchGrupos(); };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisible);
+        };
     }, []);
 
     const fetchGrupos = async () => {

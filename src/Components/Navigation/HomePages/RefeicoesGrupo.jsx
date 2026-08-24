@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const GruposList = () => {
@@ -8,10 +8,9 @@ const GruposList = () => {
   const envUrl = process.env.REACT_APP_BACKEND_URL;
   const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
-  useEffect(() => {
-    axios.get(`${backendUrl}components/grupo_refeicao.php`)
+  const fetchGrupos = useCallback(() => {
+    axios.get(`${backendUrl}components/grupo_refeicao.php?_=${Date.now()}`)
       .then(response => {
-        console.log('Dados recebidos:', response.data); // Verifique os dados recebidos
         setGrupos(Array.isArray(response.data) ? response.data : []);
         setLoading(false);
       })
@@ -21,6 +20,19 @@ const GruposList = () => {
         setLoading(false);
       });
   }, [backendUrl]);
+
+  useEffect(() => {
+    fetchGrupos();
+    const interval = setInterval(() => {
+      if (!document.hidden) fetchGrupos();
+    }, 30000);
+    const onVisible = () => { if (!document.hidden) fetchGrupos(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [fetchGrupos]);
 
   if (loading) {
     return <p>Carregando...</p>;

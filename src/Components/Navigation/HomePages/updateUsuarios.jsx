@@ -46,6 +46,15 @@ const UpdateUsuarios = () => {
 
     useEffect(() => {
         getUsers();
+        const interval = setInterval(() => {
+            if (!document.hidden) getUsers();
+        }, 30000);
+        const onVisible = () => { if (!document.hidden) getUsers(); };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisible);
+        };
     }, [triggerUpdate, getUsers]);
 
     return (
