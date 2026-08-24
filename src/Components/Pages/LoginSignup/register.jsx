@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -99,13 +101,14 @@ export default function Register() {
       if (response.data.status === "email_exists") {
         toast.error("O e-mail já existe");
       } else if (response.data.status === "success") {
-        toast.success("Registo bem-sucedido! Aguarde a aprovação do administrador.");
+        toast.success("Registo bem-sucedido! Já pode iniciar sessão.");
         setName("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
         setDataAniversario("");
         setDataAniversarioSacerdotal("");
+        setTimeout(() => navigate("/login"), 1800);
       } else {
         toast.error(response.data.message || "Erro ao registrar. Tente novamente.");
       }
