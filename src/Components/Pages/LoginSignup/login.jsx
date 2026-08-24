@@ -4,13 +4,14 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useUser } from '../../../UserContext';
 
 function Login() {
+    const { login } = useUser();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [userName, setUserName] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const navigate = useNavigate();
@@ -53,9 +54,13 @@ function Login() {
             .then(response => {
                 if (response.data.message === 'Login bem-sucedido') {
                     toast.success('Login bem-sucedido');
-                    setUserName(response.data.name);
-                    localStorage.setItem('userName', response.data.name);
-                    localStorage.setItem('token', response.data.token);
+                    // Atualiza o UserContext partilhado (estado + localStorage)
+                    // em vez de escrever só no localStorage — sem isto, o resto
+                    // da app (ex.: o botão de confirmar presença) continuava a
+                    // ver o nome antigo/vazio até um recarregamento manual da
+                    // página, porque o UserContext já estava montado antes do
+                    // login e nunca era avisado da mudança.
+                    login(response.data.name, response.data.token);
                     setLoggedIn(true);
                 } else if (response.data.message === 'A sua conta ainda não foi aprovada pelo administrador.') {
                     toast.error('A sua conta ainda não foi aprovada pelo administrador.');
@@ -74,9 +79,9 @@ function Login() {
 
     useEffect(() => {
         if (loggedIn) {
-            navigate('/home', { state: { userName } });
+            navigate('/home');
         }
-    }, [loggedIn, navigate, userName]);
+    }, [loggedIn, navigate]);
 
     return (
         <div className="container-login">
