@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { FiUserPlus, FiCheckCircle } from 'react-icons/fi';
 import '../../Styles/InscreverVisitas.css'; // Certifique-se de importar o arquivo CSS
 
 const InscreverVisitas = () => {
@@ -44,97 +45,100 @@ const InscreverVisitas = () => {
   };
 
   return (
-    <div className="container-inscricao">
-      <h1 className="titulo-inscricao">Inscrever Visitante</h1>
-      <form className="formulario-inscricao" onSubmit={handleSubmit}>
-        <div className="campo-inscricao">
-          <label className="label-inscricao">Nome:</label>
-          <input
-            className="input-inscricao"
-            type="text"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            required
-          />
-        </div>
-        <div className="campo-inscricao">
-          <label className="label-inscricao">Data:</label>
-          <input
-            className="input-inscricao"
-            type="date"
-            value={data}
-            onChange={(e) => setData(e.target.value)}
-            required
-          />
-        </div>
-        <div className="checkbox-container">
-          <label className="label-inscricao">
+    <div className="pagina" style={{ maxWidth: 480 }}>
+      <h1 className="paginaTitulo"><FiUserPlus style={{ verticalAlign: -3 }} /> Inscrever Visitante</h1>
+      <p className="paginaSubtitulo">Registe a inscrição de alguém que não tem conta na app.</p>
+
+      <div className="cartao cartao--destaque">
+        <form onSubmit={handleSubmit}>
+          <div className="campo">
+            <label className="campoRotulo" htmlFor="visita-nome">Nome</label>
             <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={levarRefeicao}
-              onChange={(e) => setLevarRefeicao(e.target.checked)}
+              id="visita-nome"
+              className="campoInput"
+              type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              required
             />
-            Takeaway
-          </label>
-          <label className="label-inscricao">
+          </div>
+          <div className="campo">
+            <label className="campoRotulo" htmlFor="visita-data">Data</label>
             <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={almoco}
-              onChange={(e) => setAlmoco(e.target.checked)}
+              id="visita-data"
+              className="campoInput"
+              type="date"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              required
             />
-            Almoço
-          </label>
-          <label className="label-inscricao">
-            <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={almocoMaisCedo}
-              onChange={(e) => setAlmocoMaisCedo(e.target.checked)}
-            />
-            Almoça mais cedo
-          </label>
-          <label className="label-inscricao">
-            <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={almocoMaisTarde}
-              onChange={(e) => setAlmocoMaisTarde(e.target.checked)}
-            />
-            Almoço mais tarde
-          </label>
-          <label className="label-inscricao">
-            <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={jantar}
-              onChange={(e) => setJantar(e.target.checked)}
-            />
-            Jantar
-          </label>
-          <label className="label-inscricao">
-            <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={jantarMaisCedo}
-              onChange={(e) => setJantarMaisCedo(e.target.checked)}
-            />
-            Jantar mais cedo
-          </label>
-          <label className="label-inscricao">
-            <input
-              className="checkbox-inscricao"
-              type="checkbox"
-              checked={jantarMaisTarde}
-              onChange={(e) => setJantarMaisTarde(e.target.checked)}
-            />
-            Jantar mais tarde
-          </label>
-        </div>
-        <button className="botao-inscricao" type="submit">Inscrever</button>
-      </form>
-      {mensagem && <p className="mensagem-inscricao">{mensagem}</p>}
+          </div>
+          <div className="checkbox-container">
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={levarRefeicao}
+                onChange={(e) => setLevarRefeicao(e.target.checked)}
+              />
+              Takeaway
+            </label>
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={almoco}
+                onChange={(e) => setAlmoco(e.target.checked)}
+              />
+              Almoço
+            </label>
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={almocoMaisCedo}
+                onChange={(e) => setAlmocoMaisCedo(e.target.checked)}
+              />
+              Almoço mais cedo
+            </label>
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={almocoMaisTarde}
+                onChange={(e) => setAlmocoMaisTarde(e.target.checked)}
+              />
+              Almoço mais tarde
+            </label>
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={jantar}
+                onChange={(e) => setJantar(e.target.checked)}
+              />
+              Jantar
+            </label>
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={jantarMaisCedo}
+                onChange={(e) => setJantarMaisCedo(e.target.checked)}
+              />
+              Jantar mais cedo
+            </label>
+            <label className="label-inscricao">
+              <input
+                type="checkbox"
+                checked={jantarMaisTarde}
+                onChange={(e) => setJantarMaisTarde(e.target.checked)}
+              />
+              Jantar mais tarde
+            </label>
+          </div>
+          <button className="botao botao--primario" type="submit" style={{ width: '100%' }}>Inscrever</button>
+        </form>
+        {mensagem && (
+          <p className="distintivo distintivo--sucesso" style={{ marginTop: 16 }}>
+            <FiCheckCircle /> {mensagem}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

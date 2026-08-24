@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useConfirm } from '../../ConfirmDialog';
+import { FiEdit2, FiTrash2, FiCalendar, FiUserPlus, FiUsers, FiPlusCircle } from 'react-icons/fi';
 import '../../Styles/Grupos.css'; // Importando o arquivo CSS
 
 const Grupos = () => {
@@ -12,6 +14,7 @@ const Grupos = () => {
     const [membros, setMembros] = useState({});
     const [selectedGrupo, setSelectedGrupo] = useState(null);
     const [novoMembro, setNovoMembro] = useState({});
+    const confirmar = useConfirm();
 
     const envUrl = process.env.REACT_APP_BACKEND_URL;
     const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
@@ -87,6 +90,7 @@ const Grupos = () => {
     };
 
     const deleteGrupo = async (id) => {
+        if (!(await confirmar('Eliminar este grupo? Também remove as suas refeições marcadas.'))) return;
         try {
             await axios.delete(`${backendUrl}components/grupos.php`, { data: { id }, ...adminHeaders() });
             fetchGrupos();
@@ -109,6 +113,7 @@ const Grupos = () => {
     };
 
     const deleteMembro = async (membroId, grupoId) => {
+        if (!(await confirmar('Eliminar este membro?'))) return;
         try {
             await axios.delete(`${backendUrl}components/grupos.php`, { data: { membro_id: membroId }, ...adminHeaders() });
             fetchMembros(grupoId); // Atualiza a lista de membros após deletar um membro
@@ -128,75 +133,112 @@ const Grupos = () => {
     };
 
     return (
-        <div className="container">
-            <div>
-            <div className="header">Grupos</div>
-            <div className="input-container">
-                <input
-                    className="input"
-                    type="text"
-                    value={nomeGrupo}
-                    onChange={(e) => setNomeGrupo(e.target.value)}
-                    placeholder="Novo Grupo"
-                />
-                <input
-                    className="input"
-                    type="number"
-                    min="0"
-                    value={numeroPessoas}
-                    onChange={(e) => setNumeroPessoas(e.target.value)}
-                    placeholder="Número de pessoas"
-                    title="Quantas pessoas o grupo representa — soma ao total geral da refeição no dia em que o grupo estiver marcado"
-                />
-                <button className="button" onClick={id ? updateGrupo : createGrupo}>
-                    {id ? 'Atualizar Grupo' : 'Criar Grupo'}
-                </button>
+        <div className="pagina">
+            <h1 className="paginaTitulo">Grupos</h1>
+            <p className="paginaSubtitulo">Crie grupos e marque-os para refeições — o número de pessoas soma ao total geral do dia.</p>
+
+            <div className="cartao cartao--destaque" style={{ marginBottom: 32 }}>
+                <div className="grupos-formLinha">
+                    <div className="campo" style={{ flex: 2, marginBottom: 0 }}>
+                        <label className="campoRotulo" htmlFor="nomeGrupo">Nome do grupo</label>
+                        <input
+                            id="nomeGrupo"
+                            className="campoInput"
+                            type="text"
+                            value={nomeGrupo}
+                            onChange={(e) => setNomeGrupo(e.target.value)}
+                            placeholder="Ex.: Catequese"
+                        />
+                    </div>
+                    <div className="campo" style={{ flex: 1, marginBottom: 0 }}>
+                        <label className="campoRotulo" htmlFor="numeroPessoas">Nº de pessoas</label>
+                        <input
+                            id="numeroPessoas"
+                            className="campoInput"
+                            type="number"
+                            min="0"
+                            value={numeroPessoas}
+                            onChange={(e) => setNumeroPessoas(e.target.value)}
+                            placeholder="0"
+                            title="Quantas pessoas o grupo representa — soma ao total geral da refeição no dia em que o grupo estiver marcado"
+                        />
+                    </div>
+                    <button className="botao botao--primario" onClick={id ? updateGrupo : createGrupo}>
+                        <FiPlusCircle /> {id ? 'Atualizar' : 'Criar Grupo'}
+                    </button>
+                </div>
             </div>
-            <ul className="group-list">
-                {grupos.map((grupo) => (
-                    <li key={grupo.id} className={`group-item ${selectedGrupo === grupo.id ? 'active' : ''}`}>
-                        <div className="group-name" onClick={() => handleGrupoClick(grupo.id)}>
-                            {grupo.nome_grupo} — {grupo.numero_pessoas} pessoa{grupo.numero_pessoas === 1 ? '' : 's'}
-                            {grupo.total_membros > 0 && ` (${grupo.total_membros} nomeado${grupo.total_membros === 1 ? '' : 's'})`}
-                        </div>
-                        <button className="button edit-button" onClick={() => {
-                            setNomeGrupo(grupo.nome_grupo);
-                            setNumeroPessoas(String(grupo.numero_pessoas ?? 0));
-                            setId(grupo.id);
-                        }}>Editar</button>
-                        <button className="button delete-button" onClick={() => deleteGrupo(grupo.id)}>Apagar</button>
-                        <Link
-                            className="button add-button"
-                            to={`/AddGroupsToMeal?grupo_id=${grupo.id}`}
-                            title="Marcar este grupo para uma refeição (data, tipo e local)"
-                        >Marcar para Refeição</Link>
-                        {selectedGrupo === grupo.id && (
-                            <>
-                                <div className="member-input-container">
-                                    <input
-                                        className="input"
-                                        type="text"
-                                        value={novoMembro[grupo.id] || ''}
-                                        onChange={(e) => handleMembroChange(grupo.id, e.target.value)}
-                                        placeholder="Novo Membro"
-                                    />
-                                    <button className="button add-button" onClick={() => createMembro(grupo.id)}>Adicionar Membro</button>
+
+            {grupos.length === 0 ? (
+                <div className="estadoVazio cartao">
+                    <div className="estadoVazio__icone"><FiUsers /></div>
+                    <p>Ainda não existe nenhum grupo. Crie o primeiro acima.</p>
+                </div>
+            ) : (
+                <div style={{ display: 'grid', gap: 16 }}>
+                    {grupos.map((grupo) => (
+                        <div key={grupo.id} className="cartao">
+                            <div className="grupos-cabecalho" onClick={() => handleGrupoClick(grupo.id)}>
+                                <div>
+                                    <strong>{grupo.nome_grupo}</strong>{' '}
+                                    <span className="distintivo distintivo--neutro">
+                                        <FiUsers /> {grupo.numero_pessoas} pessoa{grupo.numero_pessoas === 1 ? '' : 's'}
+                                    </span>
+                                    {grupo.total_membros > 0 && (
+                                        <span className="distintivo distintivo--neutro" style={{ marginLeft: 6 }}>
+                                            {grupo.total_membros} nomeado{grupo.total_membros === 1 ? '' : 's'}
+                                        </span>
+                                    )}
                                 </div>
-                                <ul className="member-list">
-                                    {membros[grupo.id] && membros[grupo.id].map((membro) => (
-                                        <li key={membro.id} className="member-item">
-                                            <span className="member-name">{membro.nome_membro}</span>
-                                            <button className="button delete-button" onClick={() => deleteMembro(membro.id, grupo.id)}>Apagar</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </>
-                        )}
-                    </li>
-                ))}
-            </ul>
-            </div>
-            
+                            </div>
+                            <div className="grupos-acoes">
+                                <button className="botao botao--secundario botao--pequeno" onClick={() => {
+                                    setNomeGrupo(grupo.nome_grupo);
+                                    setNumeroPessoas(String(grupo.numero_pessoas ?? 0));
+                                    setId(grupo.id);
+                                }}><FiEdit2 /> Editar</button>
+                                <button className="botao botao--perigo botao--pequeno" onClick={() => deleteGrupo(grupo.id)}>
+                                    <FiTrash2 /> Apagar
+                                </button>
+                                <Link
+                                    className="botao botao--azul botao--pequeno"
+                                    to={`/AddGroupsToMeal?grupo_id=${grupo.id}`}
+                                    title="Marcar este grupo para uma refeição (data, tipo e local)"
+                                ><FiCalendar /> Marcar para Refeição</Link>
+                            </div>
+
+                            {selectedGrupo === grupo.id && (
+                                <div className="grupos-membros">
+                                    <div className="grupos-formLinha">
+                                        <input
+                                            className="campoInput"
+                                            type="text"
+                                            value={novoMembro[grupo.id] || ''}
+                                            onChange={(e) => handleMembroChange(grupo.id, e.target.value)}
+                                            placeholder="Nome do novo membro"
+                                        />
+                                        <button className="botao botao--secundario botao--pequeno" onClick={() => createMembro(grupo.id)}>
+                                            <FiUserPlus /> Adicionar
+                                        </button>
+                                    </div>
+                                    {membros[grupo.id]?.length > 0 && (
+                                        <ul className="grupos-listaMembros">
+                                            {membros[grupo.id].map((membro) => (
+                                                <li key={membro.id}>
+                                                    <span>{membro.nome_membro}</span>
+                                                    <button className="botao botao--perigo botao--pequeno" onClick={() => deleteMembro(membro.id, grupo.id)}>
+                                                        <FiTrash2 />
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

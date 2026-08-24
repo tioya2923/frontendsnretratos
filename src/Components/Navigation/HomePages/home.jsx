@@ -11,8 +11,10 @@ function Home() {
 
     return (
         <div className="home-container">
-            <h1 className="home-title">{userName}, seja bem-vindo!</h1>
-            <img src={logo} alt="Logo" className="snImage" />
+            <div className="home-hero">
+                <img src={logo} alt="Logo" className="snImage" />
+                <h1 className="home-title">{userName ? `${userName}, seja bem-vindo!` : 'Seja bem-vindo!'}</h1>
+            </div>
             <AniversariosHoje />
             <div className="home-content">
                 <Refeicoes mostrarAniversarios={false} />

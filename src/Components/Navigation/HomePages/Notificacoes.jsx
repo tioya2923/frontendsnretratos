@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { FiBell, FiAlertCircle } from 'react-icons/fi';
 import '../../Styles/Notificacoes.css'; // Certifique-se de importar o arquivo CSS
 
 const Notificacoes = () => {
@@ -61,33 +62,49 @@ const Notificacoes = () => {
     }, [refeicoes]);
 
     return (
-        <div className="notificacoes-container">          
-            {error && <p className="erro">Erro: {error}</p>}
+        <div className="pagina">
+            <h1 className="paginaTitulo"><FiBell style={{ verticalAlign: -3 }} /> Notificações</h1>
+            <p className="paginaSubtitulo">Refeições nas próximas 24 horas.</p>
+
+            {error && (
+                <div className="estadoVazio cartao">
+                    <div className="estadoVazio__icone"><FiAlertCircle /></div>
+                    <p>Erro: {error}</p>
+                </div>
+            )}
+            {!error && notificacoes.length === 0 && (
+                <div className="estadoVazio cartao">
+                    <div className="estadoVazio__icone"><FiBell /></div>
+                    <p>Sem notificações por agora.</p>
+                </div>
+            )}
             {notificacoes.length > 0 && (
-                <table className="tabela-notificacoes">
-                    <thead>
-                        <tr>
-                            <th>Refeição</th>
-                            <th>Data</th>
-                            <th>Hora</th>
-                            <th>Local</th>
-                            <th>Grupo</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {notificacoes.map((notificacao, index) => (
-                            <tr key={index}>
-                                <td>{notificacao.tipo}</td>
-                                <td>{notificacao.data}</td>
-                                <td>{notificacao.hora}</td>
-                                <td>{notificacao.local}</td>
-                                <td>{notificacao.nome_grupo}</td>
-                                <td>{notificacao.total_membros}</td>
+                <div className="tabelaContainer">
+                    <table className="tabela">
+                        <thead>
+                            <tr>
+                                <th>Refeição</th>
+                                <th>Data</th>
+                                <th>Hora</th>
+                                <th>Local</th>
+                                <th>Grupo</th>
+                                <th>Total</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {notificacoes.map((notificacao, index) => (
+                                <tr key={index}>
+                                    <td>{notificacao.tipo}</td>
+                                    <td>{notificacao.data}</td>
+                                    <td>{notificacao.hora}</td>
+                                    <td>{notificacao.local}</td>
+                                    <td>{notificacao.nome_grupo}</td>
+                                    <td>{notificacao.total_membros}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );

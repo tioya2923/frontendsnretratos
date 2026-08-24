@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FiUserPlus, FiArrowLeft } from 'react-icons/fi';
 import "./AdPrivacidade.css";
 
 const AdPrivacidade = () => {
@@ -57,31 +58,63 @@ const AdPrivacidade = () => {
 
 
     return (
-        <div className='titulo-ad'><h3>Adiconar novo Administrador</h3>
+        <div className="pagina" style={{ maxWidth: 480 }}>
+            <h1 className="paginaTitulo"><FiUserPlus style={{ verticalAlign: -3 }} /> Adicionar Administrador</h1>
+            <p className="paginaSubtitulo">Cria uma nova conta de administrador para a app.</p>
 
-            <form onSubmit={handleSubmit} className='form-ad'>
-                <label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder='Nome completo' />
-                </label>
-                <label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder='E-mail' />
-                </label>
-                <label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder='Palavra-passe' />
-                </label>
-                <label>
-                    <div>
-                        É super?
-                        <input type="checkbox" checked={isSuper} onChange={(e) => setIsSuper(e.target.checked)} />
+            <div className="cartao cartao--destaque">
+                <form onSubmit={handleSubmit}>
+                    <div className="campo">
+                        <label className="campoRotulo" htmlFor="ad-nome">Nome completo</label>
+                        <input
+                            id="ad-nome"
+                            className="campoInput"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            placeholder="Nome completo"
+                        />
                     </div>
-                </label>
-                <button type="submit">Registar</button>
-            </form>
-            <Link to="/updateAdministradores" className="no-underline">
-                <h3>Administradores</h3>
-            </Link>
+                    <div className="campo">
+                        <label className="campoRotulo" htmlFor="ad-email">E-mail</label>
+                        <input
+                            id="ad-email"
+                            className="campoInput"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="nome@exemplo.com"
+                        />
+                    </div>
+                    <div className="campo">
+                        <label className="campoRotulo" htmlFor="ad-password">Palavra-passe</label>
+                        <input
+                            id="ad-password"
+                            className="campoInput"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="Palavra-passe"
+                        />
+                    </div>
+                    <label className="ad-checkboxRow">
+                        <input type="checkbox" checked={isSuper} onChange={(e) => setIsSuper(e.target.checked)} />
+                        <span>É super administrador (pode criar outros administradores)</span>
+                    </label>
+                    <button type="submit" className="botao botao--primario" style={{ width: '100%', marginTop: 8 }}>
+                        Registar
+                    </button>
+                </form>
+            </div>
 
-
+            <p style={{ textAlign: 'center', marginTop: 20 }}>
+                <Link to="/updateAdministradores" className="linkVoltar">
+                    <FiArrowLeft /> Voltar aos Administradores
+                </Link>
+            </p>
         </div>
     );
 };

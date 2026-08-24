@@ -4,6 +4,7 @@ import moment from 'moment-timezone'; // Importar a biblioteca moment-timezone
 import 'moment/locale/pt'; // Importar o idioma português
 import '../../Styles/CalendarioRefeicoes.css'; // Importar o arquivo CSS
 import { useUser } from '../../../UserContext'; // Importar o contexto do usuário
+import { FiSun, FiMoon, FiAlertCircle } from 'react-icons/fi';
 
 const CalendarioRefeicoes = () => {
     const { userName } = useUser(); // Obter o nome do usuário do contexto
@@ -144,15 +145,17 @@ const CalendarioRefeicoes = () => {
     };
 
     return (
-        <div className="calendario-container">
-            <h2>Calendário para as Refeições</h2>
-            <p>{formatarIntervaloDatas()}</p>
+        <div className="pagina pagina--larga">
+            <h1 className="paginaTitulo">Calendário para as Refeições</h1>
+            <p className="paginaSubtitulo">{formatarIntervaloDatas()}</p>
             <div className="calendario-semana">
                 {semana.map((dia, index) => (
-                    <div key={index} className="calendario-dia">
+                    <div key={index} className="calendario-dia cartao">
                         <h3>
                             {capitalizeFirstLetter(moment.tz(dia, 'Europe/Lisbon').format('dddd, D [de] MMMM'))}
                         </h3>
+
+                        <p className="calendario-seccaoLabel"><FiSun /> Almoço</p>
                         <div className="refeicao-container">
                             <label className="checkbox-label">
                                 <input
@@ -187,8 +190,10 @@ const CalendarioRefeicoes = () => {
                                 Takeaway
                             </label>
                         </div>
-                        <button onClick={() => handleInscricao(dia, 'almoco')}>Inscrever</button>
-                        {erros[dia] && <p className="erro-mensagem">{erros[dia]}</p>}
+                        <button className="botao botao--primario botao--pequeno" onClick={() => handleInscricao(dia, 'almoco')}>Inscrever</button>
+                        {erros[dia] && <p className="erro-mensagem"><FiAlertCircle /> {erros[dia]}</p>}
+
+                        <p className="calendario-seccaoLabel"><FiMoon /> Jantar</p>
                         <div className="refeicao-container">
                             <label className="checkbox-label">
                                 <input
@@ -215,8 +220,8 @@ const CalendarioRefeicoes = () => {
                                 Jantar mais tarde
                             </label>
                         </div>
-                        <button onClick={() => handleInscricao(dia, 'jantar')}>Inscrever</button>
-                        {erros[dia] && <p className="erro-mensagem">{erros[dia]}</p>}
+                        <button className="botao botao--primario botao--pequeno" onClick={() => handleInscricao(dia, 'jantar')}>Inscrever</button>
+                        {erros[dia] && <p className="erro-mensagem"><FiAlertCircle /> {erros[dia]}</p>}
                     </div>
                 ))}
             </div>

@@ -1,189 +1,77 @@
-.calendario-container {
-    max-width: 90%;
-    margin: 0 auto;
-    text-align: center;
-    background-color: rgb(237, 222, 222);
-    margin-bottom: 25px;
-}
-
 .calendario-semana {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Quatro colunas por padrão */
-    gap: 5px; /* Reduzir o espaçamento entre as grids */
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--esp-4);
 }
 
 .calendario-dia {
-    position: relative; /* Necessário para posicionamento absoluto do campo de seleção */
-    border: 1px solid #ccc;   
-    border-radius: 5px;
-    background-color: #f7a2a2;
-    margin-bottom: 15px;
-    max-width: 100%; /* Ajustar a largura máxima */
+    text-align: left;
 }
 
 .calendario-dia h3 {
-    margin: 0 0 10px;
-    font-size: medium;
-    color: white;
-    font-weight: 900;
+    margin: 0 0 var(--esp-3);
+    font-size: 0.98rem;
+    color: var(--cor-vinho);
 }
 
-.calendario-dia input {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #dde0dd6a;
+.calendario-seccaoLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: var(--esp-3) 0 var(--esp-2);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--cor-texto-suave);
 }
 
 .calendario-dia button {
     display: block;
-    width: 75px;
-    margin: 5px auto; /* Centraliza o botão */
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    background-color: #760107c8;
-    color: white;
-    cursor: pointer;
-}
-
-.calendario-dia button:hover {
-    background-color: #023b03;
+    width: 100%;
+    margin: var(--esp-2) 0 var(--esp-3);
 }
 
 .refeicao-container {
     display: flex;
-    flex-direction: column; /* Dispor os elementos verticalmente */
-    align-items: flex-start; /* Alinhar os elementos à esquerda */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
 }
 
 .checkbox-label {
     display: flex;
     align-items: center;
-    font-size: 0.8em; /* Diminuir o tamanho da fonte */
-    margin-bottom: 5px; /* Espaçamento entre as checkboxes */
+    gap: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
 }
 
 .checkbox-label input[type="checkbox"] {
-    width: 15px; /* Diminuir o tamanho da checkbox */
-    height: 15px; /* Diminuir o tamanho da checkbox */
-    margin-right: 5px; /* Espaçamento entre a checkbox e o texto */
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cor-vinho);
+    cursor: pointer;
 }
 
-.nomeContainer {
-    position: relative; /* Necessário para posicionamento absoluto do campo de seleção */
-}
-
-.nomeContainer .nomeInput {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.9); /* Fundo semi-transparente */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    z-index: 10; /* Garantir que o campo de seleção fique acima de outros elementos */
-    display: none; /* Inicialmente escondido */
-}
-
-.nomeContainer.active .nomeInput {
-    display: block; /* Mostrar quando ativo */
-}
-
-
-.calenderAniversario {
-    background-color: #42e684;
-    font-size: 1.5rem;
-    height: auto;
-    padding: 8px;
-    max-width: 800px;
-    margin: 0 auto;
-    margin-bottom: 25px;
+.erro-mensagem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cor-erro);
+    font-size: 0.82rem;
+    margin: 0 0 var(--esp-2);
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .calendario-semana {
-        grid-template-columns: 1fr; /* Uma coluna em telas menores */
-    }
-
-    .calendario-dia {
-        padding: 8px;
-    }
-
-    .calendario-dia h3 {
-        font-size: small;
-    }
-
-    .calendario-dia input {
-        padding: 4px;
-    }
-
-    .calendario-dia button {
-        width: 100%;
-        padding: 4px;
-    }
-
-    .calenderAniversario {
-        font-size: 1.2rem;
-        height: auto;
-        padding: 6px;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (max-width: 600px) {
     .calendario-semana {
-        grid-template-columns: repeat(2, 1fr); /* Duas colunas em telas médias */
-    }
-
-    .calendario-dia {
-        padding: 10px;
-    }
-
-    .calendario-dia h3 {
-        font-size: medium;
-    }
-
-    .calendario-dia input {
-        padding: 5px;
-    }
-
-    .calendario-dia button {
-        width: 75px;
-        padding: 5px;
-    }
-}
-
-@media (min-width: 1025px) {
-    .calendario-semana {
-        grid-template-columns: repeat(4, 1fr); /* Quatro colunas em telas grandes */
-    }
-
-    .calendario-dia {
-        padding: 12px;
-    }
-
-    .calendario-dia h3 {
-        font-size: large;
-    }
-
-    .calendario-dia input {
-        padding: 6px;
-    }
-
-    .calendario-dia button {
-        width: 100px;
-        padding: 6px;
-    }
-}
-/* Para telas menores que 480px (celulares) */
-@media (max-width: 480px) {
-    .calenderAniversario {
-        font-size: 1rem;
-        height: auto;
-        padding: 4px;
+        grid-template-columns: 1fr;
     }
 }

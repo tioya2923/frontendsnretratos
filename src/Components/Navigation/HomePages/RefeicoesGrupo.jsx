@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { FiUsers } from 'react-icons/fi';
 
 const GruposList = () => {
   const [grupos, setGrupos] = useState([]);
@@ -35,48 +36,70 @@ const GruposList = () => {
   }, [fetchGrupos]);
 
   if (loading) {
-    return <p>Carregando...</p>;
+    return (
+      <div className="pagina">
+        <div className="rodinha" />
+      </div>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <div className="pagina">
+        <div className="estadoVazio cartao">
+          <p>{error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2>Refeições em Grupo</h2>
+    <div className="pagina pagina--larga">
+      <h1 className="paginaTitulo">Refeições em Grupo</h1>
+      <p className="paginaSubtitulo">Grupos marcados para almoçar ou jantar, com as datas e horas previstas.</p>
+
       {grupos.length > 0 ? (
-        grupos.map(grupo => (
-          <div key={grupo.id}>
-            <h3>{grupo.nome_grupo} ({grupo.total_membros} membros)</h3>
-            {grupo.refeicoes.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Tipo de Refeição</th>
-                    <th>Data</th>
-                    <th>Hora</th>
-                    <th>Local</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {grupo.refeicoes.map(refeicao => (
-                    <tr key={refeicao.id}>
-                      <td>{refeicao.tipo_refeicao}</td>
-                      <td>{refeicao.data_refeicao}</td>
-                      <td>{refeicao.hora_refeicao}</td>
-                      <td>{refeicao.local_refeicao}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>Sem refeições cadastradas</p>
-            )}
-          </div>
-        ))
+        <div style={{ display: 'grid', gap: 24 }}>
+          {grupos.map(grupo => (
+            <div className="cartao" key={grupo.id}>
+              <h3 style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <FiUsers /> {grupo.nome_grupo}
+                <span className="distintivo distintivo--neutro">{grupo.total_membros} membro{grupo.total_membros === 1 ? '' : 's'}</span>
+              </h3>
+              {grupo.refeicoes.length > 0 ? (
+                <div className="tabelaContainer">
+                  <table className="tabela">
+                    <thead>
+                      <tr>
+                        <th>Tipo de Refeição</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Local</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {grupo.refeicoes.map(refeicao => (
+                        <tr key={refeicao.id}>
+                          <td style={{ textTransform: 'capitalize' }}>{refeicao.tipo_refeicao}</td>
+                          <td>{refeicao.data_refeicao}</td>
+                          <td>{refeicao.hora_refeicao}</td>
+                          <td>{refeicao.local_refeicao}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p style={{ color: 'var(--cor-texto-suave)', margin: 0 }}>Sem refeições marcadas.</p>
+              )}
+            </div>
+          ))}
+        </div>
       ) : (
-        <p>Sem grupos cadastrados</p>
+        <div className="estadoVazio cartao">
+          <div className="estadoVazio__icone"><FiUsers /></div>
+          <p>Ainda não há grupos cadastrados.</p>
+        </div>
       )}
     </div>
   );

@@ -1,216 +1,150 @@
-/* Estilos gerais */
 .calendarioContainer {
-    background-color: rgb(214, 155, 155);
-    width: 90%;
-    margin: 0 auto;
-    padding-bottom: 25px;
-}
-
-.calendarioTitulo {
-    padding-top: 25px;
-    font-size: 2rem; /* Usar rem para tamanhos relativos */
+    padding-bottom: var(--esp-6);
 }
 
 .calendarioData {
-    font-size: 1.2rem; /* Usar rem para tamanhos relativos */
-    padding: 0px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-bottom: var(--esp-5);
 }
 
 .calendarioDiaData {
-    margin-top: 50px;
-    padding: 10px;
-    color: rgb(4, 50, 7);
-    margin: 0 auto;
+    margin: 0 0 var(--esp-3);
+    display: flex;
+    align-items: baseline;
+    gap: var(--esp-2);
+    flex-wrap: wrap;
 }
 
-/* Estilos da tabela */
-table {
+.calendarioDiaNum {
+    font-family: var(--fonte-corpo);
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: var(--cor-texto-suave);
+}
+
+.calenderAniversario {
+    margin: 0 0 var(--esp-3);
+}
+
+.calendarioSeccao {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-2);
+    margin: var(--esp-4) 0 var(--esp-2);
+    font-size: 1rem;
+    color: var(--cor-vinho);
+}
+
+/* Tabelas do mapa de refeições — âmbito só a este componente, para não
+   sobrepor a nenhuma outra tabela da app. */
+.calendarioContainer table.calendarioTipo {
     width: 100%;
     border-collapse: collapse;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-    max-width: 1200px;
-    background-color: red;
-    margin-bottom: 20px;
+    margin: 0 0 var(--esp-4);
+    border-radius: var(--raio-sm);
+    overflow: hidden;
+    box-shadow: var(--sombra-sm);
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding-left: 10px;
-    text-align: center;
-    font-size: 1em; /* Usar em para tamanhos relativos */
+.calendarioContainer table.calendarioTipo th,
+.calendarioContainer table.calendarioTipo td {
+    border: 1px solid var(--cor-contorno);
+    padding: var(--esp-2) var(--esp-3);
+    text-align: left;
+    font-size: 0.92rem;
 }
 
-th {
-    background-color: #972d10;
+.calendarioContainer table.calendarioTipo th {
+    background: var(--cor-vinho);
     color: #fff;
-    padding: 7px;
     text-transform: uppercase;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    font-family: var(--fonte-titulo);
 }
 
-td {
-    background-color: #f0ebeb;
+.calendarioContainer table.calendarioTipo td {
+    background: var(--cor-superficie);
+    vertical-align: top;
 }
 
-td ul {
+.calendarioContainer table.calendarioTipo tr:nth-child(even) td {
+    background: #fbfaf8;
+}
+
+.calendarioContainer table.calendarioTipo td ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    text-align: left;
 }
 
-td ul li {
-    color: #1d1c1c;
-    position: relative; /* Adicionado para posicionamento absoluto do botão */
+.calendarioContainer table.calendarioTipo td ul li {
+    color: var(--cor-texto);
+    position: relative;
+    padding: 3px 0;
 }
 
-td p {
-    margin-top: 10px;
-    font-weight: bold;
-    color: #0b0e11;
-}
-
-/* Estilos adicionais */
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-table tr:hover {
-    background-color: #f1f1f1;
+.calendarioContainer table.calendarioTipo td p {
+    margin: var(--esp-2) 0 0;
+    font-weight: 600;
+    color: var(--cor-texto);
 }
 
 .calendarioButton {
-    background-color: #ff4d4d; /* Cor de fundo vermelha */
-    color: white; /* Cor do texto branca */
-    border: none; /* Sem borda */
-    padding: 0.2rem 0.5rem; /* Espaçamento interno usando rem */
-    border-radius: 0.5rem; /* Bordas arredondadas */
-    cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
-    font-size: 1rem; /* Tamanho da fonte usando rem */
-    transition: background-color 0.3s ease; /* Transição suave para a cor de fundo */
-    position: absolute; /* Posicionamento absoluto */
-    right: 1rem; /* Distância da borda direita usando rem */
-    top: 50%; /* Centraliza verticalmente */
-    transform: translateY(-50%); /* Ajusta para centralização */
-    display: none; /* Esconde o botão por padrão */
+    background: var(--cor-erro);
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: var(--raio-sm);
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: background var(--transicao);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+.nomeContainer {
+    cursor: pointer;
 }
 
 .nomeContainer:hover .calendarioButton {
-    display: block; /* Mostra o botão ao passar o mouse */
+    display: inline-block;
 }
 
 .calendarioButton:hover {
-    background-color: #ff1a1a; /* Cor de fundo ao passar o mouse */
+    background: #b5251c;
 }
 
 .presencaConfirmada {
-    color: #147a1e;
+    color: var(--cor-sucesso);
     font-weight: bold;
     margin-left: 0.4rem;
 }
 
 .confirmarPresencaButton {
-    background-color: #147a1e;
+    background: var(--cor-sucesso);
     color: white;
     border: none;
-    padding: 0.15rem 0.5rem;
-    border-radius: 0.5rem;
+    padding: 2px 9px;
+    border-radius: var(--raio-sm);
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     margin-left: 0.5rem;
-    transition: background-color 0.3s ease;
+    transition: background var(--transicao), transform var(--transicao);
 }
 
 .confirmarPresencaButton:hover {
-    background-color: #0f5c16;
+    background: #156b32;
+    transform: translateY(-1px);
 }
 
-.inscricao-link {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: white;
-    background-color: #075812;
-    text-decoration: none;
-    border-radius: 5px;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-.inscricao-link:hover {
-    background-color: #0056b3;
-}
-
-/* Media queries para diferentes tamanhos de ecrãs */
-@media (max-width: 1200px) {
-    .calendarioTitulo {
-        font-size: 1.8rem;
-    }
-
-    .calendarioData {
-        font-size: 1rem;
-    }
-
-    th, td {
-        font-size: 0.9em;
-    }
-
-   .calendarioButton {
-        font-size: 0.6rem; /* Ajusta o tamanho da fonte */
-        padding: 0.2rem 0.5rem; /* Ajusta o espaçamento interno */
-    }
-}
-
-@media (max-width: 768px) {
-    .calendarioTitulo {
-        font-size: 1.5rem;
-    }
-
-    .calendarioData {
-        font-size: 0.9rem;
-    }
-
-    th, td {
-        font-size: 0.8em;
-    }
-
-    .calendarioButton {
-        font-size: 0.5rem; /* Ajusta o tamanho da fonte */
-        padding: 0.2rem 0.5rem; /* Ajusta o espaçamento interno */
-    }
-}
-
+/* Média queries: escala de fonte suave, sem tabelas ilegíveis em ecrãs pequenos */
 @media (max-width: 480px) {
-    .calendarioTitulo {
-        font-size: 1.2rem;
-    }
-
-    .calendarioData {
+    .calendarioContainer table.calendarioTipo th,
+    .calendarioContainer table.calendarioTipo td {
         font-size: 0.8rem;
-    }
-
-    th, td {
-        font-size: 0.5rem;
-    }
-
-    .calendarioButton {
-        font-size: 0.5rem; /* Ajusta o tamanho da fonte */
-        padding: 0.1rem 0.2rem; /* Ajusta o espaçamento interno */
-    }
-}
-
-@media (max-width: 768px) {
-    .inscricao-link {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .inscricao-link {
-        font-size: 12px;
-        padding: 6px 12px;
+        padding: 6px 8px;
     }
 }

@@ -1,5 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 
+// A maior parte do sistema de design vive em Styles/tokens.css (variáveis
+// CSS, cartões, botões, tabelas, formulários — partilhados por toda a
+// app). Isto trata só do reset base e do fundo/tipografia do <body>.
 export const GlobalStyles = createGlobalStyle`
     html, body {
         margin: 0;
@@ -10,51 +13,16 @@ export const GlobalStyles = createGlobalStyle`
         box-sizing: border-box;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
-        align-items: center;
-        background: ${({ theme }) => theme.primaryDark};
-        color: ${({ theme }) => theme.primaryLight};
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        background: var(--cor-fundo);
+        color: var(--cor-texto);
+        font-family: var(--fonte-corpo);
         text-rendering: optimizeLegibility;
-    }
-
-    /* Estilos para telemóveis */
-    @media (max-width: 600px) {
-        body {
-            font-size: 0.75rem;
-            text-align: center;
-            color: black;
-            background: ${({ theme }) => theme.primaryPhones};
-        }
-    }
-
-    /* Estilos para tablets */
-    @media (min-width: 601px) and (max-width: 1024px) {
-        body {
-            font-size: 1rem;
-            text-align: center;
-            color: black;
-            background: ${({ theme }) => theme.primaryTablets};
-        }
-    }
-
-    /* Estilos para laptops */
-    @media (min-width: 1025px) and (max-width: 1440px) {
-        body {
-            font-size: 1.2rem;
-            text-align: center;
-            color: black;
-            background: ${({ theme }) => theme.primaryLaptops};
-        }
-    }
-
-    /* Estilos para computadores de secretária */
-    @media (min-width: 1441px) {
-        body {
-            font-size: 1.5rem;
-            text-align: center;
-            color: black;
-            background: ${({ theme }) => theme.primaryLargeLaptops};
-        }
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 `;

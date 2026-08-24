@@ -1,86 +1,46 @@
-/* Estilos para o container principal */
 .home-container {
-    display: -webkit-box; /* Fallback para navegadores antigos */
-    display: -ms-flexbox; /* Fallback para navegadores antigos */
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
     align-items: center;
-    font-family: Arial, sans-serif;
-    max-height: 1500vh;
-    overflow: hidden; /* Evita que o conteúdo exceda a altura máxima */
+    width: 100%;
+    padding: var(--esp-6) var(--esp-4) var(--esp-7);
 }
 
-/* Estilos para o título */
+.home-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: var(--esp-5);
+    animation: entradaPagina 320ms ease-out;
+}
+
 .home-title {
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 20px;
+    margin: var(--esp-3) 0 0;
+    font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
 }
 
-/* Estilos para a imagem do logo */
 .snImage {
-    width: 150px;
+    width: 110px;
     height: auto;
-    margin-bottom: 20px;
+    border-radius: var(--raio-lg);
+    box-shadow: var(--sombra-md);
 }
 
-/* Estilos para o conteúdo */
 .home-content {
-    display: -webkit-box; /* Fallback para navegadores antigos */
-    display: -ms-grid; /* Fallback para navegadores antigos */
-    display: -webkit-flex; /* Adicionado para compatibilidade com Safari */
-    display: flex; /* Adicionado para compatibilidade com Safari */
-    -webkit-flex-wrap: wrap; /* Adicionado para compatibilidade com Safari */
-    flex-wrap: wrap; /* Adicionado para compatibilidade com Safari */
-    -webkit-grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
-    grid-template-columns: repeat(auto-fill, minmax(1000px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-5);
     width: 100%;
     max-width: 1300px;
-    max-height: 80vh;
-    overflow-y: auto; /* Permite rolagem vertical se o conteúdo exceder a altura máxima */
 }
 
-/* Estilos para os componentes individuais */
 .home-content > * {
-    max-height: 1200px; /* Limita a altura de cada componente */
-    overflow: hidden; /* Esconde o conteúdo excedente */
     max-width: 100%;
 }
 
-/* Media Queries para responsividade */
-@media (max-width: 1200px) {
-    .home-title {
-        font-size: 1.8em;
-    }
-    .snImage {
-        width: 120px;
-    }
-}
-
-@media (max-width: 768px) {
-    .home-title {
-        font-size: 1.5em;
-    }
-    .snImage {
-        width: 100px;
-    }
-    .home-content {
-        -webkit-grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    }
-}
-
 @media (max-width: 480px) {
-    .home-title {
-        font-size: 1.2em;
-    }
     .snImage {
-        width: 80px;
-    }
-    .home-content {
-        -webkit-grid-template-columns: 1fr;
-        grid-template-columns: 1fr;
+        width: 84px;
     }
 }

@@ -1,78 +1,35 @@
-.container-participantes {
-    margin: 0 auto;
-    margin-top: 5px;
-    margin-bottom: 50px;
-    width: auto;
-    border-radius: 2%;
-    border: 5px solid #ccc;
-    padding: 5%;
-    font-weight: bold;
-    background-color: rgb(232, 224, 213);
-}
-
-.button-delete {
-    background-color: #f44336;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-
-}
-
-.button-delete:hover {
-    opacity: 0.8;
-}
-
-/* Estilos para a div que contém os usuários */
-.user-grid {
+.gestaoGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-    gap: 15px;
-    margin-left: 15px;
-    margin: 0 auto;
-    background-color:rgba(129, 102, 66, 0.731);
-
-
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--esp-4);
 }
 
-/* Estilos para cada seção de conteúdo */
-.user-card div {
+.gestaoCartao {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    width: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: rgb(225, 213, 198);
-
+    justify-content: center;
+    gap: var(--esp-2);
+    text-align: center;
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-contorno);
+    border-radius: var(--raio-md);
+    box-shadow: var(--sombra-sm);
+    padding: var(--esp-5) var(--esp-3);
+    text-decoration: none;
+    color: var(--cor-texto);
+    font-weight: 600;
+    font-size: 0.92rem;
+    transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
 }
 
-/* Estilos para o nome da coluna */
-.user-card h3 {
-    margin-right: 10px;
-
-
-
+.gestaoCartao:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-md);
+    border-color: var(--cor-vinho);
 }
 
-h2 {
-    margin-bottom: 5px;
-    /* Ajuste este valor para alterar o espaço abaixo do título */
+.gestaoCartao__icone {
+    font-size: 1.8rem;
+    color: var(--cor-vinho);
 }
-
-
-
-/* Estilos para dispositivos com largura de tela até 600px */
-@media only screen and (max-width: 600px) {
-
-    .button-delete {
-        padding: 5px 20px;
-    }
-
-    .user-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-
-}
-
-}
-
-/* Estilos para dispositivos com largura de tela entre 601px e 1024px */
-@media only screen and (min-width: 600px) and (max-width: 1024px) {}

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FiAlertCircle, FiSun, FiMoon, FiPlusCircle } from 'react-icons/fi';
 import { useUser } from '../../../UserContext';
 import '../../Styles/InscritosRefeicoes.css';
 
@@ -168,11 +169,18 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     };
 
     if (loading) {
-        return <p>Carregando...</p>;
+        return <div className="pagina"><div className="rodinha" /></div>;
     }
 
     if (error) {
-        return <p>Erro: {error}</p>;
+        return (
+            <div className="pagina">
+                <div className="estadoVazio cartao">
+                    <div className="estadoVazio__icone"><FiAlertCircle /></div>
+                    <p>{error}</p>
+                </div>
+            </div>
+        );
     }
 
     const diasDaSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -303,26 +311,27 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     
 
     return (
-        <div className='calendarioContainer'>
-         
-            <h1 className='calendarioTitulo'>Mapa para as Refeições</h1>
-            {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar, gruposAlmoco, gruposJantar, totalPessoasGruposAlmoco, totalPessoasGruposJantar }) => (
-                <div className='calendarioData' key={data}>
-                    <h2 className='calendarioDiaData'>{dia}: {data}</h2>
+        <div className='calendarioContainer pagina pagina--larga'>
 
-                    {feriado && <p className='calenderAniversario'><strong>{feriado}</strong></p>}
+            <h1 className='paginaTitulo'>Mapa para as Refeições</h1>
+            <p className="paginaSubtitulo">Quem se inscreveu para cada refeição, dia a dia.</p>
+            {refeicoesOrganizadas.map(({ dia, data, feriado, aniversariantesNatalicio, aniversariantesSacerdotal, refeicoes, horarioJantar, gruposAlmoco, gruposJantar, totalPessoasGruposAlmoco, totalPessoasGruposJantar }) => (
+                <div className='calendarioData cartao' key={data}>
+                    <h2 className='calendarioDiaData'>{dia} <span className="calendarioDiaNum">{data}</span></h2>
+
+                    {feriado && <p className='calenderAniversario distintivo distintivo--aviso'>{feriado}</p>}
 
 
                     {mostrarAniversarios && aniversariantesNatalicio.length > 0 && (
-                        <p className='calenderAniversario'> <strong>Aniversariante do Dia: {aniversariantesNatalicio.join(', ')}</strong></p>
+                        <p className='calenderAniversario'>🎂 Aniversariante do Dia: <strong>{aniversariantesNatalicio.join(', ')}</strong></p>
                     )}
 
 
                     {mostrarAniversarios && aniversariantesSacerdotal.length > 0 && (
-                        <p className='calenderAniversario'><strong>Aniversariante Sacerdotal do Dia: {aniversariantesSacerdotal.join(', ')}</strong></p>
+                        <p className='calenderAniversario'>✝️ Aniversariante Sacerdotal: <strong>{aniversariantesSacerdotal.join(', ')}</strong></p>
                     )}
 
-                    <h3 className='calendarioDiaData'>Almoço: 13h30</h3>
+                    <h3 className='calendarioSeccao'><FiSun /> Almoço: 13h30</h3>
                     <table className='calendarioTipo'>
                         <thead>
                             <tr>
@@ -385,8 +394,8 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                         </tbody>
                     </table>
 
-                    <h3>Jantar: {horarioJantar}</h3>
-                    <table>
+                    <h3 className='calendarioSeccao'><FiMoon /> Jantar: {horarioJantar}</h3>
+                    <table className='calendarioTipo'>
                         <thead>
                             <tr>
                                 {tiposRefeicoesJantar.map(({ tipo, filtro }) => {
@@ -452,7 +461,11 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                     </table>
                 </div>
             ))}
-            <Link to="/refeicoes" className="inscricao-link">Fazer inscrição</Link>
+            <p style={{ textAlign: 'center' }}>
+                <Link to="/refeicoes" className="botao botao--primario">
+                    <FiPlusCircle /> Fazer inscrição
+                </Link>
+            </p>
         </div>
     );
 };

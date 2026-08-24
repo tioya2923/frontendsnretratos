@@ -4,6 +4,18 @@ import "../../Styles/updateUsuarios.css";
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useConfirm } from '../../ConfirmDialog';
+import {
+    FiUserCheck, FiUsers, FiCalendar, FiShield, FiTrash2,
+} from 'react-icons/fi';
+import { PiChurch } from 'react-icons/pi';
+
+const LINKS_GESTAO = [
+    { to: '/InscreverVisita', label: 'Visitante', icon: <FiUserCheck /> },
+    { to: '/gruposMembros', label: 'Adicionar Grupo', icon: <FiUsers /> },
+    { to: '/AddGroupsToMeal', label: 'Refeições em Grupos', icon: <FiCalendar /> },
+    { to: '/GruposList', label: 'Ver Refeições em Grupo', icon: <PiChurch /> },
+    { to: '/updateAdministradores', label: 'Administradores', icon: <FiShield /> },
+];
 
 const UpdateUsuarios = () => {
     const [users, setUsers] = useState([]);
@@ -61,50 +73,67 @@ const UpdateUsuarios = () => {
         };
     }, [triggerUpdate, getUsers]);
 
-    return (
-        <div>
-            <div>
-                <div className="admini">
-                    <div className="link-admini"><Link to="/InscreverVisita" className='insert'>Visitante</Link></div>
-                    <div className="link-admini"><Link to="/gruposMembros" className='insert'>Adcionar Grupo</Link></div>
-                    <div className="link-admini"><Link to="/AddGroupsToMeal" className='insert'>Adicionar Refeições em Grupos</Link></div>
-                    <div className="link-admini"><Link to="/GruposList" className='insert'>Refeições em Grupos</Link></div>
-                    <div className="link-admini"><Link to="/updateAdministradores" className='insert'>Administradores</Link></div>
-                </div>
-            </div>
-            <h2>Participantes</h2>
-            <div className='container-participantes'>
-                <div className="user-grid">
-                    {users.map(user => (
-                        <div className="user-card" key={user.id}>
-                            <div>
-                                <h3>Nome:</h3>
-                                <p>{user.name}</p>
-                            </div>
-                            <div>
-                                <h3>E-mail:</h3>
-                                <p>{user.email}</p>
-                            </div>
-                            <div>
-                                <h3>Estado:</h3>
-                                <p>{user.status}</p>
-                            </div>
-                            <div>
-                                <h3>Ação:</h3>
-                                <button className='button-delete' onClick={() => deleteUser(user.id)}>Eliminar</button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+    const distintivoEstado = (status) => {
+        const s = (status || '').toLowerCase();
+        if (s === 'aprovado') return <span className="distintivo distintivo--sucesso">Aprovado</span>;
+        if (s === 'pendente') return <span className="distintivo distintivo--aviso">Pendente</span>;
+        return <span className="distintivo distintivo--neutro">{status || '—'}</span>;
+    };
 
+    return (
+        <div className="pagina pagina--larga">
+            <h1 className="paginaTitulo">Painel de Gestão</h1>
+            <p className="paginaSubtitulo">Acesso rápido às áreas de administração da app.</p>
+
+            <nav className="gestaoGrid">
+                {LINKS_GESTAO.map(({ to, label, icon }) => (
+                    <Link to={to} key={to} className="gestaoCartao">
+                        <span className="gestaoCartao__icone">{icon}</span>
+                        <span>{label}</span>
+                    </Link>
+                ))}
+            </nav>
+
+            <h2 style={{ marginTop: 48 }}>Participantes</h2>
+            <p className="paginaSubtitulo" style={{ marginBottom: 20 }}>
+                {users.length} pessoa{users.length === 1 ? '' : 's'} registada{users.length === 1 ? '' : 's'} na app.
+            </p>
+
+            {users.length === 0 ? (
+                <div className="estadoVazio cartao">
+                    <div className="estadoVazio__icone"><FiUsers /></div>
+                    <p>Ainda não há participantes para mostrar.</p>
+                </div>
+            ) : (
+                <div className="tabelaContainer">
+                    <table className="tabela">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Estado</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map(user => (
+                                <tr key={user.id}>
+                                    <td>{user.name}</td>
+                                    <td>{user.email}</td>
+                                    <td>{distintivoEstado(user.status)}</td>
+                                    <td>
+                                        <button className="botao botao--perigo botao--pequeno" onClick={() => deleteUser(user.id)}>
+                                            <FiTrash2 /> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
-
-
-
-
-
 };
 
 export default UpdateUsuarios;
