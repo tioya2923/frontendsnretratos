@@ -25,23 +25,33 @@ const AdPrivacidade = () => {
             const response = await axios({
                 method: 'post',
                 url: `${backendUrl}components/regPrivacidade.php`,
-                data: formData
+                data: formData,
+                headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
             });
 
             const data = response.data;
 
-            if (data === 'O email já está em uso') {
-                toast.error('O email já está em uso');
-            } else if (data === 'Registo bem-sucedido') {
+            // Casos de sucesso/validação — o backend devolve sempre 200 e
+            // aqui só uma string simples (não {status, message}).
+            if (data === 'Registo bem-sucedido') {
                 toast.success('Registo bem-sucedido');
-            } else if (data === 'Apenas super administradores podem inserir outros administradores') {
-                toast.error('Apenas super administradores podem inserir outros administradores');
-            } else if (data === 'Usuário não encontrado') {
-                toast.error('Usuário não encontrado');
+                setName('');
+                setEmail('');
+                setPassword('');
+                setIsSuper(false);
+            } else if (data === 'O email já está em uso') {
+                toast.error('O email já está em uso');
+            } else if (data === 'Dados inválidos') {
+                toast.error('Preencha o nome e um email válido.');
+            } else {
+                toast.error('Erro no registo.');
             }
 
         } catch (error) {
             console.error('Erro ao registrar', error);
+            // 401/403 (sem sessão de admin, ou sem ser super admin) vêm
+            // por aqui — o backend devolve a mesma string simples.
+            toast.error(error.response?.data || 'Erro ao registar administrador.');
         }
     };
 

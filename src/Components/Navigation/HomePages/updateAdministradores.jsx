@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const UpdateAdministradores = () => {
     const [users, setUsers] = useState([]);
@@ -40,14 +41,27 @@ const UpdateAdministradores = () => {
         };
     }, [getUsers]); // getUsers é agora uma dependência memorizada
 
+    // A app só sabe se O PRÓPRIO admin é super a partir do login
+    // (adminIsSuper em localStorage) — o backend continua a ser sempre a
+    // autoridade real. Se ainda não existir nenhum super administrador,
+    // mostra-se o link a qualquer admin, para não haver um beco sem saída
+    // em que ninguém consegue criar o primeiro.
+    const souSuper = localStorage.getItem('adminIsSuper') === '1';
+    const nenhumSuperAinda = users.length > 0 && !users.some(u => Number(u.is_super) === 1);
+    const podeCriarAdmin = souSuper || nenhumSuperAinda;
+
     return (
         <div>
             <h2>Administradores</h2>
+            {podeCriarAdmin && (
+                <p><Link to="/adPrivacidade">+ Adicionar Administrador</Link></p>
+            )}
             <table>
                 <thead>
                     <tr>
                         <th>Nome</th>
                         <th>E-mail</th>
+                        <th>Super</th>
                         <th>Data de Criação</th>
                     </tr>
                 </thead>
@@ -56,6 +70,7 @@ const UpdateAdministradores = () => {
                         <tr key={user.id_admin}>
                             <td>{user.name_admin}</td>
                             <td>{user.email_admin}</td>
+                            <td>{Number(user.is_super) === 1 ? 'Sim' : 'Não'}</td>
                             <td>{user.created_at}</td>
                         </tr>
                     ))}

@@ -97,7 +97,7 @@ function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route path="/privacidade" element={<><Navbar /><Privacidade /><Footer /></>} />
-      <Route path="/adPrivacidade" element={<><Navbar /><AdPrivacidade /><Footer /></>} />
+      <Route path="/adPrivacidade" element={<AdminRoute><><Navbar /><AdPrivacidade /><Footer /></></AdminRoute>} />
 
       {/* Rotas protegidas — requerem login */}
       <Route path="/home" element={<AuthRoute><><Navbar /><Home /><Footer /></></AuthRoute>} />

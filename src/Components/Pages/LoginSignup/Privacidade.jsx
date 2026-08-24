@@ -34,6 +34,10 @@ function Privacidade() {
                     toast.success('Login bem-sucedido');
                     localStorage.setItem('adminToken', data.token);
                     localStorage.setItem('adminName', data.name);
+                    // Usado para mostrar/esconder ações só de super admin
+                    // (ex.: criar novos administradores) — o backend é
+                    // sempre a autoridade real, isto é só para a UI.
+                    localStorage.setItem('adminIsSuper', data.is_super ? '1' : '0');
                     setLoggedIn(true);
                 } else if (data && data.message === 'área não permitida') {
                     toast.error('área não permitida');
