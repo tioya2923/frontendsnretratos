@@ -41,12 +41,18 @@ const UpdateAdministradores = () => {
         };
     }, [getUsers]); // getUsers é agora uma dependência memorizada
 
-    // A app só sabe se O PRÓPRIO admin é super a partir do login
-    // (adminIsSuper em localStorage) — o backend continua a ser sempre a
-    // autoridade real. Se ainda não existir nenhum super administrador,
-    // mostra-se o link a qualquer admin, para não haver um beco sem saída
-    // em que ninguém consegue criar o primeiro.
-    const souSuper = localStorage.getItem('adminIsSuper') === '1';
+    // Descobre se o PRÓPRIO admin é super cruzando o nome guardado no
+    // login (adminName) com a lista — em vez de confiar só na flag
+    // adminIsSuper do localStorage, que só é gravada num login novo (uma
+    // sessão já aberta antes desta funcionalidade nunca a teria). O
+    // backend continua a ser sempre a autoridade real de qualquer forma.
+    // Se ainda não existir nenhum super administrador, mostra-se o link a
+    // qualquer admin, para não haver um beco sem saída.
+    const meuNome = (localStorage.getItem('adminName') || '').trim().toLowerCase();
+    const meuRegisto = users.find(u => (u.name_admin || '').trim().toLowerCase() === meuNome);
+    const souSuper = meuRegisto
+        ? Number(meuRegisto.is_super) === 1
+        : localStorage.getItem('adminIsSuper') === '1'; // fallback caso o nome não bata certo
     const nenhumSuperAinda = users.length > 0 && !users.some(u => Number(u.is_super) === 1);
     const podeCriarAdmin = souSuper || nenhumSuperAinda;
 
