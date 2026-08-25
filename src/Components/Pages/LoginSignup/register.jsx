@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import axios from "axios";
 import { toast } from "react-toastify"; // ToastContainer é global (ver App.js)
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [dataAniversario, setDataAniversario] = useState("");
   const [dataAniversarioSacerdotal, setDataAniversarioSacerdotal] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -172,24 +175,34 @@ export default function Register() {
           {/* Password */}
           <div className="form-group">
             <label>Palavra Passe</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-field">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <i onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </i>
+            </div>
             {passwordError && <span className="error">{passwordError}</span>}
           </div>
 
           {/* Confirm Password */}
           <div className="form-group">
             <label>Confirmar Palavra Passe</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            <div className="password-field">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <i onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+              </i>
+            </div>
             {confirmError && <span className="error">{confirmError}</span>}
           </div>
 

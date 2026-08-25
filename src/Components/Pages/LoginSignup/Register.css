@@ -96,6 +96,28 @@ input:focus {
     background: #fff8f8;
 }
 
+.password-field {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+}
+
+.password-field input {
+    width: 100%;
+    max-width: none;
+    padding-right: 40px;
+}
+
+.password-field i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #a05c5c;
+    display: flex;
+}
+
 /* Botões */
 button[type=submit] {
     max-width: 350px;
