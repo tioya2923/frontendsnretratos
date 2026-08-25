@@ -24,7 +24,6 @@ import CalendarioRefeicoes from "./Components/Navigation/HomePages/refeicoes";
 import InscritosRefeicoes from "./Components/Navigation/HomePages/InscritosRefeicoes";
 import MembrosGrupos from "./Components/Navigation/HomePages/gruposMembros";
 import AddGroupsToMeal from "./Components/Navigation/HomePages/AddGroupsToMeal";
-import RefeicoesGrupo from "./Components/Navigation/HomePages/RefeicoesGrupo";
 import Notificacoes from "./Components/Navigation/HomePages/Notificacoes";
 import ProtectedRoute from "./Components/Pages/LoginSignup/ProtectedRoute";
 import { UserProvider, useUser } from './UserContext';
@@ -114,10 +113,6 @@ function AppRoutes() {
       <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></></AuthRoute>} />
       <Route path="/gruposMembros" element={<AdminRoute><><Navbar /><MembrosGrupos /><Footer /></></AdminRoute>} />
       <Route path="/AddGroupsToMeal" element={<AdminRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AdminRoute>} />
-      {/* O nome do componente é GruposList — a rota usa o mesmo nome para
-          bater certo com o link em updateUsuarios.jsx ("Refeições em
-          Grupos") e com o URL que os utilizadores já possam ter guardado. */}
-      <Route path="/GruposList" element={<AuthRoute><><Navbar /><RefeicoesGrupo /><Footer /></></AuthRoute>} />
       <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><Footer /></></AuthRoute>} />
       <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
       <Route path="/atividades" element={<AuthRoute><><Navbar /><AtividadesPage /><Footer /></></AuthRoute>} />

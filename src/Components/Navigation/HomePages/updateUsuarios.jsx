@@ -7,13 +7,11 @@ import { useConfirm } from '../../ConfirmDialog';
 import {
     FiUserCheck, FiUsers, FiCalendar, FiShield, FiTrash2,
 } from 'react-icons/fi';
-import { PiChurch } from 'react-icons/pi';
 
 const LINKS_GESTAO = [
     { to: '/InscreverVisita', label: 'Visitante', icon: <FiUserCheck /> },
     { to: '/gruposMembros', label: 'Adicionar Grupo', icon: <FiUsers /> },
     { to: '/AddGroupsToMeal', label: 'Refeições em Grupos', icon: <FiCalendar /> },
-    { to: '/GruposList', label: 'Ver Refeições em Grupo', icon: <PiChurch /> },
     { to: '/updateAdministradores', label: 'Administradores', icon: <FiShield /> },
 ];
 
