@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { toast } from 'react-toastify'; // ToastContainer é global (ver App.js)
-import { useNavigate } from "react-router-dom";
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useNavigate, Link } from "react-router-dom";
+import { FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
 import './Login.css';
 
 
@@ -79,6 +79,11 @@ function Privacidade() {
             </div>
             <span id="password-error" className="error"></span>
             <button onClick={handleSubmit}>Entrar</button>
+            <div className="login-form-register">
+                <Link to="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <FiArrowLeft /> Voltar ao login
+                </Link>
+            </div>
         </div>
     );
 }

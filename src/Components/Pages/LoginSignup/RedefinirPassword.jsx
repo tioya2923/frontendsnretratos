@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { FiLock, FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
+import { FiLock, FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle, FiArrowLeft } from 'react-icons/fi';
 
 export default function RedefinirPassword() {
     const [searchParams] = useSearchParams();
@@ -111,6 +111,14 @@ export default function RedefinirPassword() {
                     </form>
                 )}
             </div>
+
+            {!sucesso && (
+                <p style={{ textAlign: 'center', marginTop: 20 }}>
+                    <Link to="/login" className="linkVoltar">
+                        <FiArrowLeft /> Voltar ao login
+                    </Link>
+                </p>
+            )}
         </div>
     );
 }

@@ -105,9 +105,15 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
-      <Route path="/esqueci-password" element={<><Navbar /><EsqueciPassword /><Footer /></>} />
-      <Route path="/redefinir-password" element={<><Navbar /><RedefinirPassword /><Footer /></>} />
-      <Route path="/privacidade" element={<><Navbar /><Privacidade /><Footer /></>} />
+      {/* Sem Navbar/Footer — são páginas públicas, pré-login, tal como
+          /login e /register logo acima. Mostrar a barra de navegação da
+          app (com links para Refeições/Mensagens/etc.) aqui dava a
+          entender, a quem ainda não tinha sessão, que já estava "dentro"
+          da app — mesmo cada link continuando a mandar para /login por
+          trás, a aparência era enganadora. */}
+      <Route path="/esqueci-password" element={<EsqueciPassword />} />
+      <Route path="/redefinir-password" element={<RedefinirPassword />} />
+      <Route path="/privacidade" element={<Privacidade />} />
       <Route path="/adPrivacidade" element={<AdminRoute><><Navbar /><AdPrivacidade /><Footer /></></AdminRoute>} />
 
       {/* Rotas protegidas — requerem login */}
