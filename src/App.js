@@ -6,6 +6,7 @@ import { GlobalStyles } from "./global";
 import { theme } from "./theme";
 import Navbar from "./Components/Navigation/Navbar";
 import PwaUpdateBanner from "./Components/PwaUpdateBanner";
+import PwaInstallBanner from "./Components/PwaInstallBanner";
 import Footer from "./Components/FooterPage/Footer";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
@@ -54,7 +55,11 @@ function App() {
             toda a app. Cada página só precisa de chamar toast.success()/
             toast.error(), sem montar o seu próprio <ToastContainer />. */}
         <ToastContainer position="top-center" autoClose={4000} />
-        {swRegistration && <PwaUpdateBanner registration={swRegistration} />}
+        {swRegistration
+          ? <PwaUpdateBanner registration={swRegistration} />
+          /* Só um dos dois de cada vez — uma atualização pendente é mais
+             urgente do que o convite para instalar. */
+          : <PwaInstallBanner />}
         <ConfirmProvider>
           <Router>
             <UserProvider>
