@@ -51,17 +51,33 @@ const CalendarioRefeicoes = () => {
             return;
         }
 
+        // Cada botão "Inscrever" só submete as opções da sua própria
+        // secção — antes, clicar em qualquer um dos dois enviava sempre o
+        // dia inteiro (almoço + jantar juntos), ignorando qual tinha sido
+        // clicado, o que confundia quem preenchesse as duas secções antes
+        // de clicar. O Takeaway aparece visualmente dentro da secção do
+        // Almoço (é lá que tem a checkbox), por isso segue com esse botão.
+        const ehAlmoco = tipo === 'almoco';
         const payload = {
             nomes_completos: [userName], // Utilizar o nome do usuário autenticado
             data: data,
-            levar_refeicao: levarRefeicao[data] || false,
-            almoco: almoco[data] || false,
-            almoco_mais_cedo: almocoMaisCedo[data] || false,
-            almoco_mais_tarde: almocoMaisTarde[data] || false,
-            jantar: jantar[data] || false,
-            jantar_mais_cedo: jantarMaisCedo[data] || false,
-            jantar_mais_tarde: jantarMaisTarde[data] || false
+            levar_refeicao: ehAlmoco ? (levarRefeicao[data] || false) : false,
+            almoco: ehAlmoco ? (almoco[data] || false) : false,
+            almoco_mais_cedo: ehAlmoco ? (almocoMaisCedo[data] || false) : false,
+            almoco_mais_tarde: ehAlmoco ? (almocoMaisTarde[data] || false) : false,
+            jantar: ehAlmoco ? false : (jantar[data] || false),
+            jantar_mais_cedo: ehAlmoco ? false : (jantarMaisCedo[data] || false),
+            jantar_mais_tarde: ehAlmoco ? false : (jantarMaisTarde[data] || false)
         };
+
+        const algumaOpcaoMarcada = ehAlmoco
+            ? (payload.almoco || payload.almoco_mais_cedo || payload.almoco_mais_tarde || payload.levar_refeicao)
+            : (payload.jantar || payload.jantar_mais_cedo || payload.jantar_mais_tarde);
+
+        if (!algumaOpcaoMarcada) {
+            setErros(prev => ({ ...prev, [data]: 'Selecione pelo menos uma opção antes de inscrever.' }));
+            return;
+        }
 
         console.log('Payload:', payload); // Adicionar log para depuração
 
@@ -73,14 +89,18 @@ const CalendarioRefeicoes = () => {
             .then(response => {
                 console.log('Response:', response.data); // Adicionar log para depuração
                 setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
-                // Limpar checkboxes
-                setLevarRefeicao(prev => ({ ...prev, [data]: false }));
-                setAlmoco(prev => ({ ...prev, [data]: false }));
-                setAlmocoMaisCedo(prev => ({ ...prev, [data]: false }));
-                setAlmocoMaisTarde(prev => ({ ...prev, [data]: false }));
-                setJantar(prev => ({ ...prev, [data]: false }));
-                setJantarMaisCedo(prev => ({ ...prev, [data]: false }));
-                setJantarMaisTarde(prev => ({ ...prev, [data]: false }));
+                // Limpar só as checkboxes da secção submetida — a outra
+                // secção pode ainda ter opções por inscrever.
+                if (ehAlmoco) {
+                    setLevarRefeicao(prev => ({ ...prev, [data]: false }));
+                    setAlmoco(prev => ({ ...prev, [data]: false }));
+                    setAlmocoMaisCedo(prev => ({ ...prev, [data]: false }));
+                    setAlmocoMaisTarde(prev => ({ ...prev, [data]: false }));
+                } else {
+                    setJantar(prev => ({ ...prev, [data]: false }));
+                    setJantarMaisCedo(prev => ({ ...prev, [data]: false }));
+                    setJantarMaisTarde(prev => ({ ...prev, [data]: false }));
+                }
             })
             .catch(error => {
                 console.error('Erro ao inscrever-se:', error);
