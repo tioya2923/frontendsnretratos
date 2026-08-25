@@ -28,6 +28,7 @@ import MembrosGrupos from "./Components/Navigation/HomePages/gruposMembros";
 import AddGroupsToMeal from "./Components/Navigation/HomePages/AddGroupsToMeal";
 import Notificacoes from "./Components/Navigation/HomePages/Notificacoes";
 import ProtectedRoute from "./Components/Pages/LoginSignup/ProtectedRoute";
+import VoltarLink from "./Components/VoltarLink";
 import { UserProvider, useUser } from './UserContext';
 import { ConfirmProvider } from './Components/ConfirmDialog';
 import InscreverVisita from "./Components/Navigation/HomePages/InscreverVisita";
@@ -113,17 +114,17 @@ function AppRoutes() {
       <Route path="/home" element={<AuthRoute><><Navbar /><Home /><Footer /></></AuthRoute>} />
       <Route path="/areaPessoal" element={<AuthRoute><><Navbar /><AreaPessoal /><Footer /></></AuthRoute>} />
       <Route path="/administracao" element={<AuthRoute><><Navbar /><Administracao /><Footer /></></AuthRoute>} />
-      <Route path="/updateUsuarios" element={<AdminRoute><><Navbar /><UpdateUsuarios /><Footer /></></AdminRoute>} />
-      <Route path="/updateAdministradores" element={<AdminRoute><><Navbar /><UpdateAdministradores /><Footer /></></AdminRoute>} />
-      <Route path="/refeicoes" element={<AuthRoute><><Navbar /><CalendarioRefeicoes /><Footer /></></AuthRoute>} />
-      <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><Footer /></></AuthRoute>} />
-      <Route path="/gruposMembros" element={<AdminRoute><><Navbar /><MembrosGrupos /><Footer /></></AdminRoute>} />
+      <Route path="/updateUsuarios" element={<AdminRoute><><Navbar /><UpdateUsuarios /><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AdminRoute>} />
+      <Route path="/updateAdministradores" element={<AdminRoute><><Navbar /><UpdateAdministradores /><VoltarLink to="/updateUsuarios" label="Voltar ao Painel de Gestão" /><Footer /></></AdminRoute>} />
+      <Route path="/refeicoes" element={<AuthRoute><><Navbar /><CalendarioRefeicoes /><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AuthRoute>} />
+      <Route path="/InscritosRefeicoes" element={<AuthRoute><><Navbar /><ErrorBoundary><InscritosRefeicoes /></ErrorBoundary><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AuthRoute>} />
+      <Route path="/gruposMembros" element={<AdminRoute><><Navbar /><MembrosGrupos /><VoltarLink to="/updateUsuarios" label="Voltar ao Painel de Gestão" /><Footer /></></AdminRoute>} />
       <Route path="/AddGroupsToMeal" element={<AdminRoute><><Navbar /><AddGroupsToMeal /><Footer /></></AdminRoute>} />
-      <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><Footer /></></AuthRoute>} />
-      <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><Footer /></></AuthRoute>} />
-      <Route path="/atividades" element={<AuthRoute><><Navbar /><AtividadesPage /><Footer /></></AuthRoute>} />
-      <Route path="/perfil" element={<AuthRoute><><Navbar /><PerfilPage /><Footer /></></AuthRoute>} />
-      <Route path="/mensagens" element={<AuthRoute><><Navbar /><MensagensPage /><Footer /></></AuthRoute>} />
+      <Route path="/Notificacoes" element={<AuthRoute><><Navbar /><Notificacoes /><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AuthRoute>} />
+      <Route path="/InscreverVisita" element={<AuthRoute><><Navbar /><InscreverVisita /><VoltarLink to="/updateUsuarios" label="Voltar ao Painel de Gestão" /><Footer /></></AuthRoute>} />
+      <Route path="/atividades" element={<AuthRoute><><Navbar /><AtividadesPage /><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AuthRoute>} />
+      <Route path="/perfil" element={<AuthRoute><><Navbar /><PerfilPage /><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AuthRoute>} />
+      <Route path="/mensagens" element={<AuthRoute><><Navbar /><MensagensPage /><VoltarLink to="/home" label="Voltar à Página Inicial" /><Footer /></></AuthRoute>} />
     </Routes>
   );
 }
