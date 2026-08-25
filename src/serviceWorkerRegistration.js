@@ -43,6 +43,18 @@ function registerValidSW(swUrl, config) {
           }
         };
       };
+
+      // O browser só verifica sozinho o service-worker.js em cada
+      // navegação — quem deixa a app aberta (ou instalada, sem fechar)
+      // podia nunca chegar a ver o aviso de atualização. Isto força a
+      // verificação sempre que a aba volta a ficar visível, e de X em X
+      // tempo enquanto estiver aberta, para o aviso aparecer sem
+      // depender de a pessoa fechar e reabrir a app.
+      const verificarAtualizacao = () => registration.update().catch(() => {});
+      setInterval(verificarAtualizacao, 60 * 60 * 1000); // de hora a hora
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') verificarAtualizacao();
+      });
     })
     .catch(error => console.error('Falha no registo do Service Worker:', error));
 }

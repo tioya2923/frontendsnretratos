@@ -1,4 +1,11 @@
-const CACHE_VERSION = 'v4';
+// O valor abaixo é substituído em post-build.sh por um id único gerado a
+// cada build (timestamp) — sem isto, este ficheiro ficava com os mesmos
+// bytes entre deploys (só o JS/CSS da app mudava de nome), e o browser só
+// deteta uma atualização do Service Worker quando este PRÓPRIO ficheiro
+// muda. Resultado: o aviso "Nova versão disponível!" só aparecia quando
+// alguém se lembrasse de subir isto à mão — agora sai sempre, em todo o
+// deploy.
+const CACHE_VERSION = 'BUILD_ID_PLACEHOLDER';
 const CACHE_NAME = `psn-cache-${CACHE_VERSION}`;
 const API_HOSTNAME = '__API_HOSTNAME__'; // substituído em post-build.sh a partir de REACT_APP_BACKEND_URL
 

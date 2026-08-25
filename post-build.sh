@@ -19,4 +19,13 @@ else
   exit 1
 fi
 
+# ID único por build, para o service-worker.js ficar sempre com bytes
+# diferentes do deploy anterior — é o que faz o browser detetar a
+# atualização e mostrar o aviso "Nova versão disponível!" a quem já tem a
+# app aberta/instalada. Sem isto, o ficheiro só mudava quando alguém
+# lembrasse de subir CACHE_VERSION à mão.
+BUILD_ID=$(date -u +%Y%m%d%H%M%S)
+sed -i "s#BUILD_ID_PLACEHOLDER#$BUILD_ID#g" ./build/service-worker.js
+echo "service-worker.js: BUILD_ID definido para $BUILD_ID"
+
 echo "Script pós-build concluído!"
