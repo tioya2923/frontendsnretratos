@@ -23,7 +23,9 @@ const AddGroupsToMeal = () => {
 
   useEffect(() => {
     // Buscar grupos ao carregar o componente
-    axios.get(`${backendUrl}components/grupos.php`)
+    axios.get(`${backendUrl}components/grupos.php`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+    })
       .then(response => {
         setGrupos(response.data);
       })

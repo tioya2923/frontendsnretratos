@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FiUserPlus, FiCheckCircle } from 'react-icons/fi';
+import { FiUserPlus, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 import '../../Styles/InscreverVisitas.css'; // Certifique-se de importar o arquivo CSS
 
 const InscreverVisitas = () => {
@@ -14,6 +14,7 @@ const InscreverVisitas = () => {
   const [jantarMaisCedo, setJantarMaisCedo] = useState(false);
   const [jantarMaisTarde, setJantarMaisTarde] = useState(false);
   const [mensagem, setMensagem] = useState('');
+  const [mensagemErro, setMensagemErro] = useState(false);
 
   const envUrl = process.env.REACT_APP_BACKEND_URL;
   const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
@@ -35,12 +36,14 @@ const InscreverVisitas = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setMensagem(response.data.message);
+      setMensagemErro(false);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message === "Já inscrito para esta refeição") {
         setMensagem('Já inscrito');
       } else {
         setMensagem('Erro ao adicionar refeição');
       }
+      setMensagemErro(true);
     }
   };
 
@@ -134,8 +137,8 @@ const InscreverVisitas = () => {
           <button className="botao botao--primario" type="submit" style={{ width: '100%' }}>Inscrever</button>
         </form>
         {mensagem && (
-          <p className="distintivo distintivo--sucesso" style={{ marginTop: 16 }}>
-            <FiCheckCircle /> {mensagem}
+          <p className={`distintivo distintivo--${mensagemErro ? 'erro' : 'sucesso'}`} style={{ marginTop: 16 }}>
+            {mensagemErro ? <FiAlertCircle /> : <FiCheckCircle />} {mensagem}
           </p>
         )}
       </div>

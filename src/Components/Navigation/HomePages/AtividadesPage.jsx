@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import {
   MdAdd, MdDelete, MdClose, MdChurch, MdSchool, MdDirectionsWalk,
   MdFlight, MdSportsSoccer, MdWeekend, MdPeople, MdCategory,
@@ -380,18 +381,37 @@ export default function AtividadesPage() {
   const dateKeys = Object.keys(grouped).sort();
 
   const toggleAtivo = async (atv) => {
+    // Otimista, mas com reposição se o pedido falhar — sem isto, um erro
+    // (ex.: token expirado) deixava o interruptor "trocado" no ecrã sem
+    // ter gravado nada, e só se corrigia sozinho, sem aviso, no polling
+    // seguinte (até 30s depois).
     setAtividades(prev =>
       prev.map(a => a.id === atv.id ? { ...a, ativo: !a.ativo } : a)
     );
-    await axios.put(`${BACKEND}/components/atividades.php`,
-      { id: atv.id, ativo: !atv.ativo }, { headers });
+    try {
+      await axios.put(`${BACKEND}/components/atividades.php`,
+        { id: atv.id, ativo: !atv.ativo }, { headers });
+    } catch (err) {
+      console.error(err);
+      setAtividades(prev =>
+        prev.map(a => a.id === atv.id ? { ...a, ativo: atv.ativo } : a)
+      );
+      toast.error(err.response?.data?.error || 'Não foi possível atualizar a atividade.');
+    }
   };
 
   const deletar = async (id) => {
     if (!(await confirmar('Eliminar esta atividade?'))) return;
+    const anteriores = atividades;
     setAtividades(prev => prev.filter(a => a.id !== id));
-    await axios.delete(`${BACKEND}/components/atividades.php`,
-      { data: { id }, headers });
+    try {
+      await axios.delete(`${BACKEND}/components/atividades.php`,
+        { data: { id }, headers });
+    } catch (err) {
+      console.error(err);
+      setAtividades(anteriores);
+      toast.error(err.response?.data?.error || 'Não foi possível eliminar a atividade.');
+    }
   };
 
   const openModal = () => {

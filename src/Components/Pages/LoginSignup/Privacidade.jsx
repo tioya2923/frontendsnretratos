@@ -44,7 +44,18 @@ function Privacidade() {
                     toast.error((data && data.message) || 'Email ou palavra passe incorretos');
                 }
             })
-            .catch(error => toast.error(error));
+            .catch(error => {
+                // Nunca passar o objeto Error diretamente ao toast — o
+                // react-toastify tenta renderizá-lo como filho React e
+                // rebenta ("Objects are not valid as a React child"),
+                // e como o ToastContainer é global (App.js), isso deixava
+                // a app INTEIRA em branco, não só este formulário.
+                if (error.response && error.response.data && error.response.data.message) {
+                    toast.error('Erro: ' + error.response.data.message);
+                } else {
+                    toast.error('Erro de conexão. Tente novamente mais tarde.');
+                }
+            });
     }
     const validateInputs = () => {
         let errors = [];
