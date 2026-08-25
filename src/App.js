@@ -51,8 +51,10 @@ function App() {
       <>
         <GlobalStyles />
         {/* Container único de notificações — substitui o alert() nativo em
-            toda a app. Cada página só precisa de chamar toast.success()/
-            toast.error(), sem montar o seu próprio <ToastContainer />. */}
+            toda a app. Cada página só precisa de chamar toast.error()/
+            toast.warn(), sem montar o seu próprio <ToastContainer />. Sem
+            avisos de sucesso — a própria ação (redirecionar, a lista
+            atualizar-se) já confirma que correu bem. */}
         <ToastContainer position="top-center" autoClose={4000} />
         {swRegistration
           ? <PwaUpdateBanner registration={swRegistration} />

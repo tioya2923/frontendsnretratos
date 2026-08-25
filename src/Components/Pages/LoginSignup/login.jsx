@@ -52,7 +52,6 @@ function Login() {
         axios.post(url, fData)
             .then(response => {
                 if (response.data.message === 'Login bem-sucedido') {
-                    toast.success('Login bem-sucedido');
                     // Atualiza o UserContext partilhado (estado + localStorage)
                     // em vez de escrever só no localStorage — sem isto, o resto
                     // da app (ex.: o botão de confirmar presença) continuava a

@@ -45,7 +45,6 @@ const AddGroupsToMeal = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
     })
       .then(response => {
-        toast.success('Refeição adicionada com sucesso!');
         // Limpar o formulário, mas manter o grupo selecionado — é comum
         // marcar o mesmo grupo para mais do que uma refeição de seguida.
         setFormData({

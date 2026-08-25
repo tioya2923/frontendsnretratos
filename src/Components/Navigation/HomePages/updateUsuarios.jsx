@@ -32,7 +32,6 @@ const UpdateUsuarios = () => {
         })
             .then(response => {
                 console.log(response);
-                toast.success('Usuário eliminado com sucesso');
                 setTriggerUpdate(prevState => prevState + 1);
             })
             .catch(error => {

@@ -28,7 +28,6 @@ function AreaPessoal() {
         axios.post(url, fData)
             .then(response => {
                 if (response.data.message === "Login bem-sucedido") {
-                    toast.success("Login bem-sucedido");
                     setLoggedIn(true);
                 } else {
                     toast.error(response.data.message);

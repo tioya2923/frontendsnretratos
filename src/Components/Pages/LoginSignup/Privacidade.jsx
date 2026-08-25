@@ -31,7 +31,6 @@ function Privacidade() {
             .then(response => {
                 const data = response.data;
                 if (data && data.status === 'success') {
-                    toast.success('Login bem-sucedido');
                     localStorage.setItem('adminToken', data.token);
                     localStorage.setItem('adminName', data.name);
                     // Usado para mostrar/esconder ações só de super admin

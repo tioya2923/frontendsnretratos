@@ -100,14 +100,15 @@ export default function Register() {
       if (response.data.status === "email_exists") {
         toast.error("O e-mail já existe");
       } else if (response.data.status === "success") {
-        toast.success("Registo bem-sucedido! Já pode iniciar sessão.");
         setName("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
         setDataAniversario("");
         setDataAniversarioSacerdotal("");
-        setTimeout(() => navigate("/login"), 1800);
+        // Já sem o aviso de sucesso a dar tempo de ler antes de sair da
+        // página — navega logo, o próprio login a seguir já é a confirmação.
+        navigate("/login");
       } else {
         toast.error(response.data.message || "Erro ao registrar. Tente novamente.");
       }

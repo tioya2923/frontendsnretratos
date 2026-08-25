@@ -35,7 +35,6 @@ const AdPrivacidade = () => {
             // Casos de sucesso/validação — o backend devolve sempre 200 e
             // aqui só uma string simples (não {status, message}).
             if (data === 'Registo bem-sucedido') {
-                toast.success('Registo bem-sucedido');
                 setName('');
                 setEmail('');
                 setPassword('');
