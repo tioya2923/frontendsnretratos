@@ -381,7 +381,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                 })}
                             </tr>
                             <tr>
-                                <td colSpan={tiposRefeicoesAlmoco.length}>
+                                <td className="calendarioResumo" colSpan={tiposRefeicoesAlmoco.length}>
                                     <p>Lugares à mesa: {refeicoes.filter(refeicao => refeicao.almoco).length}</p>
                                 </td>
                             </tr>
@@ -393,7 +393,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                 </tr>
                             )}
                             <tr>
-                                <td colSpan={tiposRefeicoesAlmoco.length}>
+                                <td className="calendarioResumo" colSpan={tiposRefeicoesAlmoco.length}>
                                     <p><strong>Total Geral para o Almoço: {
                                         refeicoes.filter(refeicao => refeicao.almoco || refeicao.almoco_mais_cedo || refeicao.almoco_mais_tarde).length
                                         + totalPessoasGruposAlmoco
@@ -448,7 +448,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                 })}
                             </tr>
                             <tr>
-                                <td colSpan={tiposRefeicoesJantar.length}>
+                                <td className="calendarioResumo" colSpan={tiposRefeicoesJantar.length}>
                                     <p>Lugares à mesa: {refeicoes.filter(refeicao => refeicao.jantar).length}</p>
                                 </td>
                             </tr>
@@ -460,7 +460,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                 </tr>
                             )}
                             <tr>
-                                <td colSpan={tiposRefeicoesJantar.length}>
+                                <td className="calendarioResumo" colSpan={tiposRefeicoesJantar.length}>
                                     <p><strong>Total Geral para o Jantar: {
                                         refeicoes.filter(refeicao => refeicao.jantar).length +
                                         refeicoes.filter(refeicao => refeicao.jantar_mais_cedo).length +

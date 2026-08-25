@@ -53,6 +53,10 @@
     font-size: 0.92rem;
 }
 
+.calendarioContainer table.calendarioTipo td.calendarioResumo {
+    text-align: center;
+}
+
 .calendarioContainer table.calendarioTipo th {
     background: var(--cor-vinho);
     color: #fff;
