@@ -14,6 +14,8 @@ import Home from "./Components/Navigation/HomePages/home";
 import Login from "./Components/Pages/LoginSignup/login";
 import Register from "./Components/Pages/LoginSignup/register";
 import Unsubscribe from "./Components/Pages/LoginSignup/unsubscribe";
+import EsqueciPassword from "./Components/Pages/LoginSignup/EsqueciPassword";
+import RedefinirPassword from "./Components/Pages/LoginSignup/RedefinirPassword";
 import AreaPessoal from "./Components/Navigation/HomePages/areaPessoal";
 import Administracao from "./Components/Navigation/HomePages/Administracao";
 import Privacidade from "./Components/Pages/LoginSignup/Privacidade";
@@ -102,6 +104,8 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
+      <Route path="/esqueci-password" element={<><Navbar /><EsqueciPassword /><Footer /></>} />
+      <Route path="/redefinir-password" element={<><Navbar /><RedefinirPassword /><Footer /></>} />
       <Route path="/privacidade" element={<><Navbar /><Privacidade /><Footer /></>} />
       <Route path="/adPrivacidade" element={<AdminRoute><><Navbar /><AdPrivacidade /><Footer /></></AdminRoute>} />
 

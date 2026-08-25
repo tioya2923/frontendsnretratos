@@ -101,6 +101,9 @@ function Login() {
                     <div className="login-form-register">
                         <Link to="/register">fazer registo</Link>
                     </div>
+                    <div className="login-form-register">
+                        <Link to="/esqueci-password">Esqueceu-se da palavra-passe?</Link>
+                    </div>
                     <div className="unsubscribe-meals" style={{ marginTop: 12, textAlign: 'center' }}>
                         <span style={{ color: '#fff', fontSize: '0.98em' }}>
                             Deixarás de tomar as refeições connosco?{' '}
