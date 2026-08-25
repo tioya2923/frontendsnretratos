@@ -105,7 +105,9 @@
     display: none;
 }
 
-.nomeContainer {
+/* Só a própria linha do utilizador é clicável (para revelar o "Não vem") —
+   as dos outros ficam sem cursor de clique, já que clicar nelas não faz nada. */
+.nomeContainer--proprio {
     cursor: pointer;
 }
 

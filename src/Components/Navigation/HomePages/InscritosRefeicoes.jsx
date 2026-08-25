@@ -36,6 +36,12 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
     const toArray = d => Array.isArray(d) ? d : (d && typeof d === 'object') ? [d] : [];
     const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 
+    // Só o próprio utilizador pode ver/usar o "Não vem" na sua linha — o
+    // backend também valida isto (refeicoes.php, DELETE), esta verificação
+    // aqui só evita que o botão sequer apareça para os outros.
+    const ehMeuNome = (refeicao) =>
+        !!userName && refeicao.nome_completo?.trim().toLowerCase() === userName.trim().toLowerCase();
+
     const fetchAll = useCallback(async () => {
         const t = Date.now();
         try {
@@ -89,8 +95,7 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
             ? diaAnterior(refeicao.data)
             : refeicao.data;
         const ehHoje = diaConfirmacaoStr === hojeStr;
-        const ehOProprio = !!userName &&
-            refeicao.nome_completo?.trim().toLowerCase() === userName.trim().toLowerCase();
+        const ehOProprio = ehMeuNome(refeicao);
 
         return (
             <>
@@ -349,9 +354,13 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                         <td key={tipo}>
                                             <ul>
                                                 {inscritos.map((refeicao) => (
-                                                    <li key={refeicao.id} className="nomeContainer" onClick={(event) => handleClick(event, refeicao.id)}>
+                                                    <li
+                                                        key={refeicao.id}
+                                                        className={`nomeContainer${ehMeuNome(refeicao) ? ' nomeContainer--proprio' : ''}`}
+                                                        onClick={(event) => ehMeuNome(refeicao) && handleClick(event, refeicao.id)}
+                                                    >
                                                         {renderNome(refeicao, tipoConfirmacao)}
-                                                        {selectedId === refeicao.id && (
+                                                        {selectedId === refeicao.id && ehMeuNome(refeicao) && (
                                                             <button className="calendarioButton" onClick={() => handleDelete(refeicao.id)}>Não vem</button>
                                                         )}
                                                     </li>
@@ -412,9 +421,13 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
                                         <td key={tipo}>
                                             <ul>
                                                 {inscritos.map((refeicao) => (
-                                                    <li key={refeicao.id} className="nomeContainer" onClick={(event) => handleClick(event, refeicao.id)}>
+                                                    <li
+                                                        key={refeicao.id}
+                                                        className={`nomeContainer${ehMeuNome(refeicao) ? ' nomeContainer--proprio' : ''}`}
+                                                        onClick={(event) => ehMeuNome(refeicao) && handleClick(event, refeicao.id)}
+                                                    >
                                                         {renderNome(refeicao, tipoConfirmacao)}
-                                                        {selectedId === refeicao.id && (
+                                                        {selectedId === refeicao.id && ehMeuNome(refeicao) && (
                                                             <button className="calendarioButton" onClick={() => handleDelete(refeicao.id)}>Não vem</button>
                                                         )}
                                                     </li>
