@@ -19,6 +19,19 @@ const InscreverVisitas = () => {
   const envUrl = process.env.REACT_APP_BACKEND_URL;
   const backendUrl = envUrl ? (envUrl.endsWith('/') ? envUrl : envUrl + '/') : '/';
 
+  // Só pode estar marcada uma opção de horário de almoço, e uma de
+  // jantar, de cada vez — o Takeaway (independente) não passa por aqui.
+  const handleAlmoco = (tipo, checked) => {
+    setAlmoco(tipo === 'almoco' ? checked : false);
+    setAlmocoMaisCedo(tipo === 'almocoMaisCedo' ? checked : false);
+    setAlmocoMaisTarde(tipo === 'almocoMaisTarde' ? checked : false);
+  };
+  const handleJantar = (tipo, checked) => {
+    setJantar(tipo === 'jantar' ? checked : false);
+    setJantarMaisCedo(tipo === 'jantarMaisCedo' ? checked : false);
+    setJantarMaisTarde(tipo === 'jantarMaisTarde' ? checked : false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -41,7 +54,10 @@ const InscreverVisitas = () => {
       if (error.response && error.response.data && error.response.data.message === "Já inscrito para esta refeição") {
         setMensagem('Já inscrito');
       } else {
-        setMensagem('Erro ao adicionar refeição');
+        // Mostra a mensagem real do backend quando existe (ex.: as novas
+        // validações de horário único de almoço/jantar), em vez de um
+        // erro genérico que escondia a causa.
+        setMensagem(error.response?.data?.message || 'Erro ao adicionar refeição');
       }
       setMensagemErro(true);
     }
@@ -89,7 +105,7 @@ const InscreverVisitas = () => {
               <input
                 type="checkbox"
                 checked={almoco}
-                onChange={(e) => setAlmoco(e.target.checked)}
+                onChange={(e) => handleAlmoco('almoco', e.target.checked)}
               />
               Almoço
             </label>
@@ -97,7 +113,7 @@ const InscreverVisitas = () => {
               <input
                 type="checkbox"
                 checked={almocoMaisCedo}
-                onChange={(e) => setAlmocoMaisCedo(e.target.checked)}
+                onChange={(e) => handleAlmoco('almocoMaisCedo', e.target.checked)}
               />
               Almoço mais cedo
             </label>
@@ -105,7 +121,7 @@ const InscreverVisitas = () => {
               <input
                 type="checkbox"
                 checked={almocoMaisTarde}
-                onChange={(e) => setAlmocoMaisTarde(e.target.checked)}
+                onChange={(e) => handleAlmoco('almocoMaisTarde', e.target.checked)}
               />
               Almoço mais tarde
             </label>
@@ -113,7 +129,7 @@ const InscreverVisitas = () => {
               <input
                 type="checkbox"
                 checked={jantar}
-                onChange={(e) => setJantar(e.target.checked)}
+                onChange={(e) => handleJantar('jantar', e.target.checked)}
               />
               Jantar
             </label>
@@ -121,7 +137,7 @@ const InscreverVisitas = () => {
               <input
                 type="checkbox"
                 checked={jantarMaisCedo}
-                onChange={(e) => setJantarMaisCedo(e.target.checked)}
+                onChange={(e) => handleJantar('jantarMaisCedo', e.target.checked)}
               />
               Jantar mais cedo
             </label>
@@ -129,7 +145,7 @@ const InscreverVisitas = () => {
               <input
                 type="checkbox"
                 checked={jantarMaisTarde}
-                onChange={(e) => setJantarMaisTarde(e.target.checked)}
+                onChange={(e) => handleJantar('jantarMaisTarde', e.target.checked)}
               />
               Jantar mais tarde
             </label>

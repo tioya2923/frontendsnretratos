@@ -118,25 +118,24 @@ const CalendarioRefeicoes = () => {
     const handleCheckboxChange = (dia, tipo, value) => {
         switch (tipo) {
             case 'levarRefeicao':
+                // Takeaway é independente — nunca compromete as outras opções.
                 setLevarRefeicao(prev => ({ ...prev, [dia]: value }));
                 break;
             case 'almoco':
-                setAlmoco(prev => ({ ...prev, [dia]: value }));
-                break;
             case 'almocoMaisCedo':
-                setAlmocoMaisCedo(prev => ({ ...prev, [dia]: value }));
-                break;
             case 'almocoMaisTarde':
-                setAlmocoMaisTarde(prev => ({ ...prev, [dia]: value }));
+                // Só pode estar marcada uma destas três ao mesmo tempo —
+                // marcar uma desmarca sempre as outras duas do mesmo dia.
+                setAlmoco(prev => ({ ...prev, [dia]: tipo === 'almoco' ? value : false }));
+                setAlmocoMaisCedo(prev => ({ ...prev, [dia]: tipo === 'almocoMaisCedo' ? value : false }));
+                setAlmocoMaisTarde(prev => ({ ...prev, [dia]: tipo === 'almocoMaisTarde' ? value : false }));
                 break;
             case 'jantar':
-                setJantar(prev => ({ ...prev, [dia]: value }));
-                break;
             case 'jantarMaisCedo':
-                setJantarMaisCedo(prev => ({ ...prev, [dia]: value }));
-                break;
             case 'jantarMaisTarde':
-                setJantarMaisTarde(prev => ({ ...prev, [dia]: value }));
+                setJantar(prev => ({ ...prev, [dia]: tipo === 'jantar' ? value : false }));
+                setJantarMaisCedo(prev => ({ ...prev, [dia]: tipo === 'jantarMaisCedo' ? value : false }));
+                setJantarMaisTarde(prev => ({ ...prev, [dia]: tipo === 'jantarMaisTarde' ? value : false }));
                 break;
             default:
                 break;
