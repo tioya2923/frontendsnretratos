@@ -74,8 +74,14 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
         }
     }, [backendUrl]);
 
+    // String(...) dos dois lados porque refeicoes.php devolve o id como
+    // texto ("17") e confirmar_presenca.php devolve-o como número (17) —
+    // sem servidor com mysqlnd, o mysqli só dá tipos nativos onde o PHP
+    // faz cast explícito, e cada endpoint fê-lo de forma diferente. Uma
+    // comparação por === direta nunca dava match (exceto logo a seguir a
+    // confirmar, por coincidência de tipos nesse instante só).
     const isConfirmado = (refeicaoId, tipoBase) =>
-        confirmacoes.some(c => c.refeicao_id === refeicaoId && c.tipo === tipoBase);
+        confirmacoes.some(c => String(c.refeicao_id) === String(refeicaoId) && c.tipo === tipoBase);
 
     const handleConfirmarPresenca = async (event, refeicaoId, tipoBase) => {
         event.preventDefault();
