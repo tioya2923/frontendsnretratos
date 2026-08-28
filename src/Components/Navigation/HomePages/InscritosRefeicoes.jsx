@@ -53,7 +53,18 @@ const InscritosRefeicoes = ({ mostrarAniversarios = true }) => {
             ]);
             setRefeicoes(toArray(refRes.data));
             setNomes(toArray(nomesRes.data));
-            setConfirmacoes(toArray(confRes.data));
+            // Junta com o que já estava (não substitui) — uma confirmação
+            // nunca se desfaz, por isso isto é sempre uma união. Sem isto,
+            // um polling que tivesse começado mesmo antes de confirmar a
+            // presença podia responder depois da atualização otimista e
+            // "desfazer" visualmente o visto que acabou de aparecer,
+            // mesmo tendo a confirmação ficado gravada no servidor.
+            setConfirmacoes(prev => {
+                const chave = c => `${c.refeicao_id}-${c.tipo}`;
+                const mapa = new Map(prev.map(c => [chave(c), c]));
+                toArray(confRes.data).forEach(c => mapa.set(chave(c), c));
+                return Array.from(mapa.values());
+            });
             setGrupos(toArray(gruposRes.data));
             setError(null);
         } catch (err) {
