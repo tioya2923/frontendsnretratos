@@ -74,8 +74,13 @@ const CalendarioRefeicoes = () => {
             ? (payload.almoco || payload.almoco_mais_cedo || payload.almoco_mais_tarde || payload.levar_refeicao)
             : (payload.jantar || payload.jantar_mais_cedo || payload.jantar_mais_tarde);
 
+        // Chave por dia+secção, não só por dia — com um botão "Inscrever"
+        // por secção, um erro do Jantar não pode aparecer (nem ser
+        // apagado por um sucesso) na secção do Almoço, e vice-versa.
+        const chaveErro = `${data}-${tipo}`;
+
         if (!algumaOpcaoMarcada) {
-            setErros(prev => ({ ...prev, [data]: 'Selecione pelo menos uma opção antes de inscrever.' }));
+            setErros(prev => ({ ...prev, [chaveErro]: 'Selecione pelo menos uma opção antes de inscrever.' }));
             return;
         }
 
@@ -88,7 +93,7 @@ const CalendarioRefeicoes = () => {
         })
             .then(response => {
                 console.log('Response:', response.data); // Adicionar log para depuração
-                setErros(prev => ({ ...prev, [data]: '' })); // Limpar mensagem de erro
+                setErros(prev => ({ ...prev, [chaveErro]: '' })); // Limpar mensagem de erro
                 // Limpar só as checkboxes da secção submetida — a outra
                 // secção pode ainda ter opções por inscrever.
                 if (ehAlmoco) {
@@ -108,9 +113,9 @@ const CalendarioRefeicoes = () => {
                 // inscrições duplicadas, em vez de 200 — por isso este caso
                 // específico já chega aqui, não ao .then() de sucesso.
                 if (error.response?.data?.message === "Já inscrito para esta refeição") {
-                    setErros(prev => ({ ...prev, [data]: "Já inscrito." }));
+                    setErros(prev => ({ ...prev, [chaveErro]: "Já inscrito." }));
                 } else {
-                    setErros(prev => ({ ...prev, [data]: error.response?.data?.message || 'Erro ao inscrever-se.' }));
+                    setErros(prev => ({ ...prev, [chaveErro]: error.response?.data?.message || 'Erro ao inscrever-se.' }));
                 }
             });
     };
@@ -210,7 +215,7 @@ const CalendarioRefeicoes = () => {
                             </label>
                         </div>
                         <button className="botao botao--primario botao--pequeno" onClick={() => handleInscricao(dia, 'almoco')}>Inscrever</button>
-                        {erros[dia] && <p className="erro-mensagem"><FiAlertCircle /> {erros[dia]}</p>}
+                        {erros[`${dia}-almoco`] && <p className="erro-mensagem"><FiAlertCircle /> {erros[`${dia}-almoco`]}</p>}
 
                         <p className="calendario-seccaoLabel"><FiMoon /> Jantar</p>
                         <div className="refeicao-container">
@@ -240,7 +245,7 @@ const CalendarioRefeicoes = () => {
                             </label>
                         </div>
                         <button className="botao botao--primario botao--pequeno" onClick={() => handleInscricao(dia, 'jantar')}>Inscrever</button>
-                        {erros[dia] && <p className="erro-mensagem"><FiAlertCircle /> {erros[dia]}</p>}
+                        {erros[`${dia}-jantar`] && <p className="erro-mensagem"><FiAlertCircle /> {erros[`${dia}-jantar`]}</p>}
                     </div>
                 ))}
             </div>

@@ -402,14 +402,21 @@ export default function AtividadesPage() {
 
   const deletar = async (id) => {
     if (!(await confirmar('Eliminar esta atividade?'))) return;
-    const anteriores = atividades;
+    // Guarda só o item apagado, não a lista toda — repor com
+    // setAtividades(anteriores) sobrepunha qualquer atualização entretanto
+    // chegada do polling (ex.: outro admin a mexer noutra atividade) com
+    // uma cópia desatualizada. Assim, o rollback só readiciona o item à
+    // lista atual, tal como toggleAtivo() já fazia com o patch pontual.
+    const itemRemovido = atividades.find(a => a.id === id);
     setAtividades(prev => prev.filter(a => a.id !== id));
     try {
       await axios.delete(`${BACKEND}/components/atividades.php`,
         { data: { id }, headers });
     } catch (err) {
       console.error(err);
-      setAtividades(anteriores);
+      if (itemRemovido) {
+        setAtividades(prev => [...prev, itemRemovido]);
+      }
       toast.error(err.response?.data?.error || 'Não foi possível eliminar a atividade.');
     }
   };
