@@ -12,6 +12,7 @@ const Grupos = () => {
     const [numeroPessoas, setNumeroPessoas] = useState('');
     const [id, setId] = useState(null);
     const [membros, setMembros] = useState({});
+    const [refeicoesGrupo, setRefeicoesGrupo] = useState({});
     const [selectedGrupo, setSelectedGrupo] = useState(null);
     const [novoMembro, setNovoMembro] = useState({});
     const confirmar = useConfirm();
@@ -48,6 +49,15 @@ const Grupos = () => {
             setMembros((prevMembros) => ({ ...prevMembros, [grupoId]: response.data }));
         } catch (error) {
             console.error('Erro ao buscar membros:', error);
+        }
+    };
+
+    const fetchRefeicoesGrupo = async (grupoId) => {
+        try {
+            const response = await axios.get(`${backendUrl}components/grupo_refeicao.php?grupo_id=${grupoId}&_=${Date.now()}`, adminHeaders());
+            setRefeicoesGrupo((prev) => ({ ...prev, [grupoId]: Array.isArray(response.data) ? response.data : [] }));
+        } catch (error) {
+            console.error('Erro ao buscar refeições do grupo:', error);
         }
     };
 
@@ -123,6 +133,17 @@ const Grupos = () => {
         }
     };
 
+    const removerRefeicaoGrupo = async (refeicaoGrupoId, grupoId) => {
+        if (!(await confirmar('Remover este grupo dessa refeição? O grupo em si não é apagado.'))) return;
+        try {
+            await axios.delete(`${backendUrl}components/grupo_refeicao.php`, { data: { id: refeicaoGrupoId }, ...adminHeaders() });
+            fetchRefeicoesGrupo(grupoId);
+        } catch (error) {
+            console.error('Erro ao remover refeição do grupo:', error);
+            toast.error(erroServidor(error, 'Erro ao remover o grupo dessa refeição.'));
+        }
+    };
+
     const handleMembroChange = (grupoId, value) => {
         setNovoMembro((prevMembros) => ({ ...prevMembros, [grupoId]: value }));
     };
@@ -130,6 +151,7 @@ const Grupos = () => {
     const handleGrupoClick = (grupoId) => {
         setSelectedGrupo(grupoId === selectedGrupo ? null : grupoId);
         fetchMembros(grupoId);
+        fetchRefeicoesGrupo(grupoId);
     };
 
     return (
@@ -232,6 +254,28 @@ const Grupos = () => {
                                                 </li>
                                             ))}
                                         </ul>
+                                    )}
+
+                                    {refeicoesGrupo[grupo.id]?.length > 0 && (
+                                        <>
+                                            <p className="campoRotulo" style={{ marginTop: 16 }}>Marcado para estas refeições</p>
+                                            <ul className="grupos-listaMembros">
+                                                {refeicoesGrupo[grupo.id].map((rg) => (
+                                                    <li key={rg.id}>
+                                                        <span>
+                                                            <FiCalendar style={{ verticalAlign: -2 }} /> {rg.tipo_refeicao} — {new Date(rg.data_refeicao + 'T00:00:00').toLocaleDateString('pt-PT')} às {String(rg.hora_refeicao).slice(0, 5)} · {rg.local_refeicao}
+                                                        </span>
+                                                        <button
+                                                            className="botao botao--perigo botao--pequeno"
+                                                            onClick={() => removerRefeicaoGrupo(rg.id, grupo.id)}
+                                                            title="Remover o grupo desta refeição (o grupo em si mantém-se)"
+                                                        >
+                                                            <FiTrash2 />
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
                                     )}
                                 </div>
                             )}
