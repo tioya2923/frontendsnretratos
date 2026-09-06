@@ -94,28 +94,40 @@ self.addEventListener('fetch', event => {
 
 // ── Push Notifications ────────────────────────────────────────────────────────
 
+// event.waitUntil() é obrigatório aqui — sem ele, o browser não sabe que
+// tem de manter o service worker vivo até a notificação ser mesmo
+// mostrada, e pode terminá-lo a meio (sobretudo em telemóvel). Quando
+// isso acontece, o Chrome não consegue confirmar que o site mostrou uma
+// notificação visível para este push, e mostra a sua própria mensagem
+// genérica de substituição ("Este site foi atualizado em segundo
+// plano.") — exatamente o aviso extra que aparecia. mostrarNotificacao()
+// também precisava de devolver (return) a promise do showNotification(),
+// senão o waitUntil() não tinha nada a aguardar.
 self.addEventListener('push', event => {
   let payload = { title: 'Paróquia de São Nicolau', body: '', url: '/', tag: 'psn' };
   console.log('[Service Worker] Push event recebido:', event);
-  if (event.data) {
-    try {
-      const data = event.data.json();
-      console.log('[Service Worker] Payload JSON:', data);
-      payload = { ...payload, ...data };
-    } catch (err) {
-      console.warn('[Service Worker] Falha ao decodificar JSON, tentando como texto:', err);
-      event.data.text().then(text => {
+
+  const tratarPush = async () => {
+    if (event.data) {
+      try {
+        const data = event.data.json();
+        console.log('[Service Worker] Payload JSON:', data);
+        payload = { ...payload, ...data };
+      } catch (err) {
+        console.warn('[Service Worker] Falha ao decodificar JSON, tentando como texto:', err);
+        const text = await event.data.text();
         console.log('[Service Worker] Payload texto:', text);
         payload.body = text || 'Nova notificação';
         payload.title = 'Paróquia de São Nicolau';
-        mostrarNotificacao(payload);
-      });
-      return;
+        return mostrarNotificacao(payload);
+      }
+    } else {
+      console.warn('[Service Worker] Push event sem data!');
     }
-  } else {
-    console.warn('[Service Worker] Push event sem data!');
-  }
-  mostrarNotificacao(payload);
+    return mostrarNotificacao(payload);
+  };
+
+  event.waitUntil(tratarPush());
 });
 
 function mostrarNotificacao(payload) {
@@ -131,7 +143,7 @@ function mostrarNotificacao(payload) {
     timestamp:          Date.now(),
     data:               { url: payload.url }
   };
-  self.registration.showNotification(payload.title, options)
+  return self.registration.showNotification(payload.title, options)
     .catch(() =>
       self.registration.showNotification(payload.title, {
         body:  payload.body,
