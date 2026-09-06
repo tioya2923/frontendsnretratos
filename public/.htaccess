@@ -6,3 +6,18 @@
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>
+
+# O service-worker.js nunca pode ficar em cache — é o ponto de entrada de
+# toda a deteção de atualizações (ver BUILD_ID em post-build.sh). Uma
+# camada de cache da PTisp à frente do Apache estava a servir uma versão
+# de dias atrás mesmo depois de novos deploys, porque não havia nenhuma
+# indicação de "não guardar em cache" a vir do servidor — nem para essa
+# camada, nem para o próprio cache interno do browser (que por omissão
+# guarda o service-worker.js até 24h, mesmo com o conteúdo a mudar).
+<IfModule mod_headers.c>
+  <FilesMatch "^service-worker\.js$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+</IfModule>
