@@ -16,6 +16,7 @@ import Register from "./Components/Pages/LoginSignup/register";
 import Unsubscribe from "./Components/Pages/LoginSignup/unsubscribe";
 import EsqueciPassword from "./Components/Pages/LoginSignup/EsqueciPassword";
 import RedefinirPassword from "./Components/Pages/LoginSignup/RedefinirPassword";
+import PoliticaPrivacidade from "./Components/Pages/LoginSignup/PoliticaPrivacidade";
 import AreaPessoal from "./Components/Navigation/HomePages/areaPessoal";
 import Administracao from "./Components/Navigation/HomePages/Administracao";
 import Privacidade from "./Components/Pages/LoginSignup/Privacidade";
@@ -113,6 +114,7 @@ function AppRoutes() {
           trás, a aparência era enganadora. */}
       <Route path="/esqueci-password" element={<EsqueciPassword />} />
       <Route path="/redefinir-password" element={<RedefinirPassword />} />
+      <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
       <Route path="/privacidade" element={<Privacidade />} />
       <Route path="/adPrivacidade" element={<AdminRoute><><Navbar /><AdPrivacidade /><Footer /></></AdminRoute>} />
 

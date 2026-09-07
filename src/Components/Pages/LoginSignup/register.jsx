@@ -217,6 +217,11 @@ export default function Register() {
             </a>
           </span>
         </div>
+        <div style={{ marginTop: 8, textAlign: "center" }}>
+          <a href="/politica-de-privacidade" style={{ color: "#ece0d4", fontSize: "0.85em", textDecoration: "underline" }}>
+            Política de Privacidade
+          </a>
+        </div>
       </div>
     </div>
   );

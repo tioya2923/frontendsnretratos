@@ -4,6 +4,7 @@ import "./Footer.css";
 
 const navigation = [
     { link: "/refeicoes", text: "Inscrição para as refeições" },
+    { link: "/politica-de-privacidade", text: "Política de Privacidade" },
     { link: "/Privacidade", text: "Admin" },
 ];
 
