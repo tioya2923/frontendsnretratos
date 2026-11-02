@@ -6,7 +6,7 @@ export default function PoliticaPrivacidade() {
     return (
         <div className="pagina" style={{ maxWidth: 760 }}>
             <h1 className="paginaTitulo"><FiShield style={{ verticalAlign: -3 }} /> Política de Privacidade</h1>
-            <p className="paginaSubtitulo">Comunidade Paroquial de São Nicolau e Santa Maria Madalena — última atualização: setembro de 2026.</p>
+            <p className="paginaSubtitulo">Comunidade Paroquial de São Nicolau e Santa Maria Madalena — última atualização: novembro de 2026.</p>
 
             <div className="cartao cartao--destaque" style={{ lineHeight: 1.7 }}>
                 <p>
@@ -14,6 +14,14 @@ export default function PoliticaPrivacidade() {
                     e Santa Maria Madalena e serve para organizar as inscrições e a presença dos paroquianos
                     nas refeições da comunidade. Esta página explica que dados recolhemos, para que os usamos
                     e como pode exercer os seus direitos sobre eles.
+                </p>
+
+                <h2>Idade mínima</h2>
+                <p>
+                    A aplicação destina-se a pessoas com <strong>14 anos ou mais</strong>. Não recolhemos
+                    conscientemente dados de menores de 14 anos; o registo recusa datas de nascimento que
+                    indiquem uma idade inferior. Se tomar conhecimento de que uma criança com menos de 14 anos
+                    se registou, contacte-nos para eliminarmos a conta.
                 </p>
 
                 <h2>Que dados recolhemos</h2>

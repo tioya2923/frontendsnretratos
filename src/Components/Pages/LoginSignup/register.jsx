@@ -23,6 +23,11 @@ export default function Register() {
   const [dataAniversarioError, setDataAniversarioError] = useState("");
 
   const hoje = new Date().toISOString().split("T")[0];
+  // Idade mínima: 14 anos (ver política de privacidade).
+  const idadeMinima = 14;
+  const limite = new Date();
+  limite.setFullYear(limite.getFullYear() - idadeMinima);
+  const dataMaxima = limite.toISOString().split("T")[0];
 
   const backendEnv = process.env.REACT_APP_BACKEND_URL;
   const backendUrl = backendEnv ? (backendEnv.endsWith("/") ? backendEnv : backendEnv + "/") : '/';
@@ -62,6 +67,9 @@ export default function Register() {
       errors.push(dataAniversarioErr);
     } else if (dataAniversario > hoje) {
       dataAniversarioErr = "A data de aniversário não pode ser no futuro";
+      errors.push(dataAniversarioErr);
+    } else if (dataAniversario > dataMaxima) {
+      dataAniversarioErr = `É necessário ter pelo menos ${idadeMinima} anos para se registar`;
       errors.push(dataAniversarioErr);
     }
 
@@ -154,7 +162,7 @@ export default function Register() {
                 <input
                   type="date"
                   value={dataAniversario}
-                  max={hoje}
+                  max={dataMaxima}
                   onChange={(e) => setDataAniversario(e.target.value)}
                   required
                 />
