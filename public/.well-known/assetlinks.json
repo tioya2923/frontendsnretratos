@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "pt.paroquiasaonicolau.sn",
+        "sha256_cert_fingerprints": ["3A:F7:53:64:67:1D:CC:32:59:27:F8:09:A2:E6:1D:21:B3:58:1B:3E:F2:CF:AE:AA:60:91:B9:39:27:04:DD:0A"]
+      }
+    }]
