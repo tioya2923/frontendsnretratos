@@ -1,8 +1,11 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "pt.paroquiasaonicolau.sn",
-        "sha256_cert_fingerprints": ["3A:F7:53:64:67:1D:CC:32:59:27:F8:09:A2:E6:1D:21:B3:58:1B:3E:F2:CF:AE:AA:60:91:B9:39:27:04:DD:0A"]
-      }
-    }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "pt.paroquiasaonicolau.sn",
+    "sha256_cert_fingerprints": [
+      "64:CB:36:72:94:E8:D8:AA:F6:F1:DE:40:B5:57:3E:6F:C4:C3:DB:47:E0:A9:D9:18:49:2A:10:D5:B3:17:EE:86",
+      "3A:F7:53:64:67:1D:CC:32:59:27:F8:09:A2:E6:1D:21:B3:58:1B:3E:F2:CF:AE:AA:60:91:B9:39:27:04:DD:0A"
+    ]
+  }
+}]
