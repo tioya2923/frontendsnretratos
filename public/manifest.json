@@ -43,7 +43,7 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "theme_color": "#1a1a2e",
   "background_color": "#ffffff",
   "categories": ["lifestyle", "social"]
